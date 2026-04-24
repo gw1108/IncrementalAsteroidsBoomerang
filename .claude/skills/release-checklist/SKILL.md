@@ -140,7 +140,6 @@ Add platform-specific sections based on the argument:
 - [ ] Pricing configured for all regions
 
 ### Launch Readiness
-- [ ] Analytics / telemetry verified and receiving data
 - [ ] Crash reporting configured and dashboard accessible
 - [ ] Day-one patch prepared and tested (if needed)
 - [ ] On-call team schedule set for first 72 hours

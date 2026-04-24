@@ -94,7 +94,6 @@
 
 ## Launch Readiness
 
-- [ ] Analytics/telemetry verified and receiving data
 - [ ] Crash reporting configured: [service name]
 - [ ] Day-one patch prepared (if needed)
 - [ ] On-call team schedule set for first 72 hours

@@ -19,14 +19,12 @@ The user must approve before moving to the next phase.
 
 ## Team Composition
 - **release-manager** — Release branch, versioning, changelog, deployment
-- **analytics-engineer** — Verify telemetry events fire correctly and dashboards are live
 - **producer** — Go/no-go decision, stakeholder communication, scheduling
 
 ## How to Delegate
 
 Use the Task tool to spawn each team member as a subagent:
 - `subagent_type: release-manager` — Release branch, versioning, changelog, deployment
-- `subagent_type: analytics-engineer` — Telemetry event verification and dashboard readiness
 - `subagent_type: producer` — Go/no-go decision, stakeholder communication
 - `subagent_type: network-programmer` — Netcode stability sign-off (invoke if game has multiplayer)
 
@@ -53,12 +51,11 @@ Delegate to **release-manager**:
 Delegate in parallel:
 - **network-programmer** *(if game has multiplayer)*: Sign off on netcode stability. Verify lag compensation, reconnect handling, and bandwidth usage under load.
 
-### Phase 4: Localization, Performance, and Analytics
+### Phase 4: Localization and Performance
 Delegate (can run in parallel with Phase 3 if resources available):
 - Verify all strings are translated (delegate to **localization-lead** if available)
 - Run performance benchmarks against targets (delegate to **performance-analyst** if available)
-- **analytics-engineer**: Verify all telemetry events fire correctly on release build. Confirm dashboards are receiving data. Check that critical funnels (onboarding, progression, monetization if applicable) are instrumented.
-- Output: localization, performance, and analytics sign-off
+- Output: localization and performance sign-off
 
 ### Phase 5: Go/No-Go
 Delegate to **producer**:
@@ -88,7 +85,6 @@ Delegate to **release-manager**:
 ### Phase 7: Post-Release
 - **release-manager**: Generate release report (what shipped, what was deferred, metrics)
 - **producer**: Update milestone tracking, communicate to stakeholders
-- **analytics-engineer**: Confirm live dashboards are healthy; alert if any critical events are missing
 - Schedule post-release retrospective if issues occurred
 
 ## Error Recovery Protocol

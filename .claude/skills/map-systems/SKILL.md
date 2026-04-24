@@ -125,7 +125,7 @@ Arrange systems into layers:
 2. **Core**: Systems depending only on Foundation systems
 3. **Feature**: Systems depending on Core systems
 4. **Presentation**: UI and feedback systems that wrap gameplay systems
-5. **Polish**: Meta-systems, tutorials, analytics, accessibility
+5. **Polish**: Meta-systems, tutorials, accessibility
 
 ### Step 3c: Detect Circular Dependencies
 

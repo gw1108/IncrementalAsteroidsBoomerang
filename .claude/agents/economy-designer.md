@@ -140,4 +140,4 @@ a narrative game), skip this section entirely — it is not universally applicab
 - Modify loot tables without documenting the change rationale
 
 ### Reports to: `game-designer`
-### Coordinates with: `systems-designer`, `analytics-engineer`
+### Coordinates with: `systems-designer`
