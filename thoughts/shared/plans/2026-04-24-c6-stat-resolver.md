@@ -132,7 +132,7 @@ public readonly struct GameStatsContext
 ### Success Criteria — Phase 1
 
 #### Automated:
-- [ ] Project compiles with zero errors or warnings (check Unity console after import)
+- [x] Project compiles with zero errors or warnings (check Unity console after import)
 
 ---
 
@@ -250,7 +250,7 @@ Add `[ContextMenu("Print Resolved Context")]` on `C6StatResolver` (also `#if UNI
 ### Success Criteria — Phase 2
 
 #### Automated:
-- [ ] Project compiles zero errors or warnings.
+- [x] Project compiles zero errors or warnings.
 
 #### Manual:
 - [ ] Add `C6StatResolver` + `TestUpgradeSource` to a test scene GameObject; wire `TestUpgradeSource` into `_producers[0]`.
