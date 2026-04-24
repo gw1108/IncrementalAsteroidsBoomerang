@@ -302,8 +302,8 @@ Run → persistent skill-tree shop → run → shop → … → boss defeated �
 | **Input** | **New Input System** (Old Input Manager has known WebGL gamepad issues) |
 | **Physics** | **Physics 2D (Box2D)** for collision detection only. Boomerang motion is **kinematic scripted**, not Rigidbody2D (P3 mandate — authored feel over emergent physics). Strip Physics 3D from build entirely. |
 | **Asset Management** | **Addressables from day 1** — even if MVP ships a single bundle, the integration is architectural. |
-| **Persistence** | **IndexedDB via JSON blob wrapper** (NOT PlayerPrefs for shipping). Schema-versioned. Plus **save-export/import to clipboard** from day 1 (Safari ITP mitigation). |
-| **Key Technical Challenges** | WebGL cold-load time; GC pauses mid-pierce; Safari ITP save eviction; skill tree UI performance; boomerang feel-in-browser (not just editor) |
+| **Persistence** | **File Based Player Prefs** replaces the standard Unity PlayerPrefs. |
+| **Key Technical Challenges** | WebGL cold-load time; GC pauses mid-pierce; Safari ITP save eviction; skill tree UI performance; |
 | **Art Style** | 2D sprite-based; Deep Forge palette; flat per-surface color (no normals, no PBR); hand-drawn or AI-assisted |
 | **Art Pipeline Complexity** | Medium — custom 2D sprites, sprite-sheet animation, sprite-based VFX |
 | **Audio Needs** | Moderate — SFX critical for P4 weighty feel; 2–3 music tracks for MVP; AudioContext must be unlocked on first user input (Unity WebGL quirk) |

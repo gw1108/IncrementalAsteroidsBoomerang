@@ -39,7 +39,7 @@ of scope per game concept).
 | C3 | Fixed-Timestep Game Tick | Core | MVP | Not Started | — | (none) |
 | C4 | Addressables Content Pipeline | Core | MVP | Not Started | — | (none) |
 | S1 | Save System | Persistence | MVP | Not Started | — | (none) |
-| C6 | Stat Resolver & Upgrade Aggregation *(inferred — TD)* | Core | MVP | Not Started | — | (none at runtime; consumes registered `IUpgradeSource` producers) |
+| C6 | Stat Resolver & Upgrade Aggregation *(inferred — TD)* | Core | MVP | **Designed** *(pending `/design-review`)* | [design/gdd/c6-stat-resolver.md](./c6-stat-resolver.md) | (none at runtime; consumes registered `IUpgradeSource` producers) |
 | C5 | Scene & Mode Flow *(inferred)* | Core | MVP | Not Started | — | C1, C4, S1 |
 | S2 | Settings & Preferences *(inferred)* | Persistence | MVP | Not Started | — | S1, C1 |
 | G2 | Camera System *(inferred)* | Gameplay | MVP | Not Started | — | C3 |
@@ -347,14 +347,15 @@ when those GDDs are authored. Record verbatim in the listed GDDs.
 | Metric | Count |
 |--------|-------|
 | Total systems identified | 30 |
-| Design docs started | 1 |
+| Design docs started | 2 |
 | Design docs reviewed | 0 |
 | Design docs approved | 0 |
-| MVP systems designed | 1 / 29 |
+| MVP systems designed | 2 / 29 |
 | Vertical Slice systems designed | 0 / 1 |
 
-**G3 Boomerang Weapon** — Designed 2026-04-23; CD-GDD-ALIGN CONCERNS
-adopted; pending independent `/design-review` in a fresh session.
+**G3 Boomerang Weapon** — Designed 2026-04-23; CD-GDD-ALIGN CONCERNS adopted; pending independent `/design-review` in a fresh session.
+
+**C6 Stat Resolver** — Designed 2026-04-24; CD-GDD-ALIGN APPROVED; pending independent `/design-review` in a fresh session.
 
 ---
 

@@ -122,6 +122,55 @@ formulas:
     added: 2026-04-23
     revised: ""
 
+  - name: field_resolve
+    status: active
+    source: design/gdd/c6-stat-resolver.md
+    referenced_by:
+      - design/gdd/c6-stat-resolver.md
+    variables:
+      - V_baseline
+      - SUM_add
+      - PROD_mul
+      - V_min
+      - V_max
+    output_range: [V_min, V_max]
+    expression: "V_final = clamp( (V_baseline + SUM_add) * PROD_mul, V_min, V_max )"
+    notes: "General stat field resolution formula applied by C6 to every GameStatsContext field at run-start. SUM_add is sum of all Additive deltas from all IUpgradeSource producers. PROD_mul is product of all Multiplicative factors in injection order (P1a first, G4 second). For integer-tier fields (base_damage, chain_count) PROD_mul is always 1.0. Expected to be referenced_by design/gdd/p1a-skill-tree-architecture.md, design/gdd/g4-mod-system.md, design/gdd/g1-player-ship-controller.md when authored."
+    added: 2026-04-24
+    revised: ""
+
+  - name: base_damage_tier_step
+    status: active
+    source: design/gdd/c6-stat-resolver.md
+    referenced_by:
+      - design/gdd/c6-stat-resolver.md
+    variables:
+      - B
+      - n
+      - F
+    output_range: [1, infinity]
+    expression: "D(0) = B (first-hit damage equals base_damage exactly; subsequent contacts via pierce_damage_falloff)"
+    notes: "Documents the relationship between C6's resolved base_damage (B) and first-hit combat output. B is FIELD-RESOLVE output for the base_damage field. Full arc damage uses pierce_damage_falloff (entities.yaml, owned by g3). Expected to be referenced_by design/gdd/p1b-skill-tree-node-catalog.md when authored — P1b uses this table to design nodes that deliver felt Pillar 1 power jumps."
+    added: 2026-04-24
+    revised: ""
+
+  - name: arc_flight_clamp
+    status: active
+    source: design/gdd/c6-stat-resolver.md
+    referenced_by:
+      - design/gdd/c6-stat-resolver.md
+    variables:
+      - T_baseline
+      - SUM_add_T
+      - PROD_mul_T
+      - T_floor
+      - T_ceiling
+    output_range: [0.1, 10.0]
+    expression: "arc_flight_time_final = clamp( (T_baseline + SUM_add_T) * PROD_mul_T, T_floor, T_ceiling )"
+    notes: "Instantiation of field_resolve for arc_flight_time with named safety constants. T_floor=0.1 s is safety-critical (division-by-zero in G3 Bezier if violated). VAL-1 in C6 enforces this clamp before all other field validations. T_floor is non-tunable — if it must change, G3 Bezier math must be refactored first. Expected to be referenced_by design/gdd/g3-boomerang-weapon.md (already references boomerang_min_arc_flight_time_safety constant), design/gdd/g4-mod-system.md (any arc-speed mod must check against this floor)."
+    added: 2026-04-24
+    revised: ""
+
   - name: camera_shake_intensity
     status: active
     source: design/gdd/g3-boomerang-weapon.md

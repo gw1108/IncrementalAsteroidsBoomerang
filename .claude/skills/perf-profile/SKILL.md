@@ -45,17 +45,8 @@ Check for existing performance targets in design docs or CLAUDE.md:
 - Leaked references (objects that should be freed but aren't)
 - Cache sizes and eviction policies
 
-**Rendering Targets (if applicable):**
-- Draw call estimates
-- Overdraw from overlapping transparent objects
-- Shader complexity
-- Unoptimized particle systems
-- Missing LODs or occlusion culling
-
 **I/O Targets:**
-- Save/load performance
 - Asset loading patterns (sync vs async)
-- Network message frequency and size
 
 ---
 

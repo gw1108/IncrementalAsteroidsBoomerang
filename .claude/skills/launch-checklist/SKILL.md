@@ -63,14 +63,6 @@ Generated: [Date]
 - [ ] Error handling covers all critical paths
 - [ ] Crash reporting integrated and verified
 
-### Security
-- [ ] No exposed API keys or credentials in source
-- [ ] Save data encrypted
-- [ ] Network communication secured (TLS/DTLS)
-- [ ] Anti-cheat measures active (if multiplayer)
-- [ ] Input validation on all server endpoints (if multiplayer)
-- [ ] Privacy policy compliance verified
-
 ---
 
 ## 2. Content Readiness

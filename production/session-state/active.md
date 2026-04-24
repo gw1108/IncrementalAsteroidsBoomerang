@@ -4,7 +4,11 @@
 
 ## Current Task
 
-**No active task.** Art bible complete (AD-ART-BIBLE: APPROVED WITH CONDITIONS). Awaiting next directive from user.
+**C6 Stat Resolver GDD — COMPLETE** — `/design-system c6-stat-resolver`
+- File: `design/gdd/c6-stat-resolver.md`
+- Status: Designed; CD-GDD-ALIGN APPROVED 2026-04-24
+- Sections: All 8 written and approved
+- Pending: independent `/design-review` in a fresh session
 
 ## Recently Completed
 
