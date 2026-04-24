@@ -187,9 +187,7 @@ See: `production/releases/rollback-plan-[version].md`
 
 ## Player-Facing Patch Notes
 
-[Draft for community-manager to review before publishing]
-
-[list player-facing changes in plain language]
+[List player-facing changes in plain language]
 ```
 
 Ask: "May I write this patch record to `production/releases/day-one-patch-[version].md`?"

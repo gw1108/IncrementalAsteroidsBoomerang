@@ -39,12 +39,11 @@ No gate IDs assigned.
 - Does NOT change the physics simulation itself — documents the interface contract for engine-programmer
 
 ### Case 3: Anti-cheat conflict
-**Input:** "We want client-authoritative position for smooth movement, but anti-cheat requires server validation."
+**Input:** "We want client-authoritative position for smooth movement, but server validation requires latency compensation."
 **Expected behavior:**
-- Surfaces the direct conflict: client-authority is fast but exploitable; server-authority is secure but requires latency compensation
-- Coordinates with `security-engineer` to agree on the validation boundary
+- Surfaces the direct conflict: client-authority is fast but risky; server-authority is more robust but requires latency compensation
 - Proposes a compromise (server validates position within a tolerance band, flags outliers) rather than unilaterally deciding
-- Documents the trade-off and escalates the final decision to `technical-director` if security-engineer and network-programmer cannot agree
+- Documents the trade-off and escalates the final decision to `technical-director`
 
 ### Case 4: Context pass — latency budget
 **Input:** Technical preferences provided in context: target latency 80ms RTT for 95th percentile players. Request: "Design the input replication scheme for a fighting game."
@@ -61,7 +60,7 @@ No gate IDs assigned.
 - [ ] Stays within declared domain (replication, lag compensation, protocol design, matchmaking)
 - [ ] Returns structured findings (sync strategies, protocol specs, bandwidth estimates)
 - [ ] Does not implement gameplay logic — only specifies the network contract for it
-- [ ] Coordinates with security-engineer on anti-cheat boundaries
+- [ ] Escalates latency/robustness trade-offs to technical-director
 - [ ] Designs to explicit latency targets from provided context
 
 ---

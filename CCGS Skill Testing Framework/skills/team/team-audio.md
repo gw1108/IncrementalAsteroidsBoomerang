@@ -4,7 +4,6 @@
 
 Orchestrates the audio team through a four-step pipeline: audio direction
 (audio-director) → sound design + accessibility review in parallel (sound-designer
-+ accessibility-specialist) → technical implementation + engine validation in
 parallel (technical-artist + primary engine specialist) → code integration
 (gameplay-programmer). Reads relevant GDDs, the sound bible (if present), and
 existing audio asset lists before spawning agents. Compiles all outputs into an
@@ -26,7 +25,6 @@ engine is configured.
 - [ ] Has a next-step handoff at the end (references `/dev-story`, `/asset-audit`)
 - [ ] Error Recovery Protocol section is present
 - [ ] `AskUserQuestion` is used at step transitions before proceeding
-- [ ] Step 2 explicitly spawns sound-designer and accessibility-specialist in parallel
 - [ ] Step 3 explicitly spawns technical-artist and engine specialist in parallel (when engine is configured)
 - [ ] Skill reads `design/gdd/sound-bible.md` during context gathering if it exists
 - [ ] Output document is saved to `design/gdd/audio-[feature].md`
@@ -50,7 +48,6 @@ engine is configured.
 1. Context gathering: orchestrator reads `design/gdd/combat.md`, `design/gdd/sound-bible.md`, and `assets/audio/` asset list before spawning any agent
 2. Step 1: audio-director is spawned; defines sonic identity, emotional tone, adaptive music direction, mix targets, and adaptive audio rules for combat
 3. `AskUserQuestion` presents audio direction; user approves before Step 2 begins
-4. Step 2: sound-designer and accessibility-specialist are spawned in parallel; sound-designer produces SFX specifications, audio event list with trigger conditions, and mixing groups; accessibility-specialist identifies critical gameplay audio events and specifies visual fallback and subtitle requirements
 5. `AskUserQuestion` presents SFX spec and accessibility requirements; user approves before Step 3 begins
 6. Step 3: technical-artist and primary engine specialist are spawned in parallel; technical-artist designs bus structure, middleware integration, memory budgets, and streaming strategy; engine specialist validates that the integration approach is idiomatic for the configured engine
 7. `AskUserQuestion` presents technical plan; user approves before Step 4 begins
@@ -62,9 +59,7 @@ engine is configured.
 
 **Assertions:**
 - [ ] Sound bible is read during context gathering (before Step 1) when it exists
-- [ ] audio-director is spawned before sound-designer or accessibility-specialist
 - [ ] `AskUserQuestion` appears after Step 1 output and before Step 2 launch
-- [ ] sound-designer and accessibility-specialist Task calls are issued simultaneously in Step 2
 - [ ] technical-artist and engine specialist Task calls are issued simultaneously in Step 3
 - [ ] gameplay-programmer is not launched until Step 3 `AskUserQuestion` is approved
 - [ ] Audio design document is written to `design/gdd/audio-combat.md` (not another path)
@@ -80,13 +75,10 @@ engine is configured.
 - GDD for the target feature exists
 - Step 1 and Step 2 are in progress
 - sound-designer's audio event list includes "EnemyNearbyAlert" — a spatial audio cue that warns the player an enemy is approaching from off-screen
-- accessibility-specialist reviews the event list and finds "EnemyNearbyAlert" has no visual fallback (no on-screen indicator, no subtitle, no controller rumble specified)
 
 **Input:** `/team-audio stealth` (Step 2 scenario)
 
 **Expected behavior:**
-1. Steps 1–2 proceed; accessibility-specialist and sound-designer are spawned in parallel
-2. accessibility-specialist returns its review with a BLOCKING concern: "`EnemyNearbyAlert` is a critical gameplay audio event (warns player of off-screen threat) with no visual fallback — hearing-impaired players cannot detect this threat. This is a BLOCKING accessibility gap."
 3. Orchestrator surfaces the concern immediately in conversation before presenting `AskUserQuestion`
 4. `AskUserQuestion` presents the accessibility concern as a BLOCKING issue with options:
    - Add a visual indicator for EnemyNearbyAlert (e.g., directional arrow on HUD) and continue
@@ -162,7 +154,6 @@ engine is configured.
 
 **Expected behavior:**
 1. Context gathering: orchestrator reads `.claude/docs/technical-preferences.md` and detects no engine is configured
-2. Steps 1–2 proceed normally (audio-director, sound-designer, accessibility-specialist)
 3. Step 3: technical-artist is spawned normally; engine specialist spawn is SKIPPED
 4. Orchestrator notes in conversation: "Engine specialist not spawned — no engine configured in technical-preferences.md. Engine integration validation will be deferred until an engine is selected."
 5. Step 4: gameplay-programmer proceeds with a note that engine-specific audio integration patterns could not be validated
@@ -184,7 +175,6 @@ engine is configured.
 
 - [ ] Context gathering (GDDs, sound bible, asset list) runs before any agent is spawned
 - [ ] `AskUserQuestion` is used after every step output before the next step launches
-- [ ] Parallel spawning: Step 2 (sound-designer + accessibility-specialist) and Step 3 (technical-artist + engine specialist) issue all Task calls before waiting for results
 - [ ] No files are written by the orchestrator directly — all writes are delegated to sub-agents
 - [ ] Each sub-agent enforces the "May I write to [path]?" protocol before any write
 - [ ] BLOCKED status from any agent is surfaced immediately — not silently skipped
@@ -202,7 +192,6 @@ engine is configured.
   + partial-report pattern validated in Cases 2 and 5.
 - Step 4 (gameplay-programmer) happy-path behavior is validated implicitly by Case 1.
   Failure modes for this step follow the standard Error Recovery Protocol.
-- The accessibility-specialist's subtitle and caption requirements (beyond visual fallbacks)
   are validated implicitly by Case 1. Case 2 focuses on the more severe case where a
   critical gameplay event has no fallback at all.
 - Engine specialist validation logic (idiomatic integration, version-specific changes) is

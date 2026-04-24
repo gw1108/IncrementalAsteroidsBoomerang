@@ -49,7 +49,6 @@ No gate IDs assigned.
 **Expected behavior:**
 - Identifies the conflict with WCAG 2.1 2.2.1 (Timing Adjustable)
 - Does NOT override the accessibility requirement to preserve pace
-- Coordinates with `accessibility-specialist` to agree on a compliant solution
 - Proposes alternatives: pause-on-hover, skip button, settings option to disable auto-advance
 
 ### Case 5: Context pass — player mental model research
@@ -67,7 +66,6 @@ No gate IDs assigned.
 - [ ] Stays within declared domain (UX flows, interaction design, IA, onboarding)
 - [ ] Redirects code implementation to ui-programmer, visual style to art-director
 - [ ] Returns structured findings (state diagrams, flow steps, input mappings) not freeform opinions
-- [ ] Coordinates with accessibility-specialist when flows have timing or cognitive load constraints
 - [ ] Designs flows based on provided user research, not assumed behavior
 - [ ] Documents rationale for flow decisions against user goals
 

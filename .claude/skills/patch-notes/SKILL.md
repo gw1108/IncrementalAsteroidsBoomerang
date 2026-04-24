@@ -5,7 +5,6 @@ argument-hint: "[version] [--style brief|detailed|full]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash
 model: haiku
-agent: community-manager
 ---
 
 ## Phase 1: Parse Arguments
@@ -183,4 +182,3 @@ internal archive copy.
 Verdict: **COMPLETE** — patch notes generated and saved.
 
 - Run `/release-checklist` to verify all other release gates are met before publishing.
-- Share the patch notes draft with the community-manager for tone review before posting publicly.

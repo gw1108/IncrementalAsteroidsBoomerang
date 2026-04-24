@@ -564,10 +564,10 @@ an existing UX spec or note it as a spec dependency.
 
 #### Section E2: Events Fired
 
-For every player action in the Interaction Map, document the corresponding event the game or analytics system should fire — or explicitly note "no event" if none applies.
+For every player action in the Interaction Map, document the corresponding event the game should fire — or explicitly note "no event" if none applies.
 
 **Questions to ask**:
-- "For each action, should the game fire an analytics event, trigger a game-state change, or both?"
+- "For each action, should the game fire an event and trigger a game-state change?"
 - "Are there any actions that should NOT fire an event — and is that a deliberate choice?"
 
 Present as a table alongside the Interaction Map:

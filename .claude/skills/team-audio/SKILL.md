@@ -46,7 +46,7 @@ Spawn the `audio-director` agent to:
 - Define audio priorities and mix targets
 - Establish any adaptive audio rules (combat intensity, exploration, tension)
 
-### Step 2: Sound Design and Audio Accessibility (parallel)
+### Step 2: Sound Design (sound-designer)
 Spawn the `sound-designer` agent to:
 - Create detailed SFX specifications for every audio event
 - Define sound categories (ambient, UI, gameplay, music, dialogue)
@@ -54,14 +54,7 @@ Spawn the `sound-designer` agent to:
 - Plan audio event list with trigger conditions
 - Define mixing groups and ducking rules
 
-Spawn the `accessibility-specialist` agent in parallel to:
-- Identify which audio events carry critical gameplay information (damage received, enemy nearby, objective complete) and require visual alternatives for hearing-impaired players
-- Specify subtitle requirements: which audio events need captions, what text format, on-screen duration
-- Check that no gameplay state is communicated by audio alone (all must have a visual fallback)
-- Review the audio event list for any that could cause issues for players with auditory sensitivities (high-frequency alerts, sudden loud events)
-- Output: audio accessibility requirements list integrated into the audio event spec
-
-### Step 3: Technical Implementation (parallel)
+### Step 3: Technical Implementation (technical-artist + engine specialist, parallel)
 Spawn the `technical-artist` agent to:
 - Design the audio middleware integration (Wwise/FMOD/native)
 - Define audio bus structure and routing

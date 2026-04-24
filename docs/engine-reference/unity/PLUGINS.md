@@ -116,15 +116,6 @@ These are NOT part of the core engine but are commonly used for specific game ty
 
 ---
 
-### 🟡 Netcode for GameObjects
-- **Purpose:** Official Unity multiplayer networking
-- **When to use:** Multiplayer games (client-server architecture)
-- **Status:** Production-Ready
-- **Package:** `com.unity.netcode.gameobjects`
-- **Official:** https://docs-multiplayer.unity3d.com/netcode/current/about/
-
----
-
 ### 🟡 Burst Compiler
 - **Purpose:** LLVM-based compiler for C# Jobs (massive performance boost)
 - **When to use:** Performance-critical code, DOTS, Jobs System
@@ -241,7 +232,6 @@ For packages NOT listed above, use the following approach when users ask:
 **I need cinematics** → **Timeline**
 **I need runtime IK** → **Animation Rigging**
 **I need level prototyping** → **ProBuilder**
-**I need multiplayer** → **Netcode for GameObjects**
 
 ---
 

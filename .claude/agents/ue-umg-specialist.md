@@ -144,7 +144,5 @@ Before writing any code:
 ## Coordination
 - Work with **unreal-specialist** for overall UE architecture
 - Work with **ui-programmer** for general UI implementation
-- Work with **ux-designer** for interaction design and accessibility
+- Work with **ux-designer** for interaction design
 - Work with **ue-blueprint-specialist** for UI Blueprint standards
-- Work with **localization-lead** for text fitting and localization
-- Work with **accessibility-specialist** for compliance

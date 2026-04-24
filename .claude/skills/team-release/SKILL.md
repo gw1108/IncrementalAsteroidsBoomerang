@@ -1,6 +1,6 @@
 ---
 name: team-release
-description: "Orchestrate the release team: coordinates release-manager, qa-lead, and producer to execute a release from candidate to deployment."
+description: "Orchestrate the release team: coordinates release-manager and producer to execute a release from candidate to deployment."
 argument-hint: "[version number or 'next']"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
@@ -19,20 +19,14 @@ The user must approve before moving to the next phase.
 
 ## Team Composition
 - **release-manager** — Release branch, versioning, changelog, deployment
-- **qa-lead** — Test sign-off, regression suite, release quality gate
-- **security-engineer** — Pre-release security audit (invoke if game has online/multiplayer features or player data)
 - **analytics-engineer** — Verify telemetry events fire correctly and dashboards are live
-- **community-manager** — Patch notes, launch announcement, player-facing messaging
 - **producer** — Go/no-go decision, stakeholder communication, scheduling
 
 ## How to Delegate
 
 Use the Task tool to spawn each team member as a subagent:
 - `subagent_type: release-manager` — Release branch, versioning, changelog, deployment
-- `subagent_type: qa-lead` — Test sign-off, regression suite, release quality gate
-- `subagent_type: security-engineer` — Security audit for online/multiplayer/data features
 - `subagent_type: analytics-engineer` — Telemetry event verification and dashboard readiness
-- `subagent_type: community-manager` — Patch notes and launch communication
 - `subagent_type: producer` — Go/no-go decision, stakeholder communication
 - `subagent_type: network-programmer` — Netcode stability sign-off (invoke if game has multiplayer)
 
@@ -57,8 +51,6 @@ Delegate to **release-manager**:
 
 ### Phase 3: Quality Gate (parallel)
 Delegate in parallel:
-- **qa-lead**: Execute full regression test suite. Test all critical paths. Verify no S1/S2 bugs. Sign off on quality.
-- **security-engineer** *(if game has online features, multiplayer, or player data)*: Conduct pre-release security audit. Review authentication, anti-cheat, data privacy compliance. Sign off on security posture.
 - **network-programmer** *(if game has multiplayer)*: Sign off on netcode stability. Verify lag compensation, reconnect handling, and bandwidth usage under load.
 
 ### Phase 4: Localization, Performance, and Analytics
@@ -70,7 +62,7 @@ Delegate (can run in parallel with Phase 3 if resources available):
 
 ### Phase 5: Go/No-Go
 Delegate to **producer**:
-- Collect sign-off from: qa-lead, release-manager, security-engineer (if spawned in Phase 3), network-programmer (if spawned in Phase 3), and technical-director
+- Collect sign-off from: release-manager, network-programmer (if spawned in Phase 3), and technical-director
 - Evaluate any open issues — are they blocking or can they ship?
 - Make the go/no-go call
 - Output: release decision with rationale
@@ -81,7 +73,7 @@ Delegate to **producer**:
   - Fix the blocker and re-run the affected phase
   - Defer the release to a later date
   - Override NO-GO with documented rationale (user must provide written justification)
-- **Skip Phase 6 entirely** — do not tag, deploy to staging, deploy to production, or spawn community-manager.
+- **Skip Phase 6 entirely** — do not tag, deploy to staging, or deploy to production.
 - Produce a partial report summarizing Phases 1–5 and what was skipped (Phase 6) and why.
 - Verdict: **BLOCKED** — release not deployed.
 
@@ -93,17 +85,9 @@ Delegate to **release-manager**:
 - Deploy to production
 - Monitor for 48 hours post-release
 
-Delegate to **community-manager** (in parallel with deployment):
-- Finalize patch notes using `/patch-notes [version]`
-- Prepare launch announcement (store page updates, social media, community post)
-- Draft known issues post if any S3+ issues shipped
-- Output: all player-facing release communication, ready to publish on deploy confirmation
-
 ### Phase 7: Post-Release
 - **release-manager**: Generate release report (what shipped, what was deferred, metrics)
 - **producer**: Update milestone tracking, communicate to stakeholders
-- **qa-lead**: Monitor incoming bug reports for regressions
-- **community-manager**: Publish all player-facing communication, monitor community sentiment
 - **analytics-engineer**: Confirm live dashboards are healthy; alert if any critical events are missing
 - Schedule post-release retrospective if issues occurred
 

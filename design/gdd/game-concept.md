@@ -296,7 +296,6 @@ Run → persistent skill-tree shop → run → shop → … → boss defeated �
 | **Art Style** | 2D sprite-based; Deep Forge palette; flat per-surface color (no normals, no PBR); hand-drawn or AI-assisted |
 | **Art Pipeline Complexity** | Medium — custom 2D sprites, sprite-sheet animation, sprite-based VFX |
 | **Audio Needs** | Moderate — SFX critical for P4 weighty feel; 2–3 music tracks for MVP; AudioContext must be unlocked on first user input (Unity WebGL quirk) |
-| **Networking** | None |
 | **Content Volume (Tier 2 MVP)** | 2 zones, 6 enemy variants (3 shared × 2 zones re-tinted), 2 bosses, 3 boomerang mod archetypes, 25–30 tree nodes. 3–4 hr first playthrough; 8–12 hr theorycraft completionist |
 | **Procedural Systems** | None at MVP — asteroid field positions may be procedural but content is hand-placed |
 

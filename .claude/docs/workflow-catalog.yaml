@@ -213,7 +213,7 @@ phases:
         required: false
         artifact:
           note: "Check tests/ directory for engine-specific test framework scaffold"
-        description: "Scaffold the test framework and CI pipeline once before the first sprint. Leads to /test-helpers for fixture generation, /qa-plan per epic, and /smoke-check per sprint."
+        description: "Scaffold the test framework and CI pipeline once before the first sprint. Leads to /test-helpers for fixture generation and /smoke-check per sprint."
 
       - id: sprint-plan
         name: "First Sprint Plan"
@@ -276,13 +276,6 @@ phases:
         repeatable: true
         description: "Verify all acceptance criteria, check GDD/ADR deviations, close the story"
 
-      - id: qa-plan
-        name: "QA Plan"
-        command: /qa-plan
-        required: false
-        repeatable: true
-        description: "Generate a QA test plan per epic or sprint. Run /qa-plan [epic-slug]. Produces test cases for /smoke-check, /regression-suite, and /test-evidence-review."
-
       - id: bug-report
         name: "Bug Report / Triage"
         command: /bug-report
@@ -301,7 +294,7 @@ phases:
         name: "Team Orchestration (optional)"
         required: false
         repeatable: true
-        description: "Coordinate multiple agents on a complex feature. Use: /team-combat, /team-narrative, /team-ui, /team-audio, /team-level, /team-live-ops, /team-qa. Run when a feature spans multiple agent domains."
+        description: "Coordinate multiple agents on a complex feature. Use: /team-combat, /team-ui, /team-audio, /team-level. Run when a feature spans multiple agent domains."
 
       - id: scope-check
         name: "Scope Check"

@@ -1,6 +1,6 @@
 ---
 name: unity-ui-specialist
-description: "The Unity UI specialist owns all Unity UI implementation: UI Toolkit (UXML/USS), UGUI (Canvas), data binding, runtime UI performance, input handling, and cross-platform UI adaptation. They ensure responsive, performant, and accessible UI."
+description: "The Unity UI specialist owns all Unity UI implementation: UI Toolkit (UXML/USS), UGUI (Canvas), data binding, runtime UI performance, input handling, and cross-platform UI adaptation. They ensure responsive and performant UI."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 maxTurns: 20
@@ -226,7 +226,5 @@ When in doubt, prefer the API documented in the reference files over your traini
 ## Coordination
 - Work with **unity-specialist** for overall Unity architecture
 - Work with **ui-programmer** for general UI implementation patterns
-- Work with **ux-designer** for interaction design and accessibility
+- Work with **ux-designer** for interaction design
 - Work with **unity-addressables-specialist** for UI asset loading
-- Work with **localization-lead** for text fitting and localization
-- Work with **accessibility-specialist** for compliance

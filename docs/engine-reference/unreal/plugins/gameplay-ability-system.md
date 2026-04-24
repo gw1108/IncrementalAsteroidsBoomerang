@@ -18,7 +18,6 @@ and any game with complex ability systems.
 - Buffs/debuffs (temporary effects)
 - Cooldowns and costs
 - Damage calculation
-- Multiplayer-ready ability replication
 
 ---
 

@@ -4,8 +4,7 @@
 
 Orchestrates the release team through a 7-phase pipeline from release candidate to
 deployment and post-release monitoring. Coordinates release-manager,
-producer, security-engineer (optional, required for online/
-multiplayer), network-programmer (optional, required for multiplayer),
+producer, network-programmer (optional, required for multiplayer),
 analytics-engineer, and community-manager. Phase 3 agents run in parallel. Ends
 with a go/no-go decision; deployment (Phase 6) is skipped if the producer calls
 NO-GO. Closes with a post-release monitoring plan.
@@ -22,9 +21,8 @@ NO-GO. Closes with a post-release monitoring plan.
 - [ ] Has an Error Recovery Protocol section with four recovery options (surface / assess / offer options / partial report)
 - [ ] Has a next-step handoff referencing post-release monitoring, `/retrospective`, and `production/stage.txt`
 - [ ] Uses `AskUserQuestion` at phase transitions requiring user approval before proceeding
-- [ ] Phase 3 agents (optionally security-engineer, network-programmer) are explicitly stated to run in parallel
+- [ ] Phase 3 agents (optionally network-programmer) are explicitly stated to run in parallel
 - [ ] Phase 6 (Deployment) is conditional on a GO decision from Phase 5
-- [ ] security-engineer is described as conditional on online features / player data — not always spawned
 
 ---
 
@@ -45,7 +43,7 @@ NO-GO. Closes with a post-release monitoring plan.
 **Expected behavior:**
 1. Phase 1: Spawns `producer` via Task; confirms all milestone acceptance criteria met; identifies any deferred scope; produces release authorization; presents to user; AskUserQuestion: user approves before Phase 2
 2. Phase 2: Spawns `release-manager` via Task; cuts release branch from agreed commit; bumps version numbers; invokes `/release-checklist`; freezes branch; output: branch name and checklist; AskUserQuestion: user approves before Phase 3
-3. Phase 3 (parallel): Skips QA verification; security-engineer is NOT spawned (no online features); network-programmer is NOT spawned (no multiplayer)
+3. Phase 3 (parallel): Skips QA verification; network-programmer is NOT spawned (no multiplayer)
 4. Phase 4: Verifies localization strings all translated; `analytics-engineer` verifies telemetry fires correctly on the release build; performance benchmarks pass; sign-off produced
 5. Phase 5: Spawns `producer` via Task; collects sign-offs from release-manager, no open blocking issues; producer declares GO; AskUserQuestion: user sees GO decision and confirms deployment
 6. Phase 6: Spawns `release-manager`; tags release in version control; invokes `/changelog`; deploys to staging; smoke verification passes; deploys to production; simultaneously spawns `community-manager` to finalize patch notes via `/patch-notes v1.0.0` and prepare launch announcement
@@ -54,7 +52,6 @@ NO-GO. Closes with a post-release monitoring plan.
 
 **Assertions:**
 - [ ] Phase 3 QA verification is skipped
-- [ ] security-engineer is NOT spawned when the game has no online features, multiplayer, or player data
 - [ ] Phase 5 producer collects sign-offs from all required parties before declaring GO
 - [ ] Phase 6 deployment only begins after GO decision is confirmed by the user
 - [ ] `/changelog` is invoked by release-manager in Phase 6 (not written directly)
@@ -95,32 +92,26 @@ NO-GO. Closes with a post-release monitoring plan.
 
 ---
 
-### Case 3: Security Audit for Online Game — security-engineer is spawned in Phase 3
+### Case 3: Multiplayer Release — network-programmer is spawned in Phase 3
 
 **Fixture:**
-- Game has multiplayer features and stores player account data
+- Game has multiplayer features
 - Release candidate exists for v2.1.0
-- security-engineer audit is required per team composition rules
 
 **Input:** `/team-release v2.1.0`
 
 **Expected behavior:**
 1. Phases 1–2 complete normally
-2. Phase 3 (parallel): Orchestrator detects that the game has online/multiplayer features and player data; issues Task calls simultaneously for `security-engineer` and `network-programmer` for netcode stability sign-off
-3. security-engineer conducts pre-release security audit: reviews authentication flows, anti-cheat presence, data privacy compliance; returns sign-off
-4. network-programmer verifies lag compensation, reconnect handling, and bandwidth under load; returns sign-off
-5. Both Phase 3 agents complete; their results are collected before Phase 4 begins
-6. Phase 5: producer collects sign-offs from Phase 3 agents (security-engineer, network-programmer) before making the go/no-go call
-7. Remaining phases proceed normally to COMPLETE
+2. Phase 3 (parallel): Orchestrator detects that the game has multiplayer features; issues Task call for `network-programmer` for netcode stability sign-off
+3. network-programmer verifies lag compensation, reconnect handling, and bandwidth under load; returns sign-off
+4. Phase 3 agent completes; results are collected before Phase 4 begins
+5. Phase 5: producer collects sign-offs from Phase 3 agents (network-programmer) before making the go/no-go call
+6. Remaining phases proceed normally to COMPLETE
 
 **Assertions:**
-- [ ] security-engineer IS spawned in Phase 3 when the game has online features, multiplayer, or player data — this is not skipped
 - [ ] network-programmer IS spawned in Phase 3 when the game has multiplayer
-- [ ] Phase 3 Task calls (security-engineer, network-programmer) are issued simultaneously
-- [ ] security-engineer audit covers authentication, anti-cheat, and data privacy compliance
-- [ ] Phase 5 producer sign-off collection includes security-engineer
-- [ ] Phase 6 deployment does not begin until security-engineer has signed off
-- [ ] Skill does NOT treat security-engineer as optional for a game with player data
+- [ ] Phase 5 producer sign-off collection includes network-programmer
+- [ ] Phase 6 deployment does not begin until network-programmer has signed off
 
 ---
 
@@ -190,7 +181,6 @@ NO-GO. Closes with a post-release monitoring plan.
 ## Protocol Compliance
 
 - [ ] `AskUserQuestion` used at each phase transition gate (post-Phase 1, post-Phase 2, post-Phase 3/4 if issues, post-Phase 5 go/no-go)
-- [ ] security-engineer is conditionally spawned based on game features — never silently skipped when features are present
 - [ ] File Write Protocol: orchestrator never calls Write/Edit directly — all writes are delegated to sub-agents or sub-skills
 - [ ] Phase 6 Deployment is strictly conditional on a GO verdict from Phase 5 — never auto-triggered
 - [ ] Error recovery: any BLOCKED agent is surfaced immediately before continuing to dependent phases
@@ -204,5 +194,5 @@ NO-GO. Closes with a post-release monitoring plan.
 
 - Phase 7 post-release actions (release report, milestone tracking, community publishing, dashboard monitoring) are validated implicitly by Case 1. No separate edge case is required as Phase 7 is non-gated and does not have a blocking failure mode.
 - The parallel Phase 4 path (localization + performance + analytics simultaneously with Phase 3) is a documented option in the skill ("can run in parallel with Phase 3 if resources available"). Case 4 verifications Phase 4 as a sequential gate; the parallel variant is left to the skill's implementation judgment.
-- The `network-programmer` sign-off path for multiplayer is validated as part of Case 3 rather than a separate case, as it follows the same parallel-spawn pattern as security-engineer.
-- The "override NO-GO with documented rationale" path in Case 2 is referenced but not exhaustively verificationed — it is an escape hatch that the skill must support, and its existence is validated by the AskUserQuestion options assertion in Case 2.
+- The `network-programmer` sign-off path for multiplayer is validated as part of Case 3.
+- The "override NO-GO with documented rationale" path in Case 2 is referenced but not exhaustively verified — it is an escape hatch that the skill must support, and its existence is validated by the AskUserQuestion options assertion in Case 2.

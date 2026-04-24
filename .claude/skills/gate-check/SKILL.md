@@ -272,7 +272,6 @@ cross-GDD consistency check failed and must be resolved before advancing.
 - For design review checks: `Read` the GDD and check for the 8 required sections
 - For performance checks: `Read` technical-preferences.md and compare against any
   profiling data in `tests/performance/` or recent `/perf-profile` output
-- For localization checks: `Grep` for hardcoded strings in `src/`
 
 ### Cross-Reference Checks
 - Compare `design/gdd/` documents against `src/` implementations

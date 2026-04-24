@@ -155,26 +155,11 @@ These are NOT part of the core engine but are commonly used for specific game ty
 
 ---
 
-### ⚠️ Online Subsystem (EOS, Steam, etc.)
-- **Purpose:** Platform-agnostic online services (matchmaking, friends, achievements)
-- **When to use:** Multiplayer games with online features
-- **Status:** Production-Ready
-- **Plugin:** `OnlineSubsystem`, `OnlineSubsystemEOS`, `OnlineSubsystemSteam`
-- **Official:** https://docs.unrealengine.com/5.7/en-US/online-subsystem-in-unreal-engine/
-
----
-
 ## Deprecated Plugins (Avoid for New Projects)
 
 ### ❌ PhysX Vehicles
 - **Deprecated:** Use Chaos Vehicles instead
 - **Status:** Legacy, not recommended
-
----
-
-### ❌ Old Replication Graph
-- **Deprecated:** Replaced by Iris (UE 5.1+)
-- **Status:** Use Iris for modern networking
 
 ---
 

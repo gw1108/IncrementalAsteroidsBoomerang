@@ -254,28 +254,6 @@ using var data = new NativeArray<int>(1000, Allocator.TempJob);
 
 ---
 
-## Multiplayer
-
-### Use Netcode for GameObjects (Official)
-
-```csharp
-// ✅ Unity's official netcode
-using Unity.Netcode;
-
-public class Player : NetworkBehaviour {
-    private NetworkVariable<int> health = new NetworkVariable<int>(100);
-
-    [ServerRpc]
-    public void TakeDamageServerRpc(int damage) {
-        health.Value -= damage;
-    }
-}
-```
-
-**Replaces:** UNet (deprecated), MLAPI (renamed to Netcode for GameObjects).
-
----
-
 ## Testing
 
 ### Use Unity Test Framework (NUnit-based)
@@ -324,7 +302,6 @@ Debug.Log($"Player {playerName} scored {score} points");
 | **Rendering** | URP + RenderGraph | Built-in pipeline |
 | **Assets** | Addressables | Resources |
 | **Jobs** | Burst + IJobParallelFor | Coroutines for heavy work |
-| **Multiplayer** | Netcode for GameObjects | UNet |
 
 ---
 

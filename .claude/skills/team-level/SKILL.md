@@ -31,7 +31,6 @@ Use the Task tool to spawn each team member as a subagent:
 - `subagent_type: level-designer` — Spatial layout, pacing, encounters, navigation
 - `subagent_type: systems-designer` — Enemy compositions, loot tables, difficulty balance
 - `subagent_type: art-director` — Visual theme, color palette, lighting, asset requirements
-- `subagent_type: accessibility-specialist` — Navigation clarity, colorblind safety, cognitive load
 - `subagent_type: qa-tester` — Test cases, boundary testing, playtest checklist
 
 Always provide full context in each agent's prompt (game concept, pillars, existing level docs, narrative docs).
@@ -98,7 +97,7 @@ Spawn the `systems-designer` agent to:
 
 **Gate**: Use `AskUserQuestion` to present Step 3 outputs and confirm before proceeding to Step 4.
 
-### Step 4: Production Concepts + Accessibility (art-director + accessibility-specialist, parallel)
+### Step 4: Production Concepts (art-director)
 
 **Note**: The art-director's directional pass (visual theme, color targets, mood) happened in Step 1. This pass is location-specific production concepts — given the finalized layout, what does each specific space look like?
 
@@ -109,20 +108,7 @@ Spawn the `art-director` agent with the finalized layout from Step 2:
 - Specify VFX needs that are specific to this area's layout (weather volumes, particles, atmospheric effects)
 - Flag any locations where the layout creates visual direction conflicts with the Step 1 targets — surface these as production risks
 
-Spawn the `accessibility-specialist` agent in parallel to:
-- Review the level layout for navigation clarity (can players orient themselves without relying on color alone?)
-- Check that critical path signposting uses shape/icon/sound cues in addition to color
-- Review any puzzle mechanics for cognitive load — flag anything that requires holding more than 3 simultaneous states
-- Check that key gameplay areas have sufficient contrast for colorblind players
-- Output: accessibility concerns list with severity (BLOCKING / RECOMMENDED / NICE TO HAVE)
-
-Wait for both agents to return before proceeding.
-
-**Gate**: Use `AskUserQuestion` to present both Step 4 results. If the accessibility-specialist returned any BLOCKING concerns, highlight them prominently and offer:
-- (a) Return to level-designer and art-director to redesign the flagged elements before Step 5
-- (b) Document as a known accessibility gap and proceed to Step 5 with the concern explicitly logged in the final report
-
-Do NOT proceed to Step 5 without the user acknowledging any BLOCKING accessibility concerns.
+**Gate**: Use `AskUserQuestion` to present Step 4 results before proceeding to Step 5.
 
 ### Step 5: QA Planning (qa-tester)
 Spawn the `qa-tester` agent to:
@@ -137,9 +123,9 @@ Spawn the `qa-tester` agent to:
 5. **Save to** `design/levels/[level-name].md`.
 
 6. **Output a summary** with: area overview, encounter count, estimated asset
-   list, narrative beats, any cross-team dependencies or open questions, open
+   list, narrative beats, any cross-team dependencies or open questions, and open
    cross-level dependencies (adjacent areas referenced but not yet designed, each
-   marked UNRESOLVED), and accessibility concerns with their resolution status.
+   marked UNRESOLVED).
 
 ## File Write Protocol
 

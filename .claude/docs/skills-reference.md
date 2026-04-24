@@ -67,12 +67,11 @@
 | `/gate-check` | Validate readiness to advance between development phases (PASS/CONCERNS/FAIL) |
 | `/consistency-check` | Scan all GDDs against the entity registry to detect cross-document inconsistencies (stats, names, rules that contradict each other) |
 
-## QA & Testing
+## Testing
 
 | Command | Purpose |
 |---------|---------|
-| `/qa-plan` | Generate a QA test plan for a sprint or feature |
-| `/smoke-check` | Run critical path smoke test gate before QA hand-off |
+| `/smoke-check` | Run critical path smoke test gate |
 | `/soak-test` | Generate a soak test protocol for extended play sessions |
 | `/regression-suite` | Map test coverage to GDD critical paths, identify fixed bugs without regression tests |
 | `/test-setup` | Scaffold the test framework and CI/CD pipeline for the project's engine |
@@ -108,7 +107,6 @@
 |---------|---------|
 | `/prototype` | Rapid throwaway prototype to validate a mechanic (relaxed standards, isolated worktree) |
 | `/onboard` | Generate contextual onboarding document for a new contributor or agent |
-| `/localize` | Localization workflow: string extraction, validation, translation readiness |
 
 ## Team Orchestration
 
@@ -116,12 +114,8 @@ Coordinate multiple agents on a single feature area:
 
 | Command | Coordinates |
 |---------|-------------|
-| `/team-combat` | game-designer + gameplay-programmer + ai-programmer + technical-artist + sound-designer + qa-tester |
-| `/team-narrative` | narrative-director + writer + world-builder + level-designer |
-| `/team-ui` | ux-designer + ui-programmer + art-director + accessibility-specialist |
-| `/team-release` | release-manager + qa-lead + producer |
-| `/team-polish` | performance-analyst + technical-artist + sound-designer + qa-tester |
+| `/team-combat` | game-designer + gameplay-programmer + ai-programmer + technical-artist + sound-designer |
+| `/team-ui` | ux-designer + ui-programmer + art-director |
+| `/team-polish` | performance-analyst + technical-artist + sound-designer |
 | `/team-audio` | audio-director + sound-designer + technical-artist + gameplay-programmer |
-| `/team-level` | level-designer + narrative-director + world-builder + art-director + systems-designer + qa-tester |
-| `/team-live-ops` | live-ops-designer + economy-designer + community-manager + analytics-engineer |
-| `/team-qa` | qa-lead + qa-tester + gameplay-programmer + producer |
+| `/team-level` | level-designer + art-director + systems-designer |

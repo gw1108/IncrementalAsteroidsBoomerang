@@ -19,7 +19,6 @@ Read the argument for the launch date or `dry-run` mode. Dry-run mode generates 
 - Read `CLAUDE.md` for tech stack, target platforms, and team structure
 - Read the latest milestone in `production/milestones/`
 - Read any existing release checklist in `production/releases/`
-- Read the content calendar in `design/live-ops/content-calendar.md` if it exists
 
 ---
 

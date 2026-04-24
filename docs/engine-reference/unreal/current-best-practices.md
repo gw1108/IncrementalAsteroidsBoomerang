@@ -166,7 +166,7 @@ void AMyCharacter::Move(const FInputActionValue& Value) {
 
 ```cpp
 // ✅ Use GAS for: Abilities, buffs, damage calculation, cooldowns
-// Modular, scalable, multiplayer-ready
+// Modular, scalable
 
 // Install: Enable "Gameplay Abilities" plugin
 
@@ -231,32 +231,6 @@ UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(
     GetWorld(),
     MetaSoundSource
 );
-```
-
----
-
-## Replication (Multiplayer)
-
-### Server-Authoritative Pattern
-
-```cpp
-// ✅ Client sends input, server validates and replicates
-UFUNCTION(Server, Reliable)
-void Server_Move(FVector Direction);
-
-void AMyCharacter::Server_Move_Implementation(FVector Direction) {
-    // Server validates and applies movement
-    AddMovementInput(Direction);
-}
-
-// ✅ Replicate important state
-UPROPERTY(Replicated)
-int32 Health;
-
-void AMyCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-    DOREPLIFETIME(AMyCharacter, Health);
-}
 ```
 
 ---

@@ -199,28 +199,6 @@ complete system set before GDD authoring begins
 
 ---
 
-### CD-NARRATIVE — Narrative Consistency Check
-
-**Trigger**: After narrative GDDs, lore documents, dialogue specs, or world-building
-documents are authored (team-narrative, design-system for story systems, writer
-deliverables)
-
-**Context to pass**:
-- Document file path(s)
-- Game pillars
-- Narrative direction brief or tone guide (if exists at `design/narrative/`)
-- Any existing lore that the new document references
-
-**Prompt**:
-> "Review this narrative content for consistency with the game's pillars and
-> established world rules. Does the tone match the game's established voice? Are
-> there contradictions with existing lore or world-building? Does the content serve
-> the player experience pillar? Return APPROVE, CONCERNS [specific inconsistencies],
-> or REJECT [contradictions that break world coherence]."
-
-**Verdicts**: APPROVE / CONCERNS / REJECT
-
----
 
 ### CD-PLAYTEST — Player Experience Validation
 
@@ -712,29 +690,6 @@ done, or at `/gate-check` Production → Polish
 > INADEQUATE [critical logic is untested — do not advance]."
 
 **Verdicts**: ADEQUATE / GAPS / INADEQUATE
-
----
-
-### ND-CONSISTENCY — Narrative Director Consistency Check
-
-**Trigger**: After writer deliverables (dialogue, lore, item descriptions) are
-authored, or when a design decision has narrative implications
-
-**Context to pass**:
-- Document or content file path(s)
-- Narrative bible or tone guide path (if exists)
-- Relevant world-building rules
-- Character or faction profiles affected
-
-**Prompt**:
-> "Review this narrative content for internal consistency and adherence to
-> established world rules. Are character voices consistent with their established
-> profiles? Does the lore contradict any established facts? Is the tone consistent
-> with the game's narrative direction? Return APPROVE, CONCERNS [specific
-> inconsistencies to fix], or REJECT [contradictions that break the narrative
-> foundation]."
-
-**Verdicts**: APPROVE / CONCERNS / REJECT
 
 ---
 

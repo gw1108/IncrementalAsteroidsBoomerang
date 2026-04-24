@@ -85,7 +85,6 @@ Read the GDD and identify every domain present. A GDD can touch multiple domains
 | Level layout, spawning, wave structure | `level-designer` |
 | Player progression, XP, unlocks | `economy-designer`, `game-designer` |
 | UI, HUD, menus, player-facing displays | `ux-designer`, `ui-programmer` |
-| Dialogue, quests, story, lore | `narrative-director` |
 | Animation, feel, timing, juice | `gameplay-programmer` |
 | Multiplayer, sync, replication | `network-programmer` |
 | Audio cues, music triggers | `audio-director` |

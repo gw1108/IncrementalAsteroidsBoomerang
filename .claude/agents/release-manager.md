@@ -67,7 +67,7 @@ Before writing any code:
 Every release follows this pipeline in strict order:
 
 1. **Build** -- Verify a clean, reproducible build for all target platforms.
-2. **Test** -- Confirm QA sign-off, quality gates met, no S1/S2 bugs.
+2. **Test** -- Confirm no S1/S2 bugs.
 3. **Cert** -- Submit to platform certification, track feedback, iterate.
 4. **Submit** -- Upload final build to storefronts, configure release settings.
 5. **Verify** -- Download and test the store build on real hardware.
@@ -137,10 +137,9 @@ On release day, ensure the following:
 - **Hotfix** (critical issue in live build):
   1. Branch from the release tag
   2. Apply minimal fix, no feature work
-  3. QA verifies fix and regression
-  4. Fast-track certification if required
-  5. Deploy with patch notes
-  6. Merge fix back to development branch
+  3. Fast-track certification if required
+  4. Deploy with patch notes
+  5. Merge fix back to development branch
 
 - **Patch release** (scheduled maintenance):
   1. Collect approved fixes from development branch
@@ -166,14 +165,11 @@ For the first 72 hours after any release:
 - Make technical architecture decisions
 - Decide what features to include or exclude (escalate to producer)
 - Approve scope changes
-- Write marketing copy (provide requirements to community-manager)
 
 ### Delegation Map
 
 Reports to: `producer` for scheduling and prioritization
 
 Coordinates with:
-- `qa-lead` for quality gates, test results, and release readiness sign-off
-- `community-manager` for launch communications and player-facing messaging
 - `technical-director` for platform-specific technical requirements
 - `lead-programmer` for hotfix branch management

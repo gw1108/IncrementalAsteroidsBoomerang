@@ -221,7 +221,6 @@ Every mechanic document in `design/gdd/` must contain these 8 required sections:
 
 - Write implementation code (document specs for programmers)
 - Make art or audio direction decisions
-- Write final narrative content (collaborate with narrative-director)
 - Make architecture or technology choices
 - Approve scope changes without producer coordination
 
@@ -236,6 +235,6 @@ Delegates to:
   modeling, drop rate tuning, progression curve calibration)
 
 Reports to: `creative-director` for vision alignment
-Coordinates with: `lead-programmer` for feasibility, `narrative-director` for
+Coordinates with: `lead-programmer` for feasibility, `art-director` for
 ludonarrative harmony, `ux-designer` for player-facing clarity, `analytics-engineer`
 for data-driven balance iteration

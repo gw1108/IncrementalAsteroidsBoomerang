@@ -13,26 +13,23 @@ full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
 ## Team Composition
-- **ux-designer** — User flows, wireframes, accessibility, input handling
+- **ux-designer** — User flows, wireframes, input handling
 - **ui-programmer** — UI framework, screens, widgets, data binding, implementation
 - **art-director** — Visual style, layout polish, consistency with art bible
 - **engine UI specialist** — Validates UI implementation patterns against engine-specific best practices (read from `.claude/docs/technical-preferences.md` Engine Specialists → UI Specialist)
-- **accessibility-specialist** — Audits accessibility compliance at Phase 4
 
 **Templates used by this pipeline:**
 - `ux-spec.md` — Standard screen/flow UX specification
 - `hud-design.md` — HUD-specific UX specification
 - `interaction-pattern-library.md` — Reusable interaction patterns
-- `accessibility-requirements.md` — Committed accessibility tier and requirements
 
 ## How to Delegate
 
 Use the Task tool to spawn each team member as a subagent:
-- `subagent_type: ux-designer` — User flows, wireframes, accessibility, input handling
+- `subagent_type: ux-designer` — User flows, wireframes, input handling
 - `subagent_type: ui-programmer` — UI framework, screens, widgets, data binding
 - `subagent_type: art-director` — Visual style, layout polish, art bible consistency
 - `subagent_type: [UI engine specialist]` — Engine-specific UI pattern validation (e.g., unity-ui-specialist, ue-umg-specialist, godot-specialist)
-- `subagent_type: accessibility-specialist` — Accessibility compliance audit
 
 Always provide full context in each agent's prompt (feature requirements, existing UI patterns, platform targets). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 4 review agents can run simultaneously).
 
@@ -45,7 +42,6 @@ Before designing anything, read and synthesize:
 - `design/player-journey.md` — player's state and context when they reach this screen
 - All GDD UI Requirements sections relevant to this feature
 - `design/ux/interaction-patterns.md` — existing patterns to reuse (not reinvent)
-- `design/accessibility-requirements.md` — committed accessibility tier (e.g., Basic, Enhanced, Full)
 
 **If `design/ux/interaction-patterns.md` does not exist**, surface the gap immediately:
 > "interaction-patterns.md does not exist — no existing patterns to reuse."
@@ -79,9 +75,8 @@ After the spec is complete, invoke `/ux-review design/ux/[feature-name].md`.
 ### Phase 2: Visual Design
 
 Delegate to **art-director**:
-- Review the full UX spec (flows, wireframes, interaction patterns, accessibility notes) — not just the wireframe images
+- Review the full UX spec (flows, wireframes, interaction patterns) — not just the wireframe images
 - Apply visual treatment from the art bible: colors, typography, spacing, animation style
-- Check that visual design preserves accessibility compliance: verify color contrast ratios, and confirm color is never the only indicator of state (shape, text, or icon must reinforce it)
 - Specify all asset requirements needed from the art pipeline: icons at specified sizes, background textures, fonts, decorative elements — with precise dimensions and format requirements
 - Ensure consistency with existing implemented UI screens
 - Output: visual design spec with style notes and asset manifest
@@ -102,7 +97,6 @@ Delegate to **ui-programmer**:
 - **UI NEVER owns or modifies game state** — display only; emit events for all player actions
 - All text through the localization system — no hardcoded player-facing strings
 - Support both input methods (keyboard/mouse AND gamepad)
-- Implement accessibility features per the committed tier in `design/accessibility-requirements.md`
 - Wire up data binding to game state
 - **If any new interaction pattern is created during implementation** (i.e., something not already in the pattern library), add it to `design/ux/interaction-patterns.md` before marking implementation complete
 - Output: implemented UI feature
@@ -110,11 +104,10 @@ Delegate to **ui-programmer**:
 ### Phase 4: Review (parallel)
 
 Delegate in parallel:
-- **ux-designer**: Verify implementation matches wireframes and interaction spec. Test keyboard-only and gamepad-only navigation. Check accessibility features function correctly.
+- **ux-designer**: Verify implementation matches wireframes and interaction spec. Test keyboard-only and gamepad-only navigation.
 - **art-director**: Verify visual consistency with art bible. Check at minimum and maximum supported resolutions.
-- **accessibility-specialist**: Verify compliance against the committed accessibility tier documented in `design/accessibility-requirements.md`. Flag any violations as blockers.
 
-All three review streams must report before proceeding to Phase 5.
+Both review streams must report before proceeding to Phase 5.
 
 ### Phase 5: Polish
 
@@ -158,7 +151,7 @@ delegated to sub-agents and sub-skills (`/ux-design`, `ui-programmer`). Each enf
 
 ## Output
 
-A summary report covering: UX spec status, UX review verdict, visual design status, implementation status, accessibility compliance, input method support, interaction pattern library update status, and any outstanding issues.
+A summary report covering: UX spec status, UX review verdict, visual design status, implementation status, input method support, interaction pattern library update status, and any outstanding issues.
 
 Verdict: **COMPLETE** — UI feature delivered through full pipeline (UX spec → visual → implementation → review → polish).
 Verdict: **BLOCKED** — pipeline halted; surface the blocker and its phase before stopping.

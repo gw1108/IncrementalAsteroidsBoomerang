@@ -124,7 +124,7 @@ None. Security audit is a read-only advisory skill; no gates are invoked.
 
 ---
 
-### Case 5: Gate Compliance — No gate; security-engineer invoked separately
+### Case 5: Gate Compliance — No gate
 
 **Fixture:**
 - Source files exist; 1 CONCERNS-level finding detected (debug logging enabled in release build)
@@ -136,14 +136,12 @@ None. Security audit is a read-only advisory skill; no gates are invoked.
 1. Skill scans source; finds debug logging active in release path
 2. No director gate is invoked regardless of review mode
 3. Verdict is CONCERNS
-4. Output notes: "For formal security review, consider engaging a security-engineer agent"
-5. Findings are presented as a read-only report; no files written
+4. Findings are presented as a read-only report; no files written
 
 **Assertions:**
 - [ ] No director gate is invoked in any review mode
-- [ ] Security-engineer consultation is suggested (not mandated)
 - [ ] No files are written
-- [ ] Verdict is CONCERNS for advisory-level security findings
+- [ ] Verdict is CONCERNS for advisory-level findings
 
 ---
 

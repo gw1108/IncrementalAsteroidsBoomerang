@@ -23,11 +23,10 @@ There are three tiers of agents:
   - `producer` -- scheduling, coordination, and risk management
 
 - **Tier 2 (Sonnet)**: Department leads who own their domain
-  - `game-designer`, `lead-programmer`, `art-director`, `audio-director`,
-    `narrative-director`, `qa-lead`, `release-manager`, `localization-lead`
+  - `game-designer`, `lead-programmer`, `art-director`, `audio-director`
 
 - **Tier 3 (Sonnet/Haiku)**: Specialists who execute within their domain
-  - Designers, programmers, artists, writers, testers, engineers
+  - Designers, programmers, artists, engineers
 
 ### 2. Pick the Right Agent for the Job
 
@@ -38,20 +37,14 @@ Ask yourself: "What department would handle this in a real studio?"
 | Design a new mechanic | `game-designer` |
 | Write combat code | `gameplay-programmer` |
 | Create a shader | `technical-artist` |
-| Write dialogue | `writer` |
 | Plan the next sprint | `producer` |
 | Review code quality | `lead-programmer` |
-| Write test cases | `qa-tester` |
 | Design a level | `level-designer` |
 | Fix a performance problem | `performance-analyst` |
 | Design a loot table | `economy-designer` |
 | Resolve a creative conflict | `creative-director` |
 | Make an architecture decision | `technical-director` |
-| Manage a release | `release-manager` |
-| Prepare strings for translation | `localization-lead` |
 | Test a mechanic idea quickly | `prototyper` |
-| Review code for security issues | `security-engineer` |
-| Check accessibility compliance | `accessibility-specialist` |
 | Get Unreal Engine advice | `unreal-specialist` |
 | Get Unity advice | `unity-specialist` |
 | Get Godot advice | `godot-specialist` |
@@ -66,8 +59,6 @@ Ask yourself: "What department would handle this in a real studio?"
 | Write idiomatic GDScript | `godot-gdscript-specialist` |
 | Create Godot shaders | `godot-shader-specialist` |
 | Build GDExtension modules | `godot-gdextension-specialist` |
-| Plan live events and seasons | `live-ops-designer` |
-| Write patch notes for players | `community-manager` |
 | Brainstorm a new game idea | Use `/brainstorm` skill |
 
 ### 3. Use Slash Commands for Common Tasks
@@ -121,17 +112,12 @@ Ask yourself: "What department would handle this in a real studio?"
 | `/patch-notes` | Generate player-facing patch notes |
 | `/hotfix` | Emergency fix with audit trail |
 | `/prototype` | Scaffolds a throwaway prototype |
-| `/localize` | Localization scan, extract, validate |
 | `/team-combat` | Orchestrate full combat team pipeline |
-| `/team-narrative` | Orchestrate full narrative team pipeline |
 | `/team-ui` | Orchestrate full UI team pipeline |
 | `/team-release` | Orchestrate full release team pipeline |
 | `/team-polish` | Orchestrate full polish team pipeline |
 | `/team-audio` | Orchestrate full audio team pipeline |
 | `/team-level` | Orchestrate full level creation pipeline |
-| `/team-live-ops` | Orchestrate live-ops team for seasons, events, and post-launch content |
-| `/team-qa` | Orchestrate full QA team cycle — test plan, test cases, smoke check, sign-off |
-| `/qa-plan` | Generate a QA test plan for a sprint or feature |
 | `/bug-triage` | Re-prioritize open bugs, assign to sprints, surface systemic trends |
 | `/smoke-check` | Run critical path smoke test gate before QA hand-off (PASS/FAIL) |
 | `/soak-test` | Generate a soak test protocol for extended play sessions |
@@ -150,7 +136,6 @@ Templates are in `.claude/docs/templates/`:
 - `architecture-decision-record.md` -- for technical decisions
 - `architecture-traceability.md` -- maps GDD requirements to ADRs to story IDs
 - `risk-register-entry.md` -- for new risks
-- `narrative-character-sheet.md` -- for new characters
 - `test-plan.md` -- for feature test plans
 - `sprint-plan.md` -- for sprint planning
 - `milestone-definition.md` -- for new milestones
@@ -167,7 +152,6 @@ Templates are in `.claude/docs/templates/`:
 - `game-concept.md` -- for initial game concepts (MDA, SDT, Flow, Bartle)
 - `pitch-document.md` -- for pitching the game to stakeholders
 - `economy-model.md` -- for virtual economy design (sink/faucet model)
-- `faction-design.md` -- for faction identity, lore, and gameplay role
 - `systems-index.md` -- for systems decomposition and dependency mapping
 - `project-stage-report.md` -- for project stage detection output
 - `design-doc-from-implementation.md` -- for reverse-documenting existing code into GDDs
@@ -180,6 +164,7 @@ Templates are in `.claude/docs/templates/`:
 - `player-journey.md` -- for 6-phase emotional arc and retention hooks by time scale
 - `difficulty-curve.md` -- for difficulty axes, onboarding ramp, and cross-system interactions
 - `test-evidence.md` -- template for recording manual test evidence (screenshots, walkthrough notes)
+- `accessibility-requirements.md` -- **OUT OF SCOPE** — this project does not plan accessibility features
 
 Also in `.claude/docs/templates/collaborative-protocols/` (used by agents, not typically edited directly):
 

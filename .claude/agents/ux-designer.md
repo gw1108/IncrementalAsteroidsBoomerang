@@ -108,5 +108,4 @@ Every feature must pass:
 - Override accessibility requirements for aesthetics
 
 ### Reports to: `art-director` for visual UX, `game-designer` for gameplay UX
-### Coordinates with: `ui-programmer` for implementation feasibility,
-`analytics-engineer` for UX metrics
+### Coordinates with: `ui-programmer` for implementation feasibility

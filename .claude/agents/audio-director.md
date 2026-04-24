@@ -114,5 +114,5 @@ Delegates to:
 
 Reports to: `creative-director` for vision alignment
 Coordinates with: `game-designer` for mechanical audio feedback,
-`narrative-director` for emotional alignment, `lead-programmer` for audio
+`creative-director` for emotional alignment, `lead-programmer` for audio
 system implementation

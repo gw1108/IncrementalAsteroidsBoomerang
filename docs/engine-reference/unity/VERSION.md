@@ -36,7 +36,6 @@ before suggesting Unity API calls.
 ### New Features (Post-Cutoff)
 - **DOTS**: Production-ready Entity Component System (Entities 1.3+)
 - **Graphics**: Enhanced URP/HDRP pipelines, GPU Resident Drawer
-- **Multiplayer**: Netcode for GameObjects improvements
 - **UI Toolkit**: Production-ready for runtime UI (replaces UGUI for new projects)
 - **Async Asset Loading**: Improved Addressables performance
 - **Web**: WebGPU support

@@ -175,7 +175,6 @@ design/player-journey.md (emotional arc, if authored)
                 ├── Phase 1: /ux-design (if any specs still missing) + /ux-review
                 ├── Phase 2: visual design (art-director)
                 ├── Phase 3: layout implementation (ui-programmer)
-                ├── Phase 4: accessibility audit (accessibility-specialist)
                 └── Phase 5: final review
 
 Note: /ux-design and /ux-review belong in Phase 4 (Pre-Production).
@@ -321,7 +320,6 @@ design/player-journey.md (emotional arc)
                 ├── Phase 1: context load + /ux-design (if specs missing)
                 ├── Phase 2: visual design (art-director)
                 ├── Phase 3: layout implementation (ui-programmer)
-                ├── Phase 4: accessibility audit (accessibility-specialist)
                 └── Phase 5: final review
 ```
 

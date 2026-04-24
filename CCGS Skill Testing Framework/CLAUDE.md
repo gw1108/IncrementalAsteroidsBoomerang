@@ -39,7 +39,7 @@ analysis    → consistency-check, balance-check, content-audit, code-review,
               tech-debt, scope-check, estimate, perf-profile, asset-audit,
               security-audit, test-evidence-review, test-flakiness
 team        → team-combat, team-narrative, team-audio, team-level, team-ui,
-              team-release, team-polish, team-live-ops
+              team-polish, team-live-ops
 sprint      → sprint-plan, sprint-status, milestone-review, retrospective,
               changelog, patch-notes
 utility     → all remaining skills
@@ -50,7 +50,7 @@ utility     → all remaining skills
 ```
 directors   → creative-director, technical-director, producer, art-director
 leads       → lead-programmer, narrative-director, audio-director, ux-designer,
-              release-manager, localization-lead
+              localization-lead
 specialists → gameplay-programmer, engine-programmer, ui-programmer,
               tools-programmer, network-programmer, ai-programmer,
               level-designer, sound-designer, technical-artist
@@ -60,7 +60,7 @@ unity       → unity-specialist, unity-ui-specialist, unity-shader-specialist,
               unity-dots-specialist, unity-addressables-specialist
 unreal      → unreal-specialist, ue-gas-specialist, ue-replication-specialist,
               ue-umg-specialist, ue-blueprint-specialist
-operations  → security-engineer, performance-analyst,
+operations  → performance-analyst,
               analytics-engineer, community-manager
 creative    → writer, world-builder, game-designer, economy-designer,
               systems-designer, prototyper

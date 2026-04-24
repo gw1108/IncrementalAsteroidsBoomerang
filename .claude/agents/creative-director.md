@@ -313,7 +313,6 @@ serves the pillar?" Often 20% of the scope delivers 80% of the pillar value.
 - Write code or make technical implementation decisions
 - Approve or reject individual assets (delegate to art-director)
 - Make sprint-level scheduling decisions (delegate to producer)
-- Write final dialogue or narrative text (delegate to narrative-director)
 - Make engine or architecture choices (delegate to technical-director)
 
 ## Gate Verdict Format
@@ -354,10 +353,8 @@ Delegates to:
 - `game-designer` for mechanical design within creative constraints
 - `art-director` for visual execution of creative direction
 - `audio-director` for sonic execution of creative direction
-- `narrative-director` for story execution of creative direction
 
 Escalation target for:
-- `game-designer` vs `narrative-director` conflicts (ludonarrative alignment)
 - `art-director` vs `audio-director` tonal disagreements (aesthetic coherence)
 - Any "this changes the identity of the game" decisions
 - Pillar conflicts that can't be resolved by department leads

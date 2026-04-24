@@ -4,7 +4,6 @@
 
 Orchestrates the full level design team for a single level or area. Coordinates
 narrative-director, world-builder, level-designer, systems-designer, art-director,
-and accessibility-specialist through five sequential steps with one
 parallel phase (Step 4). Compiles all team outputs into a single level design
 document saved to `design/levels/[level-name].md`. Uses `AskUserQuestion` at each
 step transition. Delegates all file writes to sub-agents. Produces a summary report
@@ -21,10 +20,7 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`.
 - [ ] Has a next-step handoff at the end (references `/design-review`, `/dev-story`)
 - [ ] Error Recovery Protocol section is present with all four recovery steps
 - [ ] Uses `AskUserQuestion` at step transitions for user approval before proceeding
-- [ ] Step 4 is explicitly marked as parallel (art-director and accessibility-specialist run simultaneously)
 - [ ] Context gathering reads: `design/gdd/game-concept.md`, `design/gdd/game-pillars.md`, `design/levels/`, `design/narrative/`, and relevant world-building docs
-- [ ] Team Composition lists all six roles (narrative-director, world-builder, level-designer, systems-designer, art-director, accessibility-specialist)
-- [ ] accessibility-specialist output includes severity ratings (BLOCKING / RECOMMENDED / NICE TO HAVE)
 - [ ] Final level design document saved to `design/levels/[level-name].md`
 
 ---
@@ -46,7 +42,6 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`.
 2. Step 1 — narrative-director spawned: defines narrative purpose, key characters, dialogue triggers, emotional arc; world-builder spawned: provides lore context, environmental storytelling opportunities, world rules; `AskUserQuestion` confirms Step 1 outputs before Step 2
 3. Step 2 — level-designer spawned: designs spatial layout (critical path, optional paths, secrets), pacing curve, encounters, puzzles, entry/exit points and connections to adjacent areas; `AskUserQuestion` confirms layout before Step 3
 4. Step 3 — systems-designer spawned: specifies enemy compositions, loot tables, difficulty balance, area-specific mechanics, resource distribution; `AskUserQuestion` confirms systems before Step 4
-5. Step 4 — art-director and accessibility-specialist spawned in parallel; art-director: visual theme, color palette, lighting, asset list, VFX needs; accessibility-specialist: navigation clarity, colorblind safety, cognitive load check — each concern rated BLOCKING / RECOMMENDED / NICE TO HAVE; `AskUserQuestion` presents both outputs before Step 5
 6. Step 5 — Orchestrator compiles all team outputs into level design document format; sub-agent asked "May I write to `design/levels/forest-dungeon.md`?"; file saved
 7. Summary report: area overview, encounter count, estimated asset list, narrative beats, cross-team dependencies, verdict: COMPLETE
 8. Next steps listed: `/design-review design/levels/forest-dungeon.md`, `/dev-story`
@@ -55,7 +50,6 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`.
 - [ ] All five sources read during context gathering before any agent is spawned
 - [ ] narrative-director and world-builder both spawned in Step 1 (may be sequential or parallel — both must complete before Step 2)
 - [ ] `AskUserQuestion` called at each step gate (minimum: after Step 1, Step 2, Step 3, Step 4)
-- [ ] Step 4 agents (art-director, accessibility-specialist) launched simultaneously
 - [ ] All file writes delegated to sub-agents — orchestrator does not write directly
 - [ ] Level doc saved to `design/levels/forest-dungeon.md` (slugified from argument)
 - [ ] Verdict COMPLETE in final summary report
@@ -121,13 +115,11 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`.
 **Fixture:**
 - Steps 1–3 complete successfully
 - `design/accessibility-requirements.md` committed tier: Enhanced
-- accessibility-specialist (Step 4, parallel) flags a BLOCKING concern: the critical path through the forest dungeon requires players to distinguish between two environmental hazards (toxic pools vs. shallow water) using color alone — no shape, icon, or audio cue differentiates them
 
 **Input:** `/team-level forest dungeon`
 
 **Expected behavior:**
 1. Steps 1–3 complete; Step 4 parallel phase begins
-2. accessibility-specialist returns: BLOCKING concern — "Critical path hazard distinction relies on color only (toxic pools vs. shallow water). Shape, icon, or audio cue required per Enhanced accessibility tier."
 3. art-director returns Step 4 output (complete)
 4. Skill presents both Step 4 results via `AskUserQuestion` — BLOCKING concern highlighted prominently
 5. `AskUserQuestion` offers:
@@ -143,7 +135,6 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`.
 - [ ] Step 5 (compilation) does NOT begin without user acknowledging the BLOCKING concern
 - [ ] Revision path offered: level-designer + art-director can be sent back before proceeding
 - [ ] Final report includes the accessibility concern and its resolution status
-- [ ] art-director's completed output is NOT discarded when accessibility-specialist blocks
 
 ---
 
@@ -182,7 +173,6 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`.
 - [ ] `AskUserQuestion` used at each step transition — user approves before pipeline advances
 - [ ] All file writes delegated to sub-agents via Task — orchestrator does not call Write or Edit directly
 - [ ] Error Recovery Protocol followed: surface → assess → offer options → partial report
-- [ ] Step 4 agents (art-director, accessibility-specialist) launched in parallel per skill spec
 - [ ] Partial report always produced even when agents are BLOCKED
 - [ ] Accessibility BLOCKING concerns surface before sign-off and require explicit user acknowledgment
 - [ ] Verdict is one of COMPLETE / BLOCKED
@@ -200,7 +190,6 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`.
   pattern covered in Case 2 and in other team-* specs.
 - systems-designer (Step 3) block scenarios are not separately tested; the same Error Recovery
   Protocol applies and the pattern is validated by Case 2.
-- Step 4 parallel ordering (art-director completing before or after accessibility-specialist)
   does not affect outcomes — both must return before Step 5 regardless of order.
 - The level doc slug convention (argument → filename) is implicitly tested by Case 1
   (`forest dungeon` → `forest-dungeon.md`); multi-word slugification edge cases (special

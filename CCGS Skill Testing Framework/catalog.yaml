@@ -256,10 +256,6 @@ skills:
     last_category_result: ""
     priority: medium
     category: team
-
-  - name: team-release
-    spec: CCGS Skill Testing Framework/skills/team/team-release.md
-    last_static: ""
     last_static_result: ""
     last_spec: ""
     last_spec_result: ""
@@ -676,13 +672,6 @@ skills:
     priority: low
     category: utility
 
-  - name: day-one-patch
-    spec: CCGS Skill Testing Framework/skills/utility/day-one-patch.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
     last_category_result: ""
     priority: low
     category: utility
@@ -799,12 +788,6 @@ agents:
     last_spec_result: ""
     category: qa
 
-  - name: accessibility-specialist
-    spec: CCGS Skill Testing Framework/agents/qa/accessibility-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: qa
-
   - name: ux-designer
     spec: CCGS Skill Testing Framework/agents/specialists/ux-designer.md
     last_spec: ""
@@ -917,12 +900,6 @@ agents:
     category: engine
 
   # Operations
-  - name: release-manager
-    spec: CCGS Skill Testing Framework/agents/operations/release-manager.md
-    last_spec: ""
-    last_spec_result: ""
-    category: operations
-
   - name: live-ops-designer
     spec: CCGS Skill Testing Framework/agents/operations/live-ops-designer.md
     last_spec: ""

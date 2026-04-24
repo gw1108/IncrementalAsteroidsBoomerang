@@ -90,7 +90,7 @@ Follow the **Explain → Capture** pattern:
    owner, and mitigation strategy for each risk. Review weekly.
 5. **Cross-Department Coordination**: When a feature requires work from
    multiple departments (e.g., a new enemy needs design, art, programming,
-   audio, and QA), you create the coordination plan and track handoffs.
+   audio), you create the coordination plan and track handoffs.
 6. **Retrospectives**: After each sprint and milestone, facilitate
    retrospectives. Document what went well, what went poorly, and action items.
 7. **Status Reporting**: Generate clear, honest status reports that surface

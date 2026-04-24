@@ -101,7 +101,6 @@ src/                  # Game source code
   core/               # Engine/framework code
   gameplay/           # Gameplay systems
   ai/                 # AI systems
-  networking/         # Multiplayer code
   ui/                 # UI code
   tools/              # Dev tools
 assets/               # Game assets
@@ -774,7 +773,6 @@ scope clarity. Verdict: READY / NEEDS WORK / BLOCKED.
 - `gameplay-programmer` for gameplay systems
 - `engine-programmer` for core engine work
 - `ai-programmer` for AI behavior
-- `network-programmer` for multiplayer
 - `ui-programmer` for UI code
 - `tools-programmer` for dev tools
 
@@ -1022,18 +1020,19 @@ requirements document.
 
 ### What Happens in This Phase
 
-Your game is polished, tested, and ready. Now you ship it.
+Your game is polished, tested, and ready. The user manages the release pipeline.
 
 ### Phase 7 Pipeline
 
 ```
-/release-checklist  -->  /launch-checklist  -->  /team-release
-        |                       |                      |
-        v                       v                      v
-  Pre-release             Full cross-department    Coordinate:
-  validation across       validation (Go/No-Go     build, QA sign-off,
-  code, content,          per department)           deployment, launch
+/release-checklist  -->  /launch-checklist
+        |                       |
+        v                       v
+  Pre-release             Full cross-department
+  validation across       validation (Go/No-Go
+  code, content,          per department)
   store, legal
+                    User manually: Tags, builds, deploys, monitors
                     Also: /changelog, /patch-notes, /hotfix
 ```
 
@@ -1092,30 +1091,34 @@ Translates developer language into player language.
 
 Generates an internal changelog (more technical, for the team).
 
-### Step 7.4: Coordinate the Release
+### Step 7.4: Ship (User-Managed)
 
-```
-/team-release
-```
+After checklists pass, you manage the release:
 
-Coordinates release-manager, QA:
-1. Pre-release validation
-2. Build management
-3. Final QA sign-off
-4. Deployment preparation
-5. Go/No-Go decision
+1. **Cut the release branch:**
+   ```bash
+   git checkout -b release/v1.0.0
+   ```
 
-### Step 7.5: Ship
+2. **Version your code** — update version numbers in relevant files (build.gradle, package.json, Unity player settings, etc.)
+
+3. **Tag the release:**
+   ```bash
+   git tag v1.0.0
+   git push origin main --tags
+   ```
+
+4. **Build and deploy** for your target platforms:
+   - WebGL: Upload to your hosting
+   - Steam: Use Steamworks tools
+   - Console: Follow platform-specific submission processes
+
+5. **Monitor the first 48 hours** for crashes, player reports, and critical issues
 
 The `validate-push` hook will warn you when pushing to `main` or `develop`.
-This is intentional -- release pushes should be deliberate:
+This is intentional -- release pushes should be deliberate and manual.
 
-```bash
-git tag v1.0.0
-git push origin main --tags
-```
-
-### Step 7.6: Post-Launch
+### Step 7.5: Post-Launch
 
 **Hotfix workflow** for critical production bugs:
 
@@ -1201,17 +1204,16 @@ Tier 1 (Directors):    creative-director, technical-director, producer
                                           |
 Tier 2 (Leads):        game-designer, lead-programmer, art-director,
                        audio-director, narrative-director, qa-lead,
-                       release-manager, localization-lead
+                       localization-lead
                                           |
 Tier 3 (Specialists):  gameplay-programmer, engine-programmer,
-                       ai-programmer, network-programmer, ui-programmer,
-                       tools-programmer, systems-designer, level-designer,
+                       ai-programmer, ui-programmer, tools-programmer,
+                       systems-designer, level-designer,
                        economy-designer, world-builder, writer,
                        technical-artist, sound-designer, ux-designer,
                        qa-tester, performance-analyst,
-                       analytics-engineer, accessibility-specialist,
-                       live-ops-designer, prototyper, security-engineer,
-                       community-manager, godot-specialist,
+                       live-ops-designer, prototyper,
+                       godot-specialist,
                        godot-gdscript-specialist, godot-shader-specialist,
                        unity-specialist, unity-csharp-specialist,
                        unreal-specialist, unreal-blueprint-specialist,
@@ -1350,7 +1352,6 @@ Reads existing code and generates GDD-format design documentation from it.
 | Implement gameplay code | `gameplay-programmer` | 3 |
 | Implement core engine systems | `engine-programmer` | 3 |
 | Implement AI behavior | `ai-programmer` | 3 |
-| Implement multiplayer | `network-programmer` | 3 |
 | Implement UI | `ui-programmer` | 3 |
 | Build dev tools | `tools-programmer` | 3 |
 | Review code architecture | `lead-programmer` | 2 |
@@ -1362,13 +1363,9 @@ Reads existing code and generates GDD-format design documentation from it.
 | Write test cases | `qa-tester` | 3 |
 | Plan test strategy | `qa-lead` | 2 |
 | Profile performance | `performance-analyst` | 3 |
-| Design analytics | `analytics-engineer` | 3 |
-| Check accessibility | `accessibility-specialist` | 3 |
 | Plan live operations | `live-ops-designer` | 3 |
-| Manage a release | `release-manager` | 2 |
 | Manage localization | `localization-lead` | 2 |
 | Prototype quickly | `prototyper` | 3 |
-| Audit security | `security-engineer` | 3 |
 | Communicate with players | `community-manager` | 3 |
 | Godot-specific help | `godot-specialist` | 3 |
 | GDScript-specific help | `godot-gdscript-specialist` | 3 |
@@ -1382,7 +1379,6 @@ Reads existing code and generates GDD-format design documentation from it.
 | Unreal-specific help | `unreal-specialist` | 3 |
 | Unreal GAS | `ue-gas-specialist` | 3 |
 | Unreal Blueprints | `ue-blueprint-specialist` | 3 |
-| Unreal replication | `ue-replication-specialist` | 3 |
 | Unreal UMG/CommonUI | `ue-umg-specialist` | 3 |
 
 ### Agent Hierarchy
@@ -1528,7 +1524,6 @@ conflicts go to `producer`.
 | `/team-level` | Level: layout through dressed encounters | 5 |
 | `/team-audio` | Audio: direction through implemented events | 5-6 |
 | `/team-polish` | Coordinated polish: perf + art + audio + QA | 6 |
-| `/team-release` | Release coordination: build + QA + deployment | 7 |
 | `/team-live-ops` | Live-ops planning: seasonal events, battle pass, retention | 7+ |
 | `/team-qa` | Full QA cycle: strategy, execution, coverage, sign-off | 6-7 |
 
@@ -1617,7 +1612,7 @@ conflicts go to `producer`.
 3. /localize (final localization pass)
 4. /release-checklist v1.0.0
 5. /launch-checklist (full cross-department validation)
-6. /team-release (coordinate the release)
+6. User manually: Cut branch, tag release, build, and deploy
 7. /patch-notes and /changelog
 8. Ship!
 9. /hotfix if anything breaks post-launch

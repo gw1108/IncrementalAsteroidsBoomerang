@@ -225,32 +225,6 @@ For each deviation found, categorize:
 
 ---
 
-## Phase 4b: QA Coverage Gate
-
-**Review mode check** — apply before spawning QL-TEST-COVERAGE:
-- `solo` → skip. Note: "QL-TEST-COVERAGE skipped — Solo mode." Proceed to Phase 5.
-- `lean` → skip (not a PHASE-GATE). Note: "QL-TEST-COVERAGE skipped — Lean mode." Proceed to Phase 5.
-- `full` → spawn as normal.
-
-After completing the deviation checks in Phase 4, spawn `qa-lead` via Task using gate **QL-TEST-COVERAGE** (`.claude/docs/director-gates.md`).
-
-Pass:
-- The story file path and story type
-- Test file paths found during Phase 3 (exact paths, or "none found")
-- The story's `## QA Test Cases` section (the pre-written test specs from story creation)
-- The story's `## Acceptance Criteria` list
-
-The qa-lead reviews whether the tests actually cover what was specified — not just whether files exist.
-
-Apply the verdict:
-- **ADEQUATE** → proceed to Phase 5
-- **GAPS** → flag as **ADVISORY**: "QA lead identified coverage gaps: [list]. Story can complete but gaps should be addressed in a follow-up story."
-- **INADEQUATE** → flag as **BLOCKING**: "QA lead: critical logic is untested. Verdict cannot be COMPLETE until coverage improves. Specific gaps: [list]."
-
-Skip this phase for Config/Data stories (no code tests required).
-
----
-
 ## Phase 5: Lead Programmer Code Review Gate
 
 **Review mode check** — apply before spawning LP-CODE-REVIEW:
@@ -394,10 +368,7 @@ All Must Have stories are complete. QA sign-off is required before advancing.
 Run these in order:
 
 1. `/smoke-check sprint` — verify the critical path still works end-to-end
-2. `/team-qa sprint` — full QA cycle: test case execution, bug triage, sign-off report
-3. `/gate-check` — advance to the next phase once QA approves
-
-Do not run `/gate-check` until `/team-qa` returns APPROVED or APPROVED WITH CONDITIONS.
+2. `/gate-check` — advance to the next phase
 ```
 
 If there are Should Have stories still unstarted, surface them alongside the close-out sequence so the user can choose: close the sprint now, or pull in more work first.
@@ -424,5 +395,5 @@ If no more stories are ready but Must Have stories are still In Progress (not Co
 ## Recommended Next Steps
 
 - Run `/story-readiness [next-story-path]` to validate the next story before starting implementation
-- If all Must Have stories are complete: run `/smoke-check sprint` → `/team-qa sprint` → `/gate-check`
+- If all Must Have stories are complete: run `/smoke-check sprint` → `/gate-check`
 - If tech debt was logged: track it via `/tech-debt` to keep the register current

@@ -4,7 +4,6 @@
 
 Orchestrates the UI team through the full UX pipeline for a single UI feature.
 Coordinates ux-designer, ui-programmer, art-director, the engine UI specialist,
-and accessibility-specialist through five structured phases: Context Gathering +
 UX Spec (Phase 1a/1b) → UX Review Gate (Phase 1c) → Visual Design (Phase 2) →
 Implementation (Phase 3) → Review in parallel (Phase 4) → Polish (Phase 5).
 Uses `AskUserQuestion` at each phase transition. Delegates all file writes to
@@ -23,9 +22,7 @@ with verdict COMPLETE / BLOCKED and handoffs to `/ux-review`, `/code-review`,
 - [ ] Has a next-step handoff at the end (references `/ux-review`, `/code-review`, `/team-polish`)
 - [ ] Error Recovery Protocol section is present with all four recovery steps
 - [ ] Uses `AskUserQuestion` at phase transitions for user approval before proceeding
-- [ ] Phase 4 is explicitly marked as parallel (ux-designer, art-director, accessibility-specialist)
 - [ ] UX Review Gate (Phase 1c) is defined as a blocking gate — skill must not proceed to Phase 2 without APPROVED verdict
-- [ ] Team Composition lists all five roles (ux-designer, ui-programmer, art-director, engine UI specialist, accessibility-specialist)
 - [ ] References the interaction pattern library (`design/ux/interaction-patterns.md`) — ui-programmer must use existing patterns
 - [ ] Phase 1a reads `design/accessibility-requirements.md` before design begins
 
@@ -50,7 +47,6 @@ with verdict COMPLETE / BLOCKED and handoffs to `/ux-review`, `/code-review`,
 3. Phase 1c — `/ux-review design/ux/inventory-screen.md` invoked; returns APPROVED; gate passed, proceed to Phase 2
 4. Phase 2 — art-director spawned; reviews full UX spec (not only wireframes); applies visual treatment; verifies color contrast; produces visual design spec with asset manifest; `AskUserQuestion` confirms before Phase 3
 5. Phase 3 — engine UI specialist spawned first (read from technical-preferences.md); produces implementation notes for ui-programmer; ui-programmer spawned with UX spec + visual spec + engine notes; implementation produced; interaction-patterns.md updated if new patterns introduced
-6. Phase 4 — ux-designer, art-director, accessibility-specialist spawned in parallel; all three return results before Phase 5
 7. Phase 5 — review feedback addressed; animations verified skippable; UI sounds confirmed through audio event system; interaction-patterns.md final check; verdict: COMPLETE
 8. Summary report: UX spec APPROVED, visual design COMPLETE, implementation COMPLETE, accessibility COMPLIANT, all input methods supported, pattern library updated, verdict: COMPLETE
 
@@ -59,7 +55,6 @@ with verdict COMPLETE / BLOCKED and handoffs to `/ux-review`, `/code-review`,
 - [ ] UX Review Gate checked before Phase 2 — Phase 2 does NOT begin until APPROVED
 - [ ] Art-director in Phase 2 reviews full spec, not just wireframe images
 - [ ] Engine UI specialist spawned before ui-programmer in Phase 3
-- [ ] Phase 4 agents launched simultaneously (ux-designer, art-director, accessibility-specialist)
 - [ ] All file writes delegated to sub-agents and sub-skills
 - [ ] Verdict COMPLETE in final summary report
 - [ ] Next steps include `/ux-review`, `/code-review`, `/team-polish`
@@ -129,11 +124,9 @@ with verdict COMPLETE / BLOCKED and handoffs to `/ux-review`, `/code-review`,
 
 **Expected behavior:**
 1. Phase 4 begins after implementation is confirmed complete
-2. Three Task calls issued simultaneously: ux-designer, art-director, accessibility-specialist
 3. Each stream operates independently:
    - ux-designer: verifies implementation matches wireframes, tests keyboard-only and gamepad-only navigation, checks accessibility features function
    - art-director: verifies visual consistency with art bible at minimum and maximum supported resolutions
-   - accessibility-specialist: audits against the Enhanced accessibility tier in `design/accessibility-requirements.md`; any violation flagged as a blocker
 4. Skill waits for all three results before proceeding to Phase 5
 5. `AskUserQuestion` presents all three review results before Phase 5 begins
 
