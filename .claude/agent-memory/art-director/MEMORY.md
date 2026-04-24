@@ -1,1 +1,0 @@
-- [Game Concept](project_game_concept.md) — Incremental boomerang bullet hell, WebGL Unity, PoE passive tree, 5 pillars, art constraints
