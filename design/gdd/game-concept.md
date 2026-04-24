@@ -132,7 +132,7 @@ This section is the foundation of the forthcoming art bible and the gate all ass
 
 ### Core Mechanics (Systems we build)
 
-1. **Auto-aim, auto-return kinematic boomerang** with modular on-contact behaviors (pierce, chain, explode-on-return) — scripted motion, not physics simulation (P3 mandate)
+1. **Auto-aim, auto-return kinematic boomerang** with modular on-contact behaviors (pierce, chain, explode-on-return) — scripted motion, not physics simulation
 2. **Fuel-limited run economy** with kill/mine extension
 3. **Persistent hex-grid skill tree** (center-out, prereq-gated, 25–30 nodes MVP)
 4. **In-field boss spawn pattern** (escalating waves + boss-on-field, no separate arena)
@@ -219,21 +219,13 @@ Run → persistent skill-tree shop → run → shop → … → boss defeated �
 
 *Watch item (CD feedback)*: This pillar trades "visible vs behavioral" discipline for curve-honesty. If mid-tree nodes start feeling hollow in playtesting, revisit — may need a secondary clause about decision-change, not just power-increase.
 
-### Pillar 2: Positional Mastery, Not Aim Mastery
+### Pillar 2: Mastery in Where the Player Moves, Not Aiming
 
-> Skill expression lives in where the player stands, not where they aim. The boomerang auto-aims; the player commands space.
+> Skill expression lives in positioning, not aiming. Auto-aim frees the player to move.
 
-*Design test*: If debating "add manual aim" vs "add dash" → **dash**. Movement > aiming.
+*Design test*: If debating "add manual aim" vs "add dash" → **dash**.
 
-### Pillar 3: Read the Arc
-
-> The boomerang is always visible and always readable. Players should predict impact and return trajectory 100% of the time.
-
-*Design test*: If debating a chaos mod (random arc) vs a pierce mod → **pierce**. Readability is sacred.
-
-*Watch item (CD feedback)*: "100%" is aspirational and may fail at max-mod-stack. If it does, P3 becomes the pillar that *gates how many mods stack simultaneously* — treat stack count as a downstream design constraint derived from this pillar.
-
-### Pillar 4: Weighty Everything
+### Pillar 3: Weighty Everything
 
 > Every hit has perceivable weight: audio, hitstop, particles, camera response. The game is sold on tactile feel before it's sold on numbers.
 
@@ -241,7 +233,7 @@ Run → persistent skill-tree shop → run → shop → … → boss defeated �
 
 *Watch item (CD/TD feedback)*: This is the most expensive pillar to execute well. Define **Tier-1 weight surfaces** for MVP (boomerang impact + enemy deaths + asteroid cracks are the mandatory ones; upgrade-purchase juice is optional for Tier 1, should-have for Tier 2).
 
-### Pillar 5: The Tree IS the Game
+### Pillar 4: The Tree IS the Game
 
 > Progression is spatial navigation of a persistent skill tree, not accumulation of stats. Looking at the tree should tell the player who they are becoming.
 
@@ -252,9 +244,9 @@ Run → persistent skill-tree shop → run → shop → … → boss defeated �
 ### Anti-Pillars (What This Game Is NOT)
 
 - **NOT manual aim** — violates P2 (positional mastery). No reticle, no aim input, no player-driven targeting.
-- **NOT per-run temporary power upgrades** — violates P5 (tree is the game). No in-run boons, no temporary buffs invisible to the tree. Per-run *tactical* choice is still open.
+- **NOT per-run temporary power upgrades** — violates P4 (tree is the game). No in-run boons, no temporary buffs invisible to the tree. Per-run *tactical* choice is still open.
 - **NOT flat percentage upgrades** (especially early-game) — violates P1. Thresholds feel; percentages don't.
-- **NOT random or chaotic boomerang behaviors** — violates P3 (readability). No randomized arcs, no RNG targeting. Deterministic auto-aim only.
+- **NOT random or chaotic boomerang behaviors** — violates P1. No randomized arcs, no RNG targeting. Deterministic auto-aim only.
 - **NOT narrative, NPCs, or dialogue in MVP** — out of timeline scope; narrative is not in the top 5 MDA aesthetics.
 - **(AP6 considered and not adopted)** — "No runs longer than 5 min" was proposed as a session-length cap. Deferred to the fuel-economy GDD as a tuning target rather than a pillar-level wall. Re-evaluate if Act 2 content pushes run length.
 
@@ -266,7 +258,7 @@ Run → persistent skill-tree shop → run → shop → … → boss defeated �
 | ---- | ---- | ---- | ---- |
 | **Astro Prospector** | Direct genre reference: auto-fire weapon + shop-per-run + fuel-gated mining | Boomerang instead of proximity laser; persistent skill-tree grid instead of flat shop; Deep Forge palette | Validates the market exists; our differentiators are explicit |
 | **Path of Exile** | Persistent passive skill tree; threshold-based power jumps; build theorycraft culture | Compressed to 1–3 min runs; bullet-hell combat layer; much smaller tree (~25–30 nodes MVP) | Proves players will engage deeply with a spatial tree if it's well-designed |
-| **Vampire Survivors** | Auto-fire removes the aim-tax; player focuses on positioning; short addictive runs | Single weapon with modular behaviors (not 8 weapons with chaotic overlap); readability sacred (P3) | Proves the auto-fire + incremental progression pattern at mass scale |
+| **Vampire Survivors** | Auto-fire removes the aim-tax; player focuses on positioning; short addictive runs | Single weapon with modular behaviors (not 8 weapons with chaotic overlap); readability sacred (P2) | Proves the auto-fire + incremental progression pattern at mass scale |
 | **Hades** | Mod-stacking for build identity; satisfying single-weapon depth; hitstop and audio feel | Persistent tree (not per-run boons); no narrative layer; 2D top-down (not 2.5D action) | Validates that deep mod archetypes feel fresh even with one weapon |
 | **A Game About Feeding A Black Hole** | Clean readable 2D silhouettes; tactile scaling; visual restraint | Focused on single-run ship rather than monotonic "black hole grows you" loop | Taste anchor — readability + minimalism without feeling empty |
 | **Dome Keeper** | Mine-and-defend loop with meta progression; solo-dev structural comparable | Boomerang-weapon identity; skill-tree-centric meta instead of linear upgrade shop | Closest proof-point that this scope is solo-achievable |
@@ -283,13 +275,12 @@ Run → persistent skill-tree shop → run → shop → … → boss defeated �
 
 | Attribute | Detail |
 | ---- | ---- |
-| **Age range** | 25–45 |
 | **Gaming experience** | Mid-core to hardcore; comfortable with incremental progression systems and/or bullet hell |
 | **Time availability** | 30–60 minute sessions during evenings; 5-minute coffee-break pickup play works due to short run length |
-| **Platform preference** | Desktop browser primary (free-play, itch.io / portal distribution); Steam for those who cross over post-MVP |
+| **Platform preference** | Desktop browser primary (free-play, itch.io / portal distribution); |
 | **Current games they play** | Path of Exile, Vampire Survivors, Brotato, Astro Prospector, Hades, Slay the Spire |
 | **What they're looking for** | Instant-feedback dopamine of incrementals fused with skill-expression of action roguelikes; theorycraft depth; short sessions that still feel meaningful |
-| **What would turn them away** | Flat percentage upgrades (PoE-level grind without feel); slow runs; manual-aim requirements; narrative filler; pay-to-win; browser-game polish ceiling |
+| **What would turn them away** | slow runs; manual-aim requirements; narrative filler; |
 
 ---
 
@@ -300,7 +291,7 @@ Run → persistent skill-tree shop → run → shop → … → boss defeated �
 | **Recommended Engine** | **Unity 6 LTS** — confirmed; locked in by user preference |
 | **Rendering** | **URP 2D Renderer** (for 2D lights + 2D post-processing + modern sprite shaders). Ruthless feature stripping required for WebGL bundle size. |
 | **Input** | **New Input System** (Old Input Manager has known WebGL gamepad issues) |
-| **Physics** | **Physics 2D (Box2D)** for collision detection only. Boomerang motion is **kinematic scripted**, not Rigidbody2D (P3 mandate — authored feel over emergent physics). Strip Physics 3D from build entirely. |
+| **Physics** | **Physics 2D (Box2D)** for collision detection only. Boomerang motion is **kinematic scripted**, not Rigidbody2D. Strip Physics 3D from build entirely. |
 | **Asset Management** | **Addressables from day 1** — even if MVP ships a single bundle, the integration is architectural. |
 | **Persistence** | **File Based Player Prefs** replaces the standard Unity PlayerPrefs. |
 | **Key Technical Challenges** | WebGL cold-load time; GC pauses mid-pierce; Safari ITP save eviction; skill tree UI performance; |
@@ -397,7 +388,6 @@ The MVP answers one question: **Is the core loop fun enough to retain the Optimi
 ### Explicitly NOT in MVP
 
 - Prestige / NG+ mechanic
-- 4th mod archetype (Multi-throw)
 - 3rd zone
 - Steam port
 - Daily challenges / leaderboards

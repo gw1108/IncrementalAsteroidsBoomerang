@@ -9,7 +9,7 @@ Dependencies, Tuning Knobs, and Acceptance Criteria. The skill uses a
 skeleton-first approach — it creates the GDD file with all 8 section headers
 before filling any content — and writes each section individually after approval.
 
-The CD-GDD-ALIGN gate (creative-director) runs in both `full` AND `lean` modes.
+The CD-GDD-ALIGN gate (creative-director) runs in `lean` mode.
 It is only skipped in `solo` mode. If an existing GDD file is found, the skill
 offers a retrofit mode to update specific sections rather than rewriting the whole
 document.
@@ -33,12 +33,9 @@ Verified automatically by `/skill-test static` — no fixture needed.
 
 ## Director Gate Checks
 
-In `full` mode: CD-GDD-ALIGN (creative-director) gate runs after each section is
+In `lean` mode: CD-GDD-ALIGN (creative-director) gate runs after each section is
 drafted, before writing. If MAJOR REVISION is returned, the section must be
 rewritten before proceeding.
-
-In `lean` mode: CD-GDD-ALIGN still runs (this gate is NOT skipped in lean mode —
-it runs in both full and lean). Only solo mode skips it.
 
 In `solo` mode: CD-GDD-ALIGN is skipped. Output notes:
 "CD-GDD-ALIGN skipped — solo mode". Sections are written with only user approval.
@@ -173,7 +170,7 @@ In `solo` mode: CD-GDD-ALIGN is skipped. Output notes:
 ## Protocol Compliance
 
 - [ ] Skeleton file created with all 8 headers before any content is written
-- [ ] CD-GDD-ALIGN runs in both full AND lean mode (not just full)
+- [ ] CD-GDD-ALIGN runs in both lean AND solo mode
 - [ ] CD-GDD-ALIGN skipped only in solo mode — noted per section
 - [ ] "May I write [section]?" asked per section (not once for the whole document)
 - [ ] MAJOR REVISION from CD-GDD-ALIGN blocks section write until resolved

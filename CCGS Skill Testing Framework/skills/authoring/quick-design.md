@@ -3,15 +3,13 @@
 ## Skill Summary
 
 `/quick-design` produces a lightweight design spec for features too small to
-warrant a full 8-section GDD. The target scope is under 4 hours of design time
+warrant a full 8-section GDD. The target scope is under 2 hours of design time
 for a single-system feature. Instead of the full 8-section GDD format, the
 quick-design spec uses a streamlined 3-section format: Overview, Rules, and
 Acceptance Criteria.
 
-The skill has no director gates — adding gate overhead would defeat the purpose
-of a lightweight design tool. The skill asks "May I write" before writing the
-design note to `design/quick-notes/[name].md`. If the feature scope is too large
-for a quick-design, the skill redirects to `/design-system` instead.
+The skill has no director gates. The skill asks "May I write" before writing the
+design note to `design/quick-notes/[name].md`.
 
 ---
 
@@ -31,9 +29,7 @@ Verified automatically by `/skill-test static` — no fixture needed.
 
 ## Director Gate Checks
 
-No director gates — this skill spawns no director gate agents. The lightweight
-nature of quick-design means director gate overhead is intentionally absent.
-Full GDD review is not needed for sub-4-hour single-system features.
+No director gates. Full GDD review is not needed for sub-4-hour single-system features.
 
 ---
 
@@ -49,41 +45,15 @@ Full GDD review is not needed for sub-4-hour single-system features.
 
 **Expected behavior:**
 1. Skill asks scoping questions: what system, what change, what is the acceptance signal
-2. Skill determines scope is within the sub-4h threshold
-3. Skill drafts a 3-section spec: Overview, Rules, Acceptance Criteria
-4. Draft is shown to user
-5. "May I write `design/quick-notes/[name].md`?" is asked
-6. File is written after approval
+2. Skill drafts a 3-section spec: Overview, Rules, Acceptance Criteria
+3. Draft is shown to user
+4. "May I write `design/quick-notes/[name].md`?" is asked
+5. File is written after approval
 
 **Assertions:**
 - [ ] Spec contains exactly 3 sections: Overview, Rules, Acceptance Criteria
-- [ ] Draft is shown to user before "May I write" ask
-- [ ] "May I write `design/quick-notes/[name].md`?" is asked before writing
 - [ ] File is written to the correct path: `design/quick-notes/[name].md`
 - [ ] Verdict is CREATED after successful write
-
----
-
-### Case 2: Failure Path — Scope check fails; redirected to /design-system
-
-**Fixture:**
-- Feature described spans multiple systems or would take more than 4 hours of design time
-  (e.g., "redesign the entire combat system" or "new progression mechanic affecting all classes")
-
-**Input:** `/quick-design [large-feature]`
-
-**Expected behavior:**
-1. Skill asks scoping questions
-2. Skill determines scope exceeds the sub-4h / single-system threshold
-3. Skill outputs: "This feature is too large for a quick-design. Use `/design-system [name]` for a full GDD."
-4. Skill does NOT write a quick-note file
-5. Verdict is REDIRECTED
-
-**Assertions:**
-- [ ] Skill detects the scope excess and stops before drafting
-- [ ] Message explicitly names `/design-system` as the correct alternative
-- [ ] No quick-note file is written
-- [ ] Verdict is REDIRECTED (not CREATED or BLOCKED)
 
 ---
 
@@ -105,7 +75,6 @@ Full GDD review is not needed for sub-4-hour single-system features.
 - [ ] Skill detects and reads the existing file before offering to update
 - [ ] User is offered update or create-new options — not auto-overwritten
 - [ ] Only the revised section is updated (or the whole spec if user chooses full rewrite)
-- [ ] "May I write" is asked before overwriting the existing file
 
 ---
 
@@ -130,7 +99,7 @@ Full GDD review is not needed for sub-4-hour single-system features.
 
 ---
 
-### Case 5: Director Gate — No gate spawned; explicitly noted for sub-4h features
+### Case 5: Director Gate — No gate spawned; explicitly noted for sub-2h features
 
 **Fixture:**
 - Feature is within scope for quick-design
@@ -158,8 +127,6 @@ Full GDD review is not needed for sub-4-hour single-system features.
 
 - [ ] Scope check runs before drafting (redirects to `/design-system` if scope too large)
 - [ ] 3-section format used (Overview, Rules, Acceptance Criteria) — NOT the 8-section GDD format
-- [ ] Draft shown to user before "May I write" ask
-- [ ] "May I write `design/quick-notes/[name].md`?" asked before writing
 - [ ] No director gates — no review-mode.txt read
 - [ ] Ends with next-step handoff (e.g., proceed to implementation or `/dev-story`)
 

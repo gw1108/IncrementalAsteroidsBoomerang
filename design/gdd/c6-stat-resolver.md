@@ -5,7 +5,7 @@
 > **Independent Design Review**: NEEDS REVISION resolved 2026-04-24 — 6 blocking items addressed, 8 recommended revisions applied
 > **Author**: user + /design-system orchestration
 > **Last Updated**: 2026-04-24
-> **Implements Pillar**: P5 The Tree IS the Game (primary — this is the layer that makes P5 mechanically real); P1 Multiplicative Dopamine (integer-tier discipline enforced here); P3 Read the Arc (arc_flight_time safety floor enforced here)
+> **Implements Pillar**: P4 The Tree IS the Game (primary — this is the layer that makes P4 mechanically real); P1 Multiplicative Dopamine (integer-tier discipline enforced here); P2 Mastery in where the player moves (arc_flight_time safety floor enforced here)
 
 ## Overview
 
@@ -84,14 +84,13 @@ If a producer's delta query throws an unhandled exception, C6 logs the error, sk
 
 | Rule | Field | Condition | Action |
 |---|---|---|---|
-| VAL-1 | `arc_flight_time` | Result < 0.1 s | Clamp to 0.1 s. Log warning with producer chain. Safety-critical (P3 / division-by-zero in G3 Bezier). Applied first before all other clamps. |
+| VAL-1 | `arc_flight_time` | Result < 0.1 s | Clamp to 0.1 s. Log warning with producer chain. Safety-critical (P2 / division-by-zero in G3 Bezier). Applied first before all other clamps. |
 | VAL-2 | All float fields | Result outside registered [min, max] | Clamp to range. Log warning (balance tuning will routinely brush against limits during development). |
 | VAL-3 | `base_damage`, `chain_count` | Non-integer delta supplied by producer | Reject delta, log error, continue. |
 | VAL-4 | `base_damage` | Result < 1 | Clamp to 1. `pierce_damage_falloff` formula depends on base_damage ≥ 1; zero-damage hits violate P4 (every hit must produce visible feedback). |
 | VAL-5 | `chain_count` | Result > 1 (MVP ceiling) | Clamp to 1. Log warning (not error — ceiling rises post-MVP when chain cascade mechanics are designed). |
 | VAL-6 | All float fields | Multiplicative factor ≤ 0.0 | Reject multiplier, log error. A zero factor zeroes the field; a negative inverts it. Neither is ever a correct player-facing value. |
-| VAL-7 | (order) | — | VAL-1 runs first. All other field clamps run after, confirmed fields first, then provisional. VAL-8 (advisory) runs last — after all clamps — so it reads the final clamped value. |
-| VAL-8 | `arc_radius`, `throw_cooldown` | `arc_radius` result < 0.5 wu OR `throw_cooldown` result < 0.3 s | Log **WARNING** identifying the field, the resolved value, and the contributing producer chain. No clamp — the value is preserved. This is a P3 ("Read the Arc") safety advisory: values in this band are technically valid but may produce unreadable boomerang behavior. Future tree nodes that intentionally push toward the extreme (e.g., a straight-line pierce archetype) will trigger this warning and must document their intent. |
+| VAL-7 | (order) | — | VAL-1 runs first. All other field clamps run after, confirmed fields first, then provisional. |
 
 **CR-9 — GameStatsContext is a blittable readonly value struct.**
 All fields are value types (int, float). No reference types, no arrays. This constraint is permanent: if a future field requires a reference type, it does not belong in `GameStatsContext`. Consumers take a struct copy on read — no heap allocation, no reference aliasing, no possibility of mid-run mutation from the consumer side. C6's internal aggregation loop uses index-based `for` iteration over the injected producer list (not `foreach`) per the hot-path allocation prohibition in technical preferences.
@@ -100,7 +99,7 @@ All fields are value types (int, float). No reference types, no arrays. This con
 Each gameplay system that consumes `GameStatsContext` (G1, G3, G5, G6, G7) holds a `[SerializeField] private C6StatResolver _statResolver` field, wired in the scene by C5 or the scene setup. Consumers call `_statResolver.GetContext()` at their trigger point; they do not hold a static reference, use `FindObjectOfType`, or access a singleton. This pattern is required by `coding-standards.md` (all public methods unit-testable via dependency injection — tests inject a real or test-double C6 instance via the serialized field using reflection or a constructor overload).
 
 **CR-11 — Context is immutable for the duration of the run.**
-After `TriggerAggregation()` completes, `GameStatsContext` does not change until the next run-start. Tree purchases in the between-run shop update P1a's internal state but do not re-trigger C6. The new context takes effect at the next run's `TriggerAggregation()` call. This immutability is what makes P3 (Read the Arc) enforceable: G3 snapshots the context once per throw knowing no mid-flight stat change will alter arc geometry.
+After `TriggerAggregation()` completes, `GameStatsContext` does not change until the next run-start. Tree purchases in the between-run shop update P1a's internal state but do not re-trigger C6. The new context takes effect at the next run's `TriggerAggregation()` call. This immutability is what makes P2 (Mastery in where the player moves) enforceable: G3 snapshots the context once per throw knowing no mid-flight stat change will alter arc geometry.
 
 **CR-12 — First-run baseline behavior.**
 If producers are injected but return empty delta lists (no upgrades purchased — first run), C6 produces a context containing only baseline values. This is valid and expected. If no producers are injected at all, behavior is identical to baseline-only. Neither condition is an error.
@@ -114,8 +113,8 @@ All fields in the `GameStatsContext` struct. **Confirmed** fields are locked by 
 | Field | Type | Baseline | Range | Status | Primary Consumer |
 |---|---|---|---|---|---|
 | `base_damage` | int | 1 | 1–∞ (ceiling TBD in P1b) | **Confirmed** (G3) | G3 |
-| `throw_cooldown` | float | 0.8 s | 0.1–10.0 s *(P3 advisory floor: 0.3 s — VAL-8 warns below this)* | **Confirmed** (G3) | G3 |
-| `arc_radius` | float | 5.0 wu | 0.0–20.0 wu *(P3 advisory floor: 0.5 wu — VAL-8 warns below this)* | **Confirmed** (G3) | G3 |
+| `throw_cooldown` | float | 0.8 s | 0.1–10.0 s | **Confirmed** (G3) | G3 |
+| `arc_radius` | float | 5.0 wu | 0.0–20.0 wu | **Confirmed** (G3) | G3 |
 | `arc_flight_time` | float | 0.8 s | **HARD FLOOR 0.1 s**, ceiling 10.0 s | **Confirmed** (G3) | G3 |
 | `pierce_falloff` | float | 0.35 | 0.0–1.0 | **Confirmed** (G3) | G3 |
 | `chain_count` | int | 0 | 0–1 (MVP max) | **Confirmed** (G3) | G3 |
@@ -325,12 +324,12 @@ C6's tuning knobs are the baseline values and validation range bounds for every 
 | Knob | Current Value | Safe Range | What breaks at extremes |
 |---|---|---|---|
 | `base_damage` baseline | 1 (integer tier) | 1–∞ (ceiling TBD in P1b) | Below 1: VAL-4 clamps — impossible to reach. Too high as a baseline: player enters mid-power and never feels the Pillar 1 ramp from the first run. |
-| `throw_cooldown` baseline | 0.8 s | 0.3–5.0 s | < 0.3 s: boomerang spam breaks arc-reading rhythm (P3); VAL-2 clamps to 0.1 s floor. > 5.0 s: fuel depletes before enough throws occur; run too short to demonstrate tree power. |
-| `arc_radius` baseline | 5.0 wu | 0.5–15.0 wu | < 0.5 wu: near-straight-line arc; trajectory unreadable; P3 violated. > 15.0 wu: arc clips play area; CR-3 bounds suppressor fires frequently; throws are suppressed. |
-| `arc_flight_time` baseline | 0.8 s | 0.3–3.0 s | < 0.1 s: **VAL-1 hard floor fires** — G3 Bezier safe but arc is near-instantaneous (no read window). > 3.0 s: boomerang hangs too long; return-timing feel degrades; P4 weight undercut by sluggishness. |
+| `throw_cooldown` baseline | 0.8 s | 0.3–5.0 s | < 0.3 s: boomerang spam diminishes feel. > 5.0 s: fuel depletes before enough throws occur; run too short to demonstrate tree power. |
+| `arc_radius` baseline | 5.0 wu | 0.5–15.0 wu | < 0.5 wu: near-straight-line arc. > 15.0 wu: arc clips play area; CR-3 bounds suppressor fires frequently; throws are suppressed. |
+| `arc_flight_time` baseline | 0.8 s | 0.3–3.0 s | < 0.1 s: **VAL-1 hard floor fires** — G3 Bezier safety. > 3.0 s: boomerang hangs too long; return-timing feel degrades; P3 weight undercut by sluggishness. |
 | `pierce_falloff` baseline | 0.35 | 0.0–1.0 | 0.0: no falloff — every contact deals full `base_damage` (valid extreme; pierce becomes very powerful). 1.0: only first hit deals full damage; remaining contacts deal exactly 1 (pierce feels weak). |
 | `chain_count` baseline | 0 | 0–1 (MVP ceiling) | 0: chain archetype inactive until tree purchase. 1: exactly one chain fires per qualifying first-contact hit. Above 1: chain cascade mechanics — not designed for MVP; VAL-5 clamps to 1. |
-| `return_detonate_radius` baseline | 0.0 wu | 0.0–8.0 wu | 0.0: detonate inactive. > 8.0 wu: AoE radius exceeds typical enemy cluster spacing; one-shots most enemies regardless of positioning; P2 positional mastery undermined. |
+| `return_detonate_radius` baseline | 0.0 wu | 0.0–8.0 wu | 0.0: detonate inactive. > 8.0 wu: AoE radius exceeds typical enemy cluster spacing; one-shots most enemies regardless of positioning; P2 mastery undermined. |
 
 ### Provisional Field Placeholders (TBD until owning GDD authored)
 

@@ -5,9 +5,9 @@
 > **Last Updated**: 2026-04-23
 > **Last Verified**: 2026-04-23
 > **Implements Pillar**:
-> - **Mechanical primary**: P3 Read the Arc — the weapon's motion math, target acquisition, and contact rules exist to guarantee 100% readable trajectory.
-> - **Experiential primary**: P1 Multiplicative Dopamine + P5 The Tree IS the Game — what the *player* feels when a throw hits.
-> - **Supporting**: P2 Positional Mastery (auto-aim + catch-window positioning), P4 Weighty Everything (contact feel).
+> - **Mechanical primary**: P2 Mastery in where the player moves — the weapon's motion math, target acquisition, and contact rules exist to support positional skill expression.
+> - **Experiential primary**: P1 Multiplicative Dopamine + P4 The Tree IS the Game — what the *player* feels when a throw hits.
+> - **Supporting**: P2 Mastery (catch-window positioning), P3 Weighty Everything (contact feel).
 >
 > Both framings are correct at their respective layers. Mechanical primary = what the code must enforce. Experiential primary = what the player must feel.
 >
@@ -16,10 +16,10 @@
 ## Summary
 
 The boomerang is the game's single weapon — an auto-aimed, auto-returning
-kinematic projectile that travels on a readable arc through asteroids and
-enemies. The player does not aim or fire; the boomerang targets the nearest
-valid entity on a short cooldown and returns on a predictable path. Skill
-expression lives in positioning — reading the arc and moving the ship to
+kinematic projectile that travels through asteroids and enemies. The player 
+does not aim or fire; the boomerang targets the nearest valid entity on a short 
+cooldown and returns. Skill
+expression lives in positioning — moving the ship to
 maximize contacts on flight and return.
 
 > **Quick reference** — Layer: `Feature` · Priority: `MVP` · Key deps: `C2 Object Pooling, C3 Fixed-Timestep Tick, G1 Player Ship Controller, G2 Camera System, C6 Stat Resolver`
@@ -42,11 +42,11 @@ mod archetype, and every fuel-extending kill is rendered legible.
 Three things define it:
 
 1. **Kinematic scripted motion, not physics simulation.** The arc is
-   authored, not emergent. Pillar 3 ("Read the Arc") requires the player to
+   authored, not emergent. Pillar 2 ("Mastery in where the player moves") requires the player to
    predict impact and return trajectory 100% of the time — a bouncing
    physics body cannot meet that bar.
 2. **Auto-aim + auto-return.** No reticle, no fire button, no steering
-   mid-flight. Pillar 2 ("Positional Mastery, Not Aim Mastery") lives here:
+   mid-flight. Pillar 2 (Mastery in positioning) lives here:
    the player commands *where they stand*, not *where they point*.
 3. **Weighty feel on contact.** Audio, hitstop, camera response, and VFX
    converge at the moment of impact. Pillar 4 ("Weighty Everything") is sold
@@ -71,8 +71,8 @@ field — you are surviving it, throwing a blunt wedge of cyan and hoping it
 comes back before the asteroids close. Then the tree opens. A Pierce node.
 A second tier of damage. A return-detonation. And somewhere in the third or
 fourth run, you notice you have stopped flinching. The boomerang leaves
-your ship and you are already repositioning for the *next* throw, because
-you trust the arc — you forged it — and it will do what you built it to do.
+your ship and you are already repositioning for the *next* throw. The weapon
+responds exactly as you built it.
 
 This is the fantasy of **craft outpacing threat**. The boomerang becomes
 the instrument you feel in your hands every second of the run: heat in the
@@ -101,9 +101,8 @@ This section primarily serves:
 
 And depends on (mechanical preconditions):
 
-- **P3 Read the Arc** — the "you trust the arc" moment presumes 100%
-  readable trajectory; arc readability is the precondition for this
-  fantasy to land. Detailed Design + Formulas enforce P3 mechanically.
+- **P2 Mastery in where the player moves** — the player commands positioning
+  to maximize impact. Catch-window and chain routing demand spatial planning.
 - **P4 Weighty Everything** — "heat in the release, weight in the return, a
   satisfying thud" is P4 rendered into sentences. Game Feel + Visual/Audio
   Requirements specify the feel budget.
@@ -332,7 +331,7 @@ Happy path: `Spawned → ChainOutbound → ChainReturning → Vanished`.
 |---|---|---|---|---|
 | **C2 Object Pooling** | `primaryPool.Acquire()`; `chainPool.Acquire()` | `primaryPool.Release(instance)`; `chainPool.Release(instance)` | C2 owns pool lifetime; G3 calls acquire/release | Two pools: primary (pre-warm 1), chain (pre-warm 1). Seeded at run-start, not lazily — avoids first-throw allocation spike. |
 | **C3 Fixed-Timestep Tick** | `GameTick` event via `OnTick(float fixedDeltaTime)` subscription | — | C3 owns tick cadence | G3 subscribes `OnEnable`, unsubscribes `OnDisable`. All arc integration, contact evaluation, and catch-check run in this callback. Never in `Update`. |
-| **C6 Stat Resolver** | `GameStatsContext` snapshot read **once per primary throw** at `ArmedForThrow`. Chain inherits parent's snapshot, does NOT re-query C6. | — | C6 owns resolution. G3 is consumer-only. | Stats: `base_damage`, `throw_cooldown`, `arc_radius`, `arc_flight_time`, `pierce_falloff`, `chain_count`, `return_detonate_radius`. Mid-flight stat changes do NOT affect in-flight instances — immutable per throw by design (predictability; Pillar 3). |
+| **C6 Stat Resolver** | `GameStatsContext` snapshot read **once per primary throw** at `ArmedForThrow`. Chain inherits parent's snapshot, does NOT re-query C6. | — | C6 owns resolution. G3 is consumer-only. | Stats: `base_damage`, `throw_cooldown`, `arc_radius`, `arc_flight_time`, `pierce_falloff`, `chain_count`, `return_detonate_radius`. Mid-flight stat changes do NOT affect in-flight instances — immutable per throw by design (predictability; Pillar 2). |
 | **G1 Player Ship Controller** | `IShipAnchor.WorldPosition` (throw origin, sampled at throw-commit); `IShipAnchor.ShipCollider` reference (catch detection) | — | G1 exposes stable interface; G3 holds cached reference injected at scene-load (no `Find`) | Catch detection: each `Inbound` tick, G3 checks overlap of own collider with ship-collider. |
 | **G2 Camera System** | `ICameraBounds.PlayArea` (for bounds enforcement, CR-3) | `ICameraShakeRequester.Request(intensity, duration, direction)` on contact events | G2 owns camera; G3 is requester via concrete interface (NOT event bus per TD-SYSTEM-BOUNDARY #2) | Shake intensity derives from stats × per-event scalar — exact mapping in Game Feel section. |
 | **G4 Mod System** | None at runtime — G4's mod effects are baked into `GameStatsContext` via C6 | C# events: `BoomerangThrown`, `BoomerangHit(TargetHandle, int pierceIndex, int damageDealt)`, `ChainTriggered(TargetHandle, Vector2)`, `BoomerangReturnStarted`, `BoomerangCaught`, `ChainVanished` | G3 owns event declarations; G4 subscribes | Plain C# `event` delegates — NOT a project-wide event bus. G4's "Explode-on-return", "Pierce", "Chain" archetypes are encoded as stat deltas into C6. Future non-stat behavior mods (e.g., "spawn satellite on hit") subscribe to these events. **`pierceIndex = -1` is the sentinel value indicating a detonate-on-return hit** (F4) rather than a pierce hit (F3); subscribers use this to distinguish damage-event type per EC-13. |
@@ -421,9 +420,8 @@ player-visible world-unit terms — what you set is what the player sees.
 
 **Method**: Quadratic Bezier. Maps naturally to three semantic points —
 departure (P0), perpendicular bulge (P1), apex (P2) — and `Vector2.Lerp`
-evaluates it with no extra dependency. Alternative (parametric sine) adds no
-readability but requires more algebra to enforce "apex lands exactly at
-target."
+evaluates it with no extra dependency. Alternative (parametric sine) requires 
+more algebra to enforce "apex lands exactly at target."
 
 **Perpendicular direction** (RIGHT of the ship→target vector):
 
@@ -848,7 +846,7 @@ implementation-defined by Unity's broadphase ordering. For option 2
 (`OverlapCircleNonAlloc` polling), the order is the buffer-fill order,
 also deterministic. In either case: **the first entity enumerated is
 `n = 0` and triggers the chain check (CR-7).** Both options produce stable
-reproducible ordering across identical runs. Per Pillar 3, this is
+reproducible ordering across identical runs. Per Pillar 2, this is
 sufficient — players cannot distinguish which of two simultaneously-hit
 entities is "first" at this timescale. **→ AC flag**: two-entity
 simultaneous-contact test — exactly one `ChainTriggered` fires;
@@ -873,7 +871,7 @@ skill-tree node or mod activates while a primary boomerang is in flight,
 snapshotted once at `ArmedForThrow` and stored immutably on the boomerang.
 G3 does not re-query C6 during flight. The next throw snapshots the updated
 context. Enforced by the architecture (snapshot model) and required by
-Pillar 3 — mid-flight behavior changes would make arcs unpredictable. Chain
+Pillar 2 — mid-flight behavior changes would make arcs unpredictable. Chain
 boomerangs inherit the parent's snapshot; they also cannot see mid-flight
 stat changes.
 
@@ -955,9 +953,9 @@ revisions.
 | Parameter | MVP Start | Safe Range | Effect of Increase | Effect of Decrease | Source |
 |-----------|-----------|------------|--------------------|--------------------|--------|
 | `base_damage` | 1 (first run); scales with tree | 1–∞ integer tiers | Stronger hits; fewer contacts to clear the field | Unplayable early; pierce-falloff flattens to "all 1s" | `GameStatsContext` (P1a + G4 via C6) |
-| `throw_cooldown` | 0.8 s | 0.3–5.0 s | Slower cadence; more repositioning window; weakens feel if too long | Spam rate; P3 readability degrades; possibly 2 arcs overlapping visually | `GameStatsContext` (P1a via C6) |
+| `throw_cooldown` | 0.8 s | 0.3–5.0 s | Slower cadence; more repositioning window; weakens feel if too long | Spam rate; feel degrades; visual overlap | `GameStatsContext` (P1a via C6) |
 | `arc_radius` (peak deviation) | 5.0 world units | 0.0–20.0 wu | Wider arc, bigger pierce-cluster coverage, slower feel | Straight-line feel ("not boomerang-like"); 0.0 is degenerate straight-line | `GameStatsContext` (P1a via C6) |
-| `arc_flight_time` | 0.8 s outbound (same inbound) | 0.1–5.0 s (0.1 s is hard safety floor — EC-5) | Slower arc, easier to read, but feels weak | Snap-throw feel; tunnel-through risk (EC-18); P3 readability degrades below 0.3 s | `GameStatsContext` (P1a via C6) |
+| `arc_flight_time` | 0.8 s outbound (same inbound) | 0.1–5.0 s (0.1 s is hard safety floor — EC-5) | Slower arc, feels weak | Snap-throw feel; tunnel-through risk (EC-18); feel degrades below 0.3 s | `GameStatsContext` (P1a via C6) |
 | `pierce_falloff` | 0.35 | 0.0–1.0 | Sharper falloff; late-pierce nodes may become valueless (Pillar 1 risk) | Flatter falloff; pierce becomes overpowered; "lawnmower" late-game exploit risk | `GameStatsContext` (P1a via C6) |
 | `chain_count` | 0 (locked until node purchased); 1 once unlocked | 0–1 at MVP | `> 1` is undefined at MVP (chain doesn't cascade — second chain is meaningless unless semantics changes) | 0 disables the entire chain archetype | `GameStatsContext` (P1a + G4 via C6) |
 | `return_detonate_radius` | 0.0 (locked until node purchased); 3.0 wu post-unlock | 0.0–10.0 wu | Catch becomes AoE-spam; P2 incentive to catch-over-cluster strengthens | 0.0 disables the detonate archetype | `GameStatsContext` (P1a + G4 via C6) |
@@ -1127,7 +1125,7 @@ Using F6 values: `base_shake_intensity = 0.15` (TBD),
 
 The boomerang is **heavy and committed**. Once thrown it cannot be recalled —
 the player is bound to the arc they set in motion. This commitment is the
-entire point; it is the thing P2 is built on. No cancel-throw, no mid-flight
+entire point; it is the thing P2 (positional mastery) is built on. No cancel-throw, no mid-flight
 steer, no abort. The player chose their position; the weapon executes.
 
 Control level is **low during flight, high before throw**. The player's
@@ -1146,12 +1144,11 @@ and the cycle feels mushy.
 Acceleration model is **arcade committed**: the boomerang has no
 acceleration ramp — it begins at full speed and maintains it. Speed variation
 is expressed through `arc_flight_time` changes (shorter = higher apparent
-speed), not within-flight acceleration curves. Keeps the arc readable (P3)
-and avoids the perception that the boomerang is "finding its pace."
+speed), not within-flight acceleration curves.
 
 Failure texture is **repositioning, not reaction time**. Missing the catch
 window means the player was in the wrong position for the inbound arc — not
-that they reacted slowly. The fix is spatial, not reflexive. This is P2 made
+that they reacted slowly. The fix is spatial, not reflexive. This is P2 (positional mastery) made
 tactile: mistakes read as "I was standing in the wrong place" not "I wasn't
 fast enough." The feel design reinforces this — no visual or audio punishment
 for missing the catch-collider window; the cooldown still starts; the only
@@ -1164,7 +1161,7 @@ cost is a sub-optimal arc next throw.
 - [ ] A playtester watching floor-damage hits (n=3+) and clean hits (n=0) side-by-side perceives them as different **in kind**, not just in degree. Zero-hitstop + scrape-only audio + minimal sparks at n=3+ must read as "this hit barely registered" against n=0's full flash + thud.
 - [ ] A playtester can identify the catch moment by audio alone, with no visual reference. The catch chime must be sufficiently distinct from impact SFX to survive audio-only identification.
 - [ ] Gamepad playtesters do NOT describe the throw-to-catch cycle as "weightless." Rumble events (throw, clean hit, catch) must collectively produce a physical texture across the cycle.
-- [ ] A playtester can anticipate the catch window — repositioning toward it during the inbound leg — without the arc misleading them. If any tester reports "I didn't know it was coming back" during a standard throw, the trail/arc-shape readability has failed (P3 violation — flag for trajectory visual review).
+- [ ] A playtester can anticipate the catch window and reposition toward it during the inbound leg.
 
 ## UI Requirements
 
@@ -1274,7 +1271,7 @@ scope.
 - [Visual/Feel] **GIVEN** a playtester sees an n=3+ floor hit (0-frame hitstop, scrape-only audio, 2 shards max) next to an n=0 clean hit, **WHEN** asked to compare, **THEN** the playtester perceives them as different **in kind**, not merely degree. Both events must be visually unambiguous without GDD context. **🔹 Week-1 Gate**
 - [Visual/Feel] **GIVEN** a playtester is performing standard throw cycles with audio only (screen covered/eyes closed), **WHEN** the catch occurs, **THEN** the playtester identifies the catch moment by `sfx_boomerang_catch_chime` alone — correctly distinguishing it from impact SFX in ≥ 4 of 5 attempts. **🔹 Week-1 Gate**
 - [Visual/Feel] **GIVEN** a gamepad playtester completes 5 consecutive cycles, **WHEN** asked to describe the physical texture of the cycle, **THEN** no gamepad playtester uses "weightless." Rumble at throw, clean hit, and catch must collectively produce a perceivable tactile rhythm (amplitudes TBD at prototype). **🔹 Week-1 Gate**
-- [Visual/Feel] **GIVEN** a new playtester has completed 3 throw cycles, **WHEN** the boomerang is `Inbound`, **THEN** the playtester repositions the ship toward the return arc without prompting. If any tester reports "I didn't know it was coming back" after a standard throw, arc-shape + trail readability has failed (P3 violation — flag for trajectory visual review with lead sign-off). **🔹 Week-1 Gate**
+- [Visual/Feel] **GIVEN** a new playtester has completed 3 throw cycles, **WHEN** the boomerang is `Inbound`, **THEN** the playtester repositions the ship toward the return arc without prompting. **🔹 Week-1 Gate**
 
 ### Test Locations
 
@@ -1292,6 +1289,6 @@ Per `.claude/docs/coding-standards.md` Test Evidence table:
 | OQ-F6A | Final values for `base_shake_intensity` and `max_shake_intensity` (currently placeholders 0.15 / 0.6) | user + art-director + technical-artist | Week-1 prototype | Validate against G2's shake-implementation units, camera scale, target screen resolutions. May promote to M1 reduced-motion toggle. |
 | OQ-KINEMATIC | Kinematic motion implementation — option 1 (Kinematic `Rigidbody2D` + `MovePosition` + `CollisionDetectionMode2D.Continuous`) vs option 2 (pure `Transform.position` + `OverlapCircleNonAlloc`/`CircleCast` polling) | technical-director | Before any G3 implementation begins | Authored ADR via `/architecture-decision` (kinematic boomerang motion) |
 | OQ-SHIP-DEATH-CALLBACK | `IShipDestroyedListener` callback mechanism (EC-17) — does the chain-boomerang also receive the callback independently, or does the primary's controller propagate `Dissolving` to the chain? | lead-programmer | During G1/G3 interface ADR | G1/G3 interface ADR |
-| OQ-CHAIN-SCALING | Post-MVP `chain_count > 1` semantics — does a 2nd chain fire on the primary's *second* outbound contact (lifting CR-7's first-contact-only rule), or does it spawn multiple chains from the first contact? | game-designer + creative-director | Post-MVP; only if a "multi-chain" mod is proposed | Not applicable at MVP. Decision must respect Pillar 3 readability cap (max 2 arcs on screen currently; any change expands the readability budget). |
+| OQ-CHAIN-SCALING | Post-MVP `chain_count > 1` semantics — does a 2nd chain fire on the primary's *second* outbound contact (lifting CR-7's first-contact-only rule), or does it spawn multiple chains from the first contact? | game-designer + creative-director | Post-MVP; only if a "multi-chain" mod is proposed | Not applicable at MVP. Max 2 arcs on screen at launch. |
 | OQ-DETONATE-ZOOM | Catch-detonate camera zoom-out (2–3% FoV expansion over 0.3 s) feasibility on WebGL | technical-artist | Week-1 prototype | Cut and compensate with VFX if it reads as judder on browser builds. |
 | OQ-WEIGHT-FLOOR-FEEL | Do n=3+ floor-damage hits feel **distinct in kind** from clean hits (per Feel Acceptance Criterion 3), or merely **reduced in degree**? | creative-director via playtest | Week-1 prototype (Feel Gate) | Playtest sign-off. If playtesters perceive only "reduced," increase shape/audio differentiation at floor-hit spec before MVP ships. |

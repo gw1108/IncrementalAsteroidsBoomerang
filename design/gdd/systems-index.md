@@ -17,7 +17,7 @@ This decomposition breaks the game concept into 30 systems across five dependenc
 layers. The game is an incremental bullet-hell built on Unity 6.3 LTS + URP 2D for
 WebGL-first deployment. The core loop runs at two timescales — a 1–3 minute combat
 run and a persistent hex-grid skill tree that the run feeds. Because "The Tree IS
-the Game" (Pillar 5), the progression hub (P1a/P1b) and stat-resolution layer (C6)
+the Game" (Pillar 4), the progression hub (P1a/P1b) and stat-resolution layer (C6)
 are the architectural center of gravity; almost every gameplay system flows stats
 through C6 rather than querying the tree directly. The weapon (G3 Boomerang) is
 the mechanical identity and the Week-1 prototype gate — its feel fails or the
@@ -193,7 +193,7 @@ contracts should wait for their approval.
 | 12 | E2 Currency & XP | MVP | Core | S | Ledger |
 | 13 | E3 Run Stats Tracker | MVP | Core | S | Counters |
 | 14 | **G3 Boomerang Weapon** ⚠ design-gate, Week-1 | MVP | Feature | L | HIGHEST RISK — Week-1 prototype gate |
-| 15 | P1a Skill Tree Architecture ⚠ | MVP | Feature | L | Pillar 5 hub; must follow C6 |
+| 15 | P1a Skill Tree Architecture ⚠ | MVP | Feature | L | Pillar 4 hub; must follow C6 |
 | 16 | G4 Mod System | MVP | Feature | M | Pierce / Chain / Explode-on-return |
 | 17 | P1b Skill Tree Node Catalog ⚠ | MVP | Feature | L | 25–30 nodes; follows G3 + G4 so stat deltas are concrete |
 | 18 | G6 Enemy System | MVP | Feature | M | 3 types × 2 zones = 6 variants |

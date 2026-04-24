@@ -38,7 +38,7 @@ Every distinct hue in the game is owned by a specific gameplay role, and that ow
 
 **Design test**: A new pickup type is proposed. Before assigning it a color, ask: which existing hue role does this pickup belong to? If it belongs to none, the role must be formally defined and approved before the asset is created. If it belongs to an existing role, use that hue at reduced saturation or value to signal subordination.
 
-**Pillar anchor**: **P2 — Positional Mastery**. If enemies, hazards, currency, and the boomerang each own a distinct hue, the player reads the field spatially at a glance without aiming or parsing text.
+**Pillar anchor**: **P2 — Positional Mastery**. Distinct hues for enemies, hazards, currency enable spatial decision-making.
 
 ---
 
@@ -46,7 +46,7 @@ Every distinct hue in the game is owned by a specific gameplay role, and that ow
 
 The highest-saturation moment in any frame must be a contact event: the boomerang striking an asteroid, enemy, or the return catch. Non-contact VFX (ambient particles, ship trail, arc indicator) must never approach the saturation ceiling. The white-yellow flash of impact is the loudest visual event the game ever produces — everything else is quieter.
 
-**Design test**: A new VFX is proposed — say, a thruster exhaust glow or an ambient nebula pulse. Ask: is this a contact event? If no, its saturation must be measurably lower than the current lowest-saturation impact effect. If a non-contact VFX must be prominent for readability, solve it through value contrast (brightness) or shape, not saturation.
+**Design test**: A new VFX is proposed — say, a thruster exhaust glow or an ambient nebula pulse. Ask: is this a contact event? If no, its saturation must be measurably lower than the current lowest-saturation impact effect.
 
 **Pillar anchor**: **P4 — Weighty Everything**. Weight is not communicated by numbers or text — it is communicated by the moment of contact being the undeniable visual climax of every boomerang cycle.
 
@@ -58,7 +58,7 @@ Visual quality in this game is achieved through geometry, sprite craft, and shap
 
 **Design test**: A visual treatment is proposed that requires a new gradient, a bloom pass, or a texture larger than fits the atlas budget. Reject it and reformulate: can the same mood be achieved with a drawn silhouette, a sprite animation, or a palette swap? If yes — and it almost always can — that is the correct answer. If no, escalate to technical-artist with a specific budget justification.
 
-**Pillar anchor**: **P5 — The Tree IS the Game**. The skill tree must be a beautiful artifact the player actively wants to look at. That beauty must be durable across a 30-second cold load and a 3-minute run loop on a mid-tier browser. Expensive beauty is fragile beauty.
+**Pillar anchor**: **P4 — The Tree IS the Game**. The skill tree must be a beautiful artifact the player actively wants to look at. That beauty must be durable across a 30-second cold load and a 3-minute run loop on a mid-tier browser. Expensive beauty is fragile beauty.
 
 ---
 
@@ -93,16 +93,14 @@ The player is *working*. Not panicking, not triumphant — working. The forge is
 **Lighting character**:
 - **Background**: Near-black with warm undertone (#0D0A08 range — warm near-black, never cold blue-black). No ambient fill. The field is dark by default; only gameplay-relevant objects are lit.
 - **Global Light2D**: Very low intensity (0.08–0.12), warm amber cast (#A06030) — the furnace glow from below, not overhead studio lighting.
-- **Boomerang Point Light2D**: Tight electric-cyan Light2D attached to the boomerang at all times. Intensity 0.4–0.6, steep falloff. This is the single most important light in the scene — it is what makes P3 (Read the Arc) *implementable*. The boomerang lights its own path. Nothing competes with it. Asteroid/enemy sprites must have mid-dark value and no cyan in their palette to guarantee the cyan light reads against every surface.
-- **Asteroid Point Light2D (ore-bearing only)**: Small, very dim warm-amber, intensity 0.1–0.2. Makes currency targets subtly glow-readable without competing with impact saturation. Non-ore asteroids receive no light.
-- **Shadow/normal-map direction**: Normal-mapped sprites set their normal-map light direction to upper-left (10–11 o'clock) consistently across all asteroid sprites — gives them a readable faceted quality.
-- **Enemy lighting**: No dedicated enemy light. Enemies read by **silhouette** (dark crimson sprites against near-black) and by motion. Hue does the spatial work; light is not needed.
+- **Boomerang Point Light2D**: Tight electric-cyan Light2D attached to the boomerang. Intensity 0.4–0.6, steep falloff.
+- **Asteroid Point Light2D (ore-bearing only)**: Small, very dim warm-amber, intensity 0.1–0.2. Non-ore asteroids receive no light.
+- **Shadow/normal-map direction**: Normal-mapped sprites set their normal-map light direction to upper-left (10–11 o'clock) consistently across all asteroid sprites.
+- **Enemy lighting**: No dedicated enemy light. Dark crimson sprites against near-black. Hue handles spatial distinction.
 
 **Anchoring visual element**: The boomerang trail **dulls progressively as fuel depletes**. At full fuel, a sharp electric-cyan line with a short additive-blend tail. At 25% fuel, desaturated to a steel-blue grey and shortened — the weapon is cooling, the forge is running low. Single sprite-shader lerp on trail color; costs nothing, communicates fuel state without a UI number.
 
 **Distinction from adjacent (Boss Engagement)**: In-run lighting is sparse and stable — only the boomerang moves the light. Boss engagement adds a second dominant light source (the boss) and raises the global ambient — the field gets brighter and more chaotic precisely to signal that something larger has entered it.
-
-**P3 compliance note**: **No ambient particle, background animation, or non-boomerang light source may introduce cyan into the field during in-run.** The boomerang's color is earned by being unique. Any ambient effect that pulses, breathes, or drifts must use warm amber or neutral grey — never cyan, never high saturation.
 
 ---
 
@@ -404,7 +402,7 @@ Each mod adds a readable visual indicator that does not alter base silhouette's 
 
 **Zone 2 re-skin rule**: Zone 2 variants **share silhouette with Zone 1 variants**. Hue shifts only (deeper or shifted crimson per Section 2). **Shape is never the zone differentiator.** Player must recognize archetype at 32×32 regardless of zone.
 
-**Pillar anchor**: **P2 — Positional Mastery**. Positioning to maximize chain-pierce through clusters requires type reads at arc-planning range.
+**Pillar anchor**: **P2 — Positional Mastery**. Positioning to maximize chain-pierce through clusters requires type distinction.
 
 ---
 
@@ -449,8 +447,8 @@ Both MVP bosses must read as bosses **before any attack pattern is observed**.
 | Pillar | Where it appears in Section 3 |
 |---|---|
 | **P1 — Multiplicative Dopamine** | Ship evolution (3.5.2): attachments at node-cluster thresholds → threshold-felt visual jump |
-| **P2 — Positional Mastery** | 32×32 legibility (3.1); enemy archetypes (3.5.4): type reads before route commitment; asteroid types (3.5.3): yield readable before approach |
-| **P3 — Read the Arc** | Field geometry (3.3): arc-readable negative space; boomerang mods (3.5.1): additive-not-replacement rule preserves base silhouette |
+| **P2 — Positional Mastery** | 32×32 legibility (3.1); enemy archetypes (3.5.4): distinct types; asteroid types (3.5.3): visual distinction |
+| **P2 — Mastery in where the player moves** | Boomerang mods (3.5.1): additive-not-replacement rule preserves base silhouette |
 | **P4 — Weighty Everything** | Hero vs supporting register (3.2): contact events get charged contrast; boss silhouettes (3.5.5): boss mass reads before first attack; the no-curves rule (3.7): angular = heavier perception |
 | **P5 — The Tree IS the Game** | UI shape grammar (3.4): hex precision + ruled lines; node/connector geometry (3.5.6): no geometric looseness |
 
@@ -759,7 +757,7 @@ Every new asset must pass all three tests before pipeline entry.
 |---|---|
 | **P1 — Multiplicative Dopamine** | Boss hit amber vs standard parchment (4.6) — "this hit counted more." Unlocked node warmth accumulating on tree (4.4) — tree visibly warms as build fills. |
 | **P2 — Positional Mastery** | Hue reservation (4.1/4.2) — field objects read by color role at a glance. CVD backup cues (4.5) — this holds for colorblind players. |
-| **P3 — Read the Arc** | Weapon Cyan zone-invariance (4.3). Trail desaturation rule (4.1) — fuel state visible on the weapon itself. Tritanopia backup cue (4.5) — luminance + motion preserve arc readability without hue. |
+| **P2 — Mastery in where the player moves** | Weapon Cyan zone-invariance (4.3). Trail desaturation rule (4.1) — fuel state visible on the weapon itself. |
 | **P4 — Weighty Everything** | Saturation Budget Test (4.7) — impact events always own the saturation ceiling. Impact flash timing (4.6) — blow registers before number. |
 | **P5 — The Tree IS the Game** | Full UI palette spec (4.4) — tree has its own palette language. Crimson forbidden in UI — tree never signals threat. Node accumulation warmth — tree grows visibly brighter. |
 
@@ -824,7 +822,7 @@ Attachments have **no idle animation of their own** — static hull modification
 
 Implementation: Transform hover tween + 2–4 frame thruster sprite-sheet. No bones. No secondary controllers.
 
-**Pillar anchor**: **P3**. A ship that performs its own idle introduces competing visual motion. The boomerang's arc must always be primary.
+**Pillar anchor**: **P2**. A ship that performs its own idle introduces competing visual motion.
 
 #### 5.1.4 Damage States — Non-Crimson Feedback
 
@@ -876,7 +874,7 @@ Personality = **deliberate targeting**. Hangs at distance, faces the player, fir
 
 **Destruction**: On kill, splits along primary (tall) axis — 2 large body halves + 1–2 smaller shards. Barrel protrusion(s) detach separately as elongated spinning fragments. ~0.5–0.6s lifetime. **Read: a pointed thing snapped at its length.**
 
-**Pillar anchor**: **P2**. Standoff behavior + directional telegraph teaches the player to route boomerang arc to intersect before fire.
+**Pillar anchor**: **P2**. Standoff behavior + directional telegraph telegraphs intent.
 
 #### 5.2.3 Tank — "Bulwark"
 
@@ -987,7 +985,7 @@ Metaphor: **a tool gaining visible history of use and modification**, NOT a weap
 
 **Zone Victory hold pause** (Section 2.6 reference): The 2–3s pause exists to let the player read the boomerang's accumulated form. No UI, no summary card. **Just the weapon, lit by zone gold, showing its authored form.** *Look at what I built.*
 
-**Pillars**: **P1** + **P5**. Every tree node that unlocks a mod archetype or stacks a mod changes the boomerang's visible form. **The tree is legible in the weapon the player is throwing.**
+**Pillars**: **P1** + **P4**. Every tree node that unlocks a mod archetype or stacks a mod changes the boomerang's visible form. **The tree is legible in the weapon the player is throwing.**
 
 #### 5.4.3 Interaction Character
 
@@ -1002,7 +1000,7 @@ Boomerang travels on a single scripted arc (kinematic, not physics). **Visual re
 | **Enemy (kill)** | Full destruction VFX per archetype (5.2.1–5.2.3). Boomerang passes through (pierce) or stops (chain). | The boomerang did its job. Enemy reaction tells the story. |
 | **Boss (any hit)** | Impact White → Impact Gold, **1.5× flash radius**. Amber damage number (Section 4.6). No special boomerang reaction. | *Even the boss is just a surface the boomerang is working through.* Weapon's job unchanged by target scale. |
 
-**Pillars**: **P3** (same weapon, same physics, different surface response = consistent). **P2** (amber fragment preview teaches route decisions before the ore drops).
+**Pillars**: **P2** (same weapon, same physics, different surface response = consistent). **P2** (amber fragment preview teaches route decisions before the ore drops).
 
 ---
 
@@ -1014,7 +1012,7 @@ Boomerang travels on a single scripted arc (kinematic, not physics). **Visual re
 - **Detail floor**: Every sprite carries all required section marks (ship: 5 marks, enemy: motion-relevant features, boss: sub-component reads). Detail not surviving downsampling: not authored.
 - **Detail ceiling**: **No texture-level surface detail.** No hatching, no fill patterns, no cross-face gradients. **Flat per-face color values only**, consistent with Beauty Must Be Cheap. A face = one value, or one angular accent mark in neighboring value. That is the ceiling.
 
-**Pillar anchor**: **P3**. Flat per-face color + authored edges give the boomerang trail maximum contrast against every object it passes.
+**Pillar anchor**: **P2**. Flat per-face color + authored edges give the boomerang trail maximum contrast against every object it passes.
 
 #### 5.5.2 Skill Tree Icon Register
 
@@ -1028,7 +1026,7 @@ Boomerang travels on a single scripted arc (kinematic, not physics). **Visual re
   - Fuel/survivability: 3 parallel diagonal lines (schematic fill level)
 - **NO circles, curves, or rounded shapes at this scale.** If a mechanic can't be conveyed in angular 3+ pixel marks, the design must be revised.
 
-**Pillar anchor**: **P5**. Tree as beautiful document requires every node icon legible at display scale.
+**Pillar anchor**: **P4**. Tree as beautiful document requires every node icon legible at display scale.
 
 #### 5.5.3 Showcase Register — Main Menu + Zone Victory
 
@@ -1037,7 +1035,7 @@ Boomerang travels on a single scripted arc (kinematic, not physics). **Visual re
 
 > **Anti-nanotexture rule (explicit)**: No sprite may be authored with texture-level detail (stippling, hatching, sub-pixel gradient, fill pattern) on the assumption players won't see it at in-run scale. If detail is only visible at 3×+, **it does not belong in the base sprite.** The place for zoomed-in beauty is geometry-based mod-fill accumulation — inherently scale-independent.
 
-**Pillar anchor**: **P3** (boomerang's menu rotation is the game's first introduction of P3 — eye learns the weapon before the first throw) + **Beauty Must Be Cheap** (showcase earned by craft within constraints, not a separate asset pass).
+**Pillar anchor**: **P2** (boomerang's menu rotation is the game's first introduction of P3 — eye learns the weapon before the first throw) + **Beauty Must Be Cheap** (showcase earned by craft within constraints, not a separate asset pass).
 
 ---
 
@@ -1047,9 +1045,9 @@ Boomerang travels on a single scripted arc (kinematic, not physics). **Visual re
 |---|---|
 | **P1** | Ship attachment thresholds (5.1.2). Boomerang mod-fill visual story (5.4.2). Rotation speed +mod stack (5.4.1). |
 | **P2** | Enemy telegraphs: Grunt acceleration, Ranged Blueprint Gold charge, Tank squash (5.2). Boss dual-axis threats (5.3). Boomerang ore-fragment preview (5.4.3). |
-| **P3** | Ship idle minimum-motion (5.1.3). Throw/return arc visual symmetry (5.4.1). Anti-nanotexture rule (5.5.3). In-run flat color ceiling (5.5.1). |
+| **P2** | Ship idle minimum-motion (5.1.3). Throw/return arc visual symmetry (5.4.1). Anti-nanotexture rule (5.5.3). In-run flat color ceiling (5.5.1). |
 | **P4** | Ship damage feedback (5.1.4). Enemy destruction per archetype (5.2). Boss death sequences (5.3). Throw squash-stretch + catch overscale (5.4.1). Tank heavy debris drift (5.2.3). |
-| **P5** | Zone Victory boomerang "read what you built" pause (5.4.2). Tree icon legibility (5.5.2). Ship attachment at cluster thresholds (5.1.2). |
+| **P4** | Zone Victory boomerang "read what you built" pause (5.4.2). Tree icon legibility (5.5.2). Ship attachment at cluster thresholds (5.1.2). |
 
 All five pillars anchored. P4 carries most rules (entity personality + destruction). P2 second-highest (telegraph aesthetics).
 
@@ -1269,20 +1267,20 @@ Environmental sprites carry no runtime normal map data. The "normal-map light di
 
 | Rule | Pillar |
 |---|---|
-| Pure Forge Black — no starfield | **P3** |
+| Pure Forge Black — no starfield | **P2** |
 | Background scoring marks at 15–20% opacity | **P4** |
 | Bounded arena + fixed camera | **P2** |
 | Density scales with wave, drops for boss | **P2** |
-| Placement constraint templates with clear lanes | **P3** |
+| Placement constraint templates with clear lanes | **P2** |
 | Zone 2 clustered distribution | **P2** |
 | Vein cluster via Light2D grouping | **P2** |
 | Vignette boundary + angular L-marks | **P4** |
-| Ship boundary feedback on object, not camera | **P3** |
-| Forge silhouettes at parchment edges | **P5** |
-| Parchment weathering marks | **P5** |
-| Flat per-face color + max one accent | **P3** |
+| Ship boundary feedback on object, not camera | **P2** |
+| Forge silhouettes at parchment edges | **P4** |
+| Parchment weathering marks | **P4** |
+| Flat per-face color + max one accent | **P2** |
 | ±5 HSL value tint only, set at spawn | **P2 / P3** |
-| No animated ambient tint variation | **P3** |
+| No animated ambient tint variation | **P2** |
 
 P2 + P3 carry 9 of 14 environmental anchors. Correct — the field exists to be *read and navigated*.
 
@@ -1558,18 +1556,18 @@ Prevents accidental irreversible spends.
 
 | Rule | Pillar |
 |---|---|
-| Screen-space HUD; boomerang trail sole diegetic | **P3** |
-| HUD sparsity; center + bottom-left clear | **P3** |
-| Fuel bar Spent Cyan matches trail below 25% | **P3** |
+| Screen-space HUD; boomerang trail sole diegetic | **P2** |
+| HUD sparsity; center + bottom-left clear | **P2** |
+| Fuel bar Spent Cyan matches trail below 25% | **P2** |
 | Currency Ore Amber icon activation | **P2** |
 | 'LOW FUEL' persistent text + Reduced-Motion gated pulse | **P2 + Accessibility** |
 | Boss HP bar crimson interior (documented exception) | **P2** |
 | World-space phase-transition flash + HP bar tick | **P2** (no eye-travel risk) |
 | Node purchase: radial fill + single ring, no burst | **P1 + P5 + P4 restraint** |
 | Tree grows visibly brighter as nodes unlock | **P1** |
-| Schematic draw-on reveal | **P5** |
+| Schematic draw-on reveal | **P4** |
 | Angular chamfered-rectangle buttons/panels | **P4 via shape grammar** |
-| Rajdhani + Share Tech Mono typography | **P5** |
+| Rajdhani + Share Tech Mono typography | **P4** |
 | No italic, no weight above SemiBold | **P4** |
 | Schematic-glyph icons, no circles/organic | **P4 via shape grammar** |
 | Three tree node states (locked/unaffordable/affordable) | **P1** |
@@ -1846,7 +1844,7 @@ Pre-commit (or CI) hook `tools/art-lint.py` must flag any asset violating the fo
 
 | Standard | Anchors to |
 |----------|-----------|
-| RGBA32 uncompressed for game-field sprites | **P1** (Weapon Cyan hue integrity) + **P3** (boomerang edge readability) |
+| RGBA32 uncompressed for game-field sprites | **P1** (Weapon Cyan hue integrity) + **P2** (boomerang edge readability) |
 | Separate Zone 1 / Zone 2 atlases | **TD** (memory reclaim under 512 MB ceiling) |
 | 44.1 kHz audio source | **WebGL AudioContext compatibility** (cold-load <30 s) |
 | RGBA straight alpha, no premultiplied | **WebGL shader correctness** |
@@ -2047,11 +2045,10 @@ Additionally, cyberpunk's visual identity is built on excess: more neon, more gr
 
 **Why we reject this**: Vampire Survivors is built on deliberate visual chaos: hundreds of simultaneous enemies, projectiles filling the screen, particle effects overlapping to produce intentional visual noise. The aesthetic reward of Vampire Survivors is saturation-overload — the screen becomes an overwhelming wall of color and motion. The player experience is deliberately one of loss-of-control.
 
-Deep Forge's entire visual discipline is the structural opposite. P3 requires the boomerang arc to be readable at all times. P2 requires enemy types to be legible by silhouette in peripheral vision. The field must never become a wall of visual noise. Every rule in Sections 3 through 6 — the 32×32 test, the saturation budget, the ambient Light2D discipline, the particle caps, the draw-call budget — exists precisely to prevent the visual anarchy that Vampire Survivors celebrates.
+Deep Forge's visual discipline prioritizes clarity through restraint: distinct hues for spatial decision-making, impact saturation reserved for contact, restrained particle effects. P2 (Positional Mastery) governs hue assignment and enemy type distinction.
 
 Vampire Survivors is not a bad game. It is the correct answer to a different design question. The question Deep Forge answers is the opposite.
 
-**The specific test**: Any proposed effect, enemy, or field condition that would obscure the boomerang trail for more than one frame is Vampire Survivors territory. Reject it.
 
 ---
 
@@ -2362,9 +2359,9 @@ The following specific visual characteristics are immediate grounds for asset re
 | Game-field sprite with surface texture, gradient, or hatching | Section 5.5.1 flat-per-face ceiling | Beauty-Must-Be-Cheap violation |
 | Rounded corner on any UI element | Section 3.4 no-organic-shape-in-UI | Shape grammar violation |
 | Enemy or asteroid sprite with hex form or hex sub-element | Section 3.4 (hexagonal language is UI-exclusive) | False interactive signal |
-| HUD element placed in the center or bottom-left quadrant | Section 7.2 governing principle | P3 arc-clearance violation |
+| HUD element placed in the center or bottom-left quadrant | Section 7.2 governing principle | Obstructs critical game area |
 | Any Pirate Crimson in a UI panel, button, or HUD element (not Boss HP bar) | Section 4.4 UI palette | False threat signal |
-| Boomerang sprite with mod-indicator that changes base silhouette beyond ±15% | Section 3.5.1 | P3 base-silhouette recognition loss |
+| Boomerang sprite with mod-indicator that changes base silhouette beyond ±15% | Section 3.5.1 | Base-silhouette consistency |
 | Skill tree node that is not a regular hexagon | Section 3.5.6 | UI shape grammar violation |
 | Zone-invariant asset (boomerang, ore pickup, UI) with any hue/saturation shift between zones | Section 4.3 zone-invariance rule | Semantic hue meaning collapsed |
 
@@ -2419,13 +2416,13 @@ Some submitted assets will be technically within the documented rules but feel w
 | **9.3.3** Astro Prospector differentiation | Supporting (tree as distinguishing P1 signal) | Supporting (semantic hue = cleaner field) | Supporting (forge register ≠ space-game register) | Supporting (shape register distinction) | Primary (tree as artifact is our dominant differentiator) |
 | **9.3.4** Cozy-incremental rejected | — | — | — | Primary rejection (soft forms violate weight) | — |
 | **9.3.5** Realistic space sim rejected | — | Supporting (bounded arena not simulated space) | Primary rejection (stars, parallax prohibited) | — | — |
-| **9.3.6** Neon particle-aesthetic rejected | — | — | Primary rejection (additive-glow ambient = arc competition) | Rejection protects (weight from timing, not glow) | — |
+| **9.3.6** Neon particle-aesthetic rejected | — | — | Primary rejection (additive-glow ambient visually competing) | Rejection protects (weight from timing, not glow) | — |
 | **9.3.7** Gothic ARPG density rejected | — | Supporting (environmental read, not study) | Supporting (field readable, not storied) | — | Supporting (tree readable spatially, not by icon density) |
 | **9.4 Mood board specification** | Supporting (Zone Victory category images carry it) | Supporting (in-run category calibrates field read) | Primary anchor (in-run lighting model grounded) | Primary anchor (boss category establishes scale) | Primary anchor (tree category establishes schematic tradition) |
 | **9.5 Zone reference register** | — | Primary (zone escalation readable by register shift) | — | Supporting (Zone 2 material registers older/harder) | — |
-| **9.6 Anti-patterns** | — | Supporting (prevents palette drift that collapses roles) | Primary anchor (most anti-patterns ultimately protect arc readability) | Supporting (glow-mechanism anti-pattern protects weight-from-timing discipline) | Supporting (warmth and schematic precision anti-patterns) |
+| **9.6 Anti-patterns** | — | Supporting (prevents palette drift that collapses roles) | Supporting (saturation and particle discipline) | Supporting (glow-mechanism anti-pattern protects weight-from-timing discipline) | Supporting (warmth and schematic precision anti-patterns) |
 | **9.7 Competitor map** | Supporting (evolution signature is our differentiator) | Supporting (semantic palette = cleaner field) | — | Supporting (single-weapon weight vs multi-weapon dilution) | Primary anchor (tree as artifact is the column's final answer) |
-| **9.8 Enforcement process** | — | Reject criteria protect P2 at pipeline level | Primary anchor (cyan exclusion, arc-clearance violations are blocking rejects) | Supporting (reject criteria enforce contact-saturation discipline) | Supporting (reject criteria enforce hex/connector/parchment rules) |
+| **9.8 Enforcement process** | — | Reject criteria protect P2 at pipeline level | Supporting (cyan exclusion, saturation discipline blocking rejects) | Supporting (reject criteria enforce contact-saturation discipline) | Supporting (reject criteria enforce hex/connector/parchment rules) |
 
 ---
 
