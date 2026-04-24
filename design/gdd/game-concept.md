@@ -337,12 +337,6 @@ The following are inputs to `/create-architecture` and `/architecture-decision`:
 - **Skill tree UI performance** under naive UGUI implementation — mitigated by single-mesh connector Graphic
 - **Brotli/COOP-COEP host support** — verify at target launch date for whichever free-play portal is chosen
 
-### Market Risks
-
-- **Astro Prospector is an active competitor** — differentiator (boomerang + tree) must land hard in the first 60 seconds of play
-- **WebGL-only free distribution has weak monetization** — Steam port is the revenue path, but adds post-MVP scope
-- **Free-play portal fragmentation** (itch.io vs Newgrounds vs others) — save persistence may silently fail on some portals; pick one primary host and architect for it
-
 ### Scope Risks (from PR-SCOPE)
 
 - **Hex-grid skill tree UI is a 3–4 week hidden cost** (not "substantial UI work"). Most underestimated line item in the plan.

@@ -20,7 +20,6 @@ All game assets live under `src/IncrementalAsteroidBoomerang/Assets`. Use these 
 
 - **Gameplay code** → `src/IncrementalAsteroidBoomerang/Assets/_Scripts`
   - Organized by domain: `Character/`, `Decor/`, `Dialogue/`, `Gameplay/`, `Scenes/`, `Scheduler/`, `UI/`, `Utility/`, `World/`
-  - Bootstrapper entry point: `src/IncrementalAsteroidBoomerang/Assets/_Scripts/Bootstrapper.cs`
 - **Materials** → `src/IncrementalAsteroidBoomerang/Assets/Materials`
 - **Prefabs** → `src/IncrementalAsteroidBoomerang/Assets/Prefabs`
 - **Scenes** → `src/IncrementalAsteroidBoomerang/Assets/Scenes`
