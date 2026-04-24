@@ -8,7 +8,7 @@
 - **Engine**: Unity 6.3 LTS (supported through December 2027)
 - **Language**: C# (.NET — Mono + IL2CPP for WebGL builds)
 - **Rendering**: URP 2D Renderer — feature-stripped for WebGL per TD-FEASIBILITY (no shadows, no SSAO, minimal renderer features, no post-processing stack unless required)
-- **Physics**: Physics 2D (Box2D). Physics 3D stripped from build via Player Settings. Boomerang motion is **kinematic scripted** (not Rigidbody2D) per pillar P3 (Read the Arc)
+- **Physics**: Physics 2D (Box2D). Physics 3D stripped from build via Player Settings. Boomerang motion is **kinematic scripted** (not Rigidbody2D)
 
 ## Input & Platform
 
@@ -37,12 +37,9 @@
 <!-- Add patterns that should never appear in this project's codebase -->
 - **`Resources.Load` / `Resources.LoadAsync`** in hot paths — use Addressables
 - **`FindObjectsOfType` / `GameObject.Find`** in `Update`, `FixedUpdate`, or event callbacks — cache references
-- **String allocation in hot paths** (`$"{damage}"`, `ToString()` on int inside Update) — use pre-allocated string pool for damage numbers / UI
 - **LINQ in hot paths** (`.Where`, `.Select`, `.ToList` inside Update) — manual loops instead
-- **`foreach` over `List<T>` in hot paths** if IL2CPP WebGL profiling shows allocation (verify case-by-case)
 - **Rigidbody2D for boomerang** — boomerang must be kinematic scripted motion per pillar P3
 - **UI Toolkit for the skill tree** — use UGUI with a custom mesh-based connector `Graphic` per TD-FEASIBILITY mandate
-- **PlayerPrefs for shipping saves** — prototyping only; ship uses `ISaveStore` JSON-blob-in-IndexedDB
 - **Per-run temporary power upgrades invisible to the tree** — violates anti-pillar AP2
 
 ## Allowed Libraries / Addons

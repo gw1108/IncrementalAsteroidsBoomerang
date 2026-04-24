@@ -119,7 +119,6 @@ Ask yourself: "What department would handle this in a real studio?"
 | `/team-audio` | Orchestrate full audio team pipeline |
 | `/team-level` | Orchestrate full level creation pipeline |
 | `/bug-triage` | Re-prioritize open bugs, assign to sprints, surface systemic trends |
-| `/smoke-check` | Run critical path smoke test gate before QA hand-off (PASS/FAIL) |
 | `/soak-test` | Generate a soak test protocol for extended play sessions |
 | `/regression-suite` | Map coverage to GDD critical paths, flag gaps, maintain regression suite |
 | `/test-setup` | Scaffold test framework + CI pipeline for the project's engine (run once) |

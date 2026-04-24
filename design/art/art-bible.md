@@ -1408,7 +1408,7 @@ Register: **condensed technical/engineering sans-serif** — reads as instrument
 
 #### 7.3.3 Localization Note
 
-English-only MVP per AP5. Rajdhani covers Latin + Devanagari; lacks CJK/Arabic/Hebrew/Cyrillic. Post-MVP localization requires typography system decision before content sprint — flag to producer.
+English-only MVP per AP5. Rajdhani covers Latin + Devanagari; lacks CJK/Arabic/Hebrew/Cyrillic. Post-MVP localization requires typography system decision before content sprint.
 
 ### 7.4 Iconography Style
 

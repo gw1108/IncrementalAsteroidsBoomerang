@@ -51,13 +51,7 @@ Delegate to **release-manager**:
 Delegate in parallel:
 - **network-programmer** *(if game has multiplayer)*: Sign off on netcode stability. Verify lag compensation, reconnect handling, and bandwidth usage under load.
 
-### Phase 4: Localization and Performance
-Delegate (can run in parallel with Phase 3 if resources available):
-- Verify all strings are translated (delegate to **localization-lead** if available)
-- Run performance benchmarks against targets (delegate to **performance-analyst** if available)
-- Output: localization and performance sign-off
-
-### Phase 5: Go/No-Go
+### Phase 4: Go/No-Go
 Delegate to **producer**:
 - Collect sign-off from: release-manager, network-programmer (if spawned in Phase 3), and technical-director
 - Evaluate any open issues — are they blocking or can they ship?
@@ -74,18 +68,13 @@ Delegate to **producer**:
 - Produce a partial report summarizing Phases 1–5 and what was skipped (Phase 6) and why.
 - Verdict: **BLOCKED** — release not deployed.
 
-### Phase 6: Deployment (if GO)
+### Phase 5: Deployment (if GO)
 Delegate to **release-manager**:
 - Tag the release in version control
 - Generate changelog using `/changelog`
 - Deploy to staging for final smoke test
 - Deploy to production
 - Monitor for 48 hours post-release
-
-### Phase 7: Post-Release
-- **release-manager**: Generate release report (what shipped, what was deferred, metrics)
-- **producer**: Update milestone tracking, communicate to stakeholders
-- Schedule post-release retrospective if issues occurred
 
 ## Error Recovery Protocol
 

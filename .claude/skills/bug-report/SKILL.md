@@ -91,7 +91,7 @@ If no argument is provided, ask the user for a bug description before proceeding
 
 ## Phase 2C: Verify Mode
 
-Read `production/qa/bugs/[BUG-ID].md`. Extract the reproduction steps and expected result.
+Read `production/bugs/[BUG-ID].md`. Extract the reproduction steps and expected result.
 
 1. **Re-run reproduction steps** — use Grep/Glob to check whether the root cause code path still exists as described. If the fix removed or changed it, note the change.
 2. **Run the related test** — if the bug's system has a test file in `tests/`, run it via Bash and report pass/fail.

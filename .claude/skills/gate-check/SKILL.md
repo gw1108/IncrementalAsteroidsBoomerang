@@ -220,9 +220,6 @@ A depends on B). If any cycle is detected (e.g. A→B→A, or A→B→C→A):
 **Required Artifacts:**
 - [ ] All features from milestone plan are implemented
 - [ ] Content is complete (all levels, assets, dialogue referenced in design docs exist)
-- [ ] Localization strings are externalized (no hardcoded player-facing text in `src/`)
-- [ ] QA test plan exists (`/qa-plan` output in `production/qa/`)
-- [ ] QA sign-off report exists (`/team-qa` output — APPROVED or APPROVED WITH CONDITIONS)
 - [ ] All Must Have story test evidence is present (Logic/Integration: test files pass; Visual/Feel/UI: sign-off docs in `production/qa/evidence/`)
 - [ ] Smoke check passes cleanly (PASS verdict) on the release candidate build
 - [ ] No test regressions from previous sprint (test suite passes fully)
@@ -232,13 +229,7 @@ A depends on B). If any cycle is detected (e.g. A→B→A, or A→B→C→A):
 - [ ] Changelog / patch notes drafted
 
 **Quality Checks:**
-- [ ] Full QA pass signed off by `qa-lead`
-- [ ] All tests passing
-- [ ] Performance targets met across all target platforms
 - [ ] No known critical, high, or medium-severity bugs
-- [ ] Accessibility basics covered (remapping, text scaling if applicable)
-- [ ] Localization verified for all target languages
-- [ ] Legal requirements met (EULA, privacy policy, age ratings if applicable)
 - [ ] Build compiles and packages cleanly
 
 ---
@@ -488,7 +479,6 @@ Based on the verdict, suggest specific next steps:
 - **No player journey document?** → create `design/player-journey.md` using the player journey template
 - **Need a quick sprint check?** → `/sprint-status` for current sprint progress snapshot
 - **Performance unknown?** → `/perf-profile`
-- **Not localized?** → `/localize`
 - **Ready for release?** → `/launch-checklist`
 
 ---

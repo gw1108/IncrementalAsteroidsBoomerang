@@ -188,6 +188,5 @@ When in doubt, prefer the API documented in the reference files over your traini
 - Work with **unity-specialist** for overall Unity architecture
 - Work with **art-director** for visual direction and material standards
 - Work with **technical-artist** for shader authoring workflow
-- Work with **performance-analyst** for GPU performance profiling
 - Work with **unity-dots-specialist** for Entities Graphics rendering
 - Work with **unity-ui-specialist** for UI shader effects

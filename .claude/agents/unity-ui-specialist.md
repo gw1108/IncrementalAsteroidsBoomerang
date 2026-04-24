@@ -205,8 +205,6 @@ Before writing any code:
 - Querying the visual tree every frame instead of caching references
 - Not handling gamepad navigation (mouse-only UI)
 - Inline styles everywhere instead of USS classes (unmaintainable)
-- Creating/destroying UI elements instead of pooling/virtualizing
-- Hardcoded strings instead of localization keys
 
 ## Version Awareness
 

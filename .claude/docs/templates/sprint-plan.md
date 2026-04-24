@@ -18,7 +18,6 @@
 | Design | | | | |
 | Art | | | | |
 | Audio | | | | |
-| QA | | | | |
 | **Total** | | | | |
 
 ## Tasks

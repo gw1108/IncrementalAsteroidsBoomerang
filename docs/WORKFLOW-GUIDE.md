@@ -989,18 +989,6 @@ Coordinates 4 specialists in parallel:
 
 You set priorities; the team executes with your approval at each step.
 
-### Step 6.7: Localization and Accessibility
-
-```
-/localize src/
-```
-
-Scans for hardcoded strings, concatenation that breaks translation, text that
-does not account for expansion, and missing locale files.
-
-Accessibility is audited against the tier committed in Phase 3's accessibility
-requirements document.
-
 ### Phase 6 Gate
 
 ```
@@ -1009,10 +997,7 @@ requirements document.
 
 **Requirements to pass:**
 
-- At least 3 playtest reports exist
-- Coordinated polish pass completed (`/team-polish`)
 - No blocking performance issues
-- Accessibility tier requirements met
 
 ---
 
@@ -1044,11 +1029,6 @@ Your game is polished, tested, and ready. The user manages the release pipeline.
 
 Generates a comprehensive pre-release checklist covering:
 - Build verification (all platforms compile and run)
-- Certification requirements (platform-specific)
-- Store metadata (descriptions, screenshots, trailers)
-- Legal compliance (EULA, privacy policy, ratings)
-- Save game compatibility
-- Analytics verification
 
 ### Step 7.2: Launch Readiness (Full Validation)
 
@@ -1066,7 +1046,6 @@ Complete cross-department validation:
 | **Audio** | Missing sounds, mixing levels, spatial audio |
 | **QA** | Open bug count by severity, regression suite pass rate |
 | **Narrative** | Dialogue completeness, lore consistency, typos |
-| **Localization** | All strings translated, no truncation, locale testing |
 | **Accessibility** | Compliance checklist, assistive feature testing |
 | **Store** | Metadata complete, screenshots approved, pricing set |
 | **Marketing** | Press kit ready, launch trailer, social media scheduled |
@@ -1602,21 +1581,6 @@ conflicts go to `producer`.
 5. Implement stories
 6. /story-done per completed story
 7. /sprint-status for quick progress checks
-```
-
-### Workflow 7: "Shipping the game"
-
-```
-1. /gate-check polish (verify Polish phase is complete)
-2. /tech-debt (decide what's acceptable at launch)
-3. /localize (final localization pass)
-4. /release-checklist v1.0.0
-5. /launch-checklist (full cross-department validation)
-6. User manually: Cut branch, tag release, build, and deploy
-7. /patch-notes and /changelog
-8. Ship!
-9. /hotfix if anything breaks post-launch
-10. Post-mortem after launch stabilizes
 ```
 
 ### Workflow 8: "I'm lost / don't know what to do next"

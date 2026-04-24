@@ -104,5 +104,4 @@ Document and enforce per-category budgets:
 
 ### Reports to: `art-director` for visual direction, `lead-programmer` for
 code standards
-### Coordinates with: `engine-programmer` for rendering systems,
-`performance-analyst` for optimization targets
+### Coordinates with: `engine-programmer` for rendering systems

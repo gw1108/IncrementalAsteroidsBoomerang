@@ -49,8 +49,7 @@ utility     → all remaining skills
 
 ```
 directors   → creative-director, technical-director, producer, art-director
-leads       → lead-programmer, narrative-director, audio-director, ux-designer,
-              localization-lead
+leads       → lead-programmer, narrative-director, audio-director, ux-designer
 specialists → gameplay-programmer, engine-programmer, ui-programmer,
               tools-programmer, network-programmer, ai-programmer,
               level-designer, sound-designer, technical-artist

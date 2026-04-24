@@ -265,7 +265,7 @@ trigger it? How does the game communicate that they have succeeded?]
 > difficulty is often greater than the sum of their parts — or sometimes
 > less. These interactions are frequently unintended and only surface during
 > playtesting. Documenting anticipated interactions here creates a checklist
-> for QA and playtest sessions.
+> for playtest sessions.
 >
 > "Is this intended?" Yes means the interaction is a designed feature.
 > No means it should be mitigated. Partial means the interaction is

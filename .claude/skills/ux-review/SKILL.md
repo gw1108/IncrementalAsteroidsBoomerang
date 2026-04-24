@@ -135,10 +135,6 @@ Run all checks against a `ux-spec.md`-based document.
 - [ ] Any new patterns invented in this spec are flagged for addition to the
   pattern library
 
-**Localization**
-- [ ] Character limit warnings present for all text-heavy elements
-- [ ] Any layout-critical text has been flagged for 40% expansion accommodation
-
 **Acceptance Criteria Quality**
 - [ ] Criteria are specific enough for a QA tester who hasn't seen the design docs
 - [ ] Performance criterion present (screen opens within Xms)

@@ -56,7 +56,7 @@ is managed by `/team-release`.
 5. Report written on approval; verdict is LAUNCH READY
 
 **Assertions:**
-- [ ] All checklist categories are checked (legal, platform, store, build, analytics, UX)
+- [ ] All checklist categories are checked
 - [ ] All items appear in the report with PASS markers
 - [ ] Verdict is LAUNCH READY
 - [ ] "May I write" is asked with the correct dated filename

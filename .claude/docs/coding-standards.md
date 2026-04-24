@@ -34,9 +34,8 @@ All stories must have appropriate test evidence before they can be marked Done:
 |---|---|---|---|
 | **Logic** (formulas, AI, state machines) | Automated unit test — must pass | `tests/unit/[system]/` | BLOCKING |
 | **Integration** (multi-system) | Integration test OR documented playtest | `tests/integration/[system]/` | BLOCKING |
-| **Visual/Feel** (animation, VFX, feel) | Screenshot + lead sign-off | `production/qa/evidence/` | ADVISORY |
-| **UI** (menus, HUD, screens) | Manual walkthrough doc OR interaction test | `production/qa/evidence/` | ADVISORY |
-| **Config/Data** (balance tuning) | Smoke check pass | `production/qa/smoke-[date].md` | ADVISORY |
+| **Visual/Feel** (animation, VFX, feel) | Screenshot + lead sign-off | `production/evidence/` | ADVISORY |
+| **UI** (menus, HUD, screens) | Manual walkthrough doc OR interaction test | `production/evidence/` | ADVISORY |
 
 ## Automated Test Rules
 

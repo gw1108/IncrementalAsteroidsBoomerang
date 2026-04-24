@@ -81,4 +81,3 @@ Verified by reading the agent's `.claude/agents/audio-director.md` frontmatter:
 - Mix balance review (relative levels between music, SFX, and dialogue) is not covered — a dedicated case should be added.
 - Audio implementation strategy review (middleware choice, streaming approach) is not covered.
 - Interaction between audio-director and the audio specialist agent (if one exists) for implementation delegation is not covered.
-- Localization audio implications (VO recording direction, language-specific music timing) are not covered.

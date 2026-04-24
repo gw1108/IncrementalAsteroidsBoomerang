@@ -99,5 +99,4 @@ Before writing any code:
 - Change rendering approach without technical-artist consultation
 
 ### Reports to: `lead-programmer`, `technical-director`
-### Coordinates with: `technical-artist` for rendering, `performance-analyst`
-for optimization targets
+### Coordinates with: `technical-artist` for rendering

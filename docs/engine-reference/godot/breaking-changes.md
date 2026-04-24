@@ -18,7 +18,6 @@ Changes between Godot versions, focused on post-LLM-cutoff changes (4.4+).
 | Editor | New "Modern" theme default | Grayscale replaces blue-tint. Restore: Editor Settings → Interface → Theme → Style: Classic |
 | Editor | "Select Mode" keybind changed | New "Select Mode" (v key) prevents accidental transforms. Old mode renamed "Transform Mode" (q key). |
 | 2D | TileMapLayer scene tile rotation | Scene tiles can now be rotated like atlas tiles. |
-| Localization | CSV plural form support | No longer requires Gettext for plurals. Context columns added. |
 | C# | Automatic string extraction | Translation strings auto-extracted from C# code. |
 | Plugins | New EditorDock class | Specialized container for plugin docks with layout control. |
 

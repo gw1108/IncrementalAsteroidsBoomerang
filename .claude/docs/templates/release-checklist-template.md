@@ -47,8 +47,6 @@
 
 - [ ] All placeholder assets replaced with final versions
 - [ ] All player-facing text proofread
-- [ ] All text localization-ready (no hardcoded strings)
-- [ ] Localization complete for: [list locales]
 - [ ] Audio mix finalized and approved
 - [ ] Credits complete and accurate
 - [ ] Legal notices and third-party attributions complete
@@ -108,7 +106,6 @@
 
 | Role | Name | Status | Date |
 | ---- | ---- | ---- | ---- |
-| QA Lead | | [ ] Approved | |
 | Technical Director | | [ ] Approved | |
 | Producer | | [ ] Approved | |
 | Creative Director | | [ ] Approved | |

@@ -8,8 +8,6 @@ Each agent owns a specific domain, enforcing separation of concerns and quality.
 - **Engine**: Unity 6.3 LTS
 - **Language**: C#
 - **Version Control**: Git with trunk-based development
-- **Build System**: Unity Build Pipeline
-- **Asset Pipeline**: Unity Asset Import Pipeline + Addressables
 
 > **Note**: Engine-specialist agents exist for Godot, Unity, and Unreal with
 > dedicated sub-specialists. Use the set matching your engine.

@@ -61,7 +61,7 @@ art-dir = art-director
 | From | Can Delegate To |
 |------|----------------|
 | creative-director | game-designer, art-director, audio-director |
-| technical-director | lead-programmer, performance-analyst, technical-artist (technical decisions) |
+| technical-director | lead-programmer, technical-artist (technical decisions) |
 | producer | Any agent (task assignment within their domain only) |
 | game-designer | systems-designer, level-designer, economy-designer |
 | lead-programmer | gameplay-programmer, engine-programmer, ai-programmer, network-programmer, tools-programmer, ui-programmer |

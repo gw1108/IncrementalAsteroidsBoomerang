@@ -149,7 +149,6 @@ Delegates to:
 - `engine-programmer` for core engine implementation
 - `network-programmer` for networking architecture
 - `technical-artist` for rendering pipeline decisions
-- `performance-analyst` for profiling and optimization work
 
 Escalation target for:
 - `lead-programmer` when a code decision affects architecture

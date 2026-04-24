@@ -451,31 +451,6 @@ automatically.]
 
 ---
 
-## 13. Localization Considerations
-
-> **Why this section exists**: UI built without localization in mind breaks on first
-> translation. German text is typically 30–40% longer than English. Arabic and Hebrew
-> require right-to-left layout mirroring. Japanese and Chinese text may be significantly
-> shorter than English, creating awkward whitespace. These issues are cheap to plan for
-> and expensive to fix after a layout is built and shipped. Every text element should
-> have an explicit max-character count and a plan for overflow.
-
-**General rules for this screen**:
-- All text elements must tolerate a minimum of 40% expansion from English baseline
-- RTL layout (Arabic, Hebrew): mirrored layout required — document which elements mirror and which do not
-- CJK languages (Japanese, Korean, Chinese): text may be 20-30% shorter — verify layouts do not look broken with less text
-- Do not use text in images — all text must be from localization strings
-
-| Text Element | English Baseline Length | Max Characters | Expansion Budget | RTL Behavior | Overflow Behavior | Risk |
-|--------------|------------------------|----------------|-----------------|--------------|-------------------|------|
-| [e.g., Screen title "INVENTORY"] | [9 chars] | [16 chars] | [78%] | [Mirror to right, or center — acceptable] | [Truncate with ellipsis — title is not critical content] | [Low] |
-| [e.g., Item name] | [~15 chars avg, max ~35 "Enchanted Dragon Scale Gauntlets"] | [50 chars] | [43%] | [Right-align in RTL layouts] | [Truncate with tooltip showing full name on hover/focus] | [Medium — long fantasy item names are common] |
-| [e.g., Item description] | [~80–120 chars] | [200 chars] | [67%] | [Right-align, wrap normally] | [Scroll within Detail Panel — no truncation] | [Low — panel is scrollable] |
-| [e.g., Action button "Equip"] | [5 chars] | [14 chars] | [180%] | [Button layout mirrors; text right-aligns] | [Shrink font to 90% minimum, then truncate] | [Medium — "Ausrüsten" in German is 9 chars] |
-| [e.g., Category tab "Consumables"] | [11 chars] | [18 chars] | [64%] | [Mirror tab position] | [Abbreviate: "Consum." — define abbreviations per language in loc file] | [High — long localized tab labels are a known problem] |
-
----
-
 ## 14. Acceptance Criteria
 
 > **Why this section exists**: Acceptance criteria are the contractual definition of
@@ -519,11 +494,6 @@ automatically.]
 - [ ] Screen reader announces item name and key stats on focus (verify with platform screen reader)
 - [ ] Reduced motion setting results in instant transitions (no animated transitions)
 - [ ] High contrast mode (if applicable to Accessibility Tier) renders without visual breakage
-
-**Localization**
-- [ ] No text element overflows its container in any supported language
-- [ ] RTL layout renders correctly (if RTL is a target language)
-- [ ] All text elements are driven by localization strings — no hardcoded display text
 
 ---
 

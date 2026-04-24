@@ -40,7 +40,7 @@ with "(inferred)" in the system name.]
 | **UI** | Player-facing information displays | HUD, menus, inventory screen, dialogue UI, map, notifications |
 | **Audio** | Sound and music systems | Music manager, SFX bus, ambient audio, adaptive music, voice |
 | **Narrative** | Story and dialogue delivery | Dialogue system, quest tracking, cutscenes, journal, lore entries |
-| **Meta** | Systems outside the core game loop | Analytics, tutorials/onboarding, accessibility options, photo mode |
+| **Meta** | Systems outside the core game loop | Tutorials/onboarding, accessibility options, photo mode |
 
 [Not every game needs every category. Remove categories that don't apply.
 Add custom categories if needed.]

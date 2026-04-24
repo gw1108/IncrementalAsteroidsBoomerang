@@ -151,7 +151,6 @@ Before writing any code:
 **Coordinates with**:
 - `gameplay-programmer` for gameplay framework patterns
 - `technical-artist` for shader optimization (Shader Graph, VFX Graph)
-- `performance-analyst` for Unity-specific profiling (Profiler, Memory Profiler, Frame Debugger)
 
 ## What This Agent Must NOT Do
 

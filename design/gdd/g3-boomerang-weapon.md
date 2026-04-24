@@ -922,7 +922,6 @@ ship layer. **→ AC flag**: layer-mask configuration test — chain boomerang
 
 | System | Direction | Nature of Dependency |
 |--------|-----------|---------------------|
-| **C2 Object Pooling** | This depends on C2 | Structural — framework-level. Primary pool (pre-warm 1) + chain pool (pre-warm 1). Hard — G3 cannot function without pooling. |
 | **C3 Fixed-Timestep Tick** | This depends on C3 | Structural — simulation cadence. Hard — all motion + contact detection runs in C3's tick callback. |
 | **C6 Stat Resolver** | This depends on C6 | Data — consumes `GameStatsContext` snapshot. Hard — G3 has no standalone stats; all boomerang behavior is stat-driven. |
 | **G1 Player Ship Controller** | This depends on G1 | Data — throw anchor + catch collider. Hard — boomerang has no origin without ship. |
@@ -1022,8 +1021,7 @@ authoring.
 
 ### Asset Dependencies
 
-Specific assets required from V1 (Juice Layer pool) and A1 (Audio System
-pool). These are G3-sourced specifications; V1 and A1 own production.
+Specific assets required from V1 (Juice Layer pool) and A1 (Audio System). These are G3-sourced specifications; V1 and A1 own production.
 
 **V1 pool assignments:**
 - `vfx_boomerang_throw_spark_small` — 2–3 angular cyan sparks, 2-frame animation, additive. Pre-warm 2.
@@ -1191,7 +1189,6 @@ dependency entry.
 | This Document References | Target GDD | Specific Element Referenced | Nature |
 |--------------------------|-----------|----------------------------|--------|
 | `GameStatsContext` snapshot per throw | `design/gdd/c6-stat-resolver.md` *(undesigned)* | `GameStatsContext` + `IUpgradeSource` contract | Data dependency |
-| `Pool<T>` framework | `design/gdd/c2-object-pooling.md` *(undesigned)* | `Pool.Acquire()` / `Pool.Release()` API | Structural dependency |
 | `GameTick` event subscription | `design/gdd/c3-fixed-timestep-tick.md` *(undesigned)* | `OnTick(float fixedDeltaTime)` | State trigger |
 | `IShipAnchor.WorldPosition` + `ShipCollider` | `design/gdd/g1-player-ship-controller.md` *(undesigned)* | Ship anchor + catch collider interface | Data dependency |
 | `ICameraShakeRequester` + `ICameraBounds` | `design/gdd/g2-camera-system.md` *(undesigned)* | Shake-request contract + play-area bounds | Ownership handoff (shake budget) + Data dependency (bounds) |

@@ -30,7 +30,7 @@ the acceptance criteria numbers from the story that this evidence covers.]
 ## Screenshots / Video
 
 List all captured evidence below. Store files in the same directory as this
-document or in `production/qa/evidence/[story-slug]/`.
+document or in `production/evidence/[story-slug]/`.
 
 | # | Filename | What It Shows | Acceptance Criterion |
 |---|----------|--------------|----------------------|

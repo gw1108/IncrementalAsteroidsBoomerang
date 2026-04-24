@@ -73,8 +73,6 @@ Before writing any code:
    elements. UI must update automatically when underlying data changes.
 5. **Accessibility**: Implement accessibility features -- scalable text,
    colorblind modes, screen reader support, remappable controls.
-6. **Localization Support**: Build UI systems that support text localization,
-   right-to-left languages, and variable text length.
 
 ### Engine Version Safety
 
@@ -87,7 +85,6 @@ Before writing any code:
 ### UI Code Principles
 
 - UI must never block the game thread
-- All UI text must go through the localization system (no hardcoded strings)
 - UI must support both keyboard/mouse and gamepad input
 - Animations must be skippable and respect user motion preferences
 - UI sounds trigger through the audio event system, not directly
