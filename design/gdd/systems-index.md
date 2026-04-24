@@ -16,7 +16,7 @@
 This decomposition breaks the game concept into 30 systems across five dependency
 layers. The game is an incremental bullet-hell built on Unity 6.3 LTS + URP 2D for
 WebGL-first deployment. The core loop runs at two timescales — a 1–3 minute combat
-run and a persistent hex-grid skill tree that the run feeds. Because "The Tree IS
+run and a persistent grid skill tree that the run feeds. Because "The Tree IS
 the Game" (Pillar 4), the progression hub (P1a/P1b) and stat-resolution layer (C6)
 are the architectural center of gravity; almost every gameplay system flows stats
 through C6 rather than querying the tree directly. The weapon (G3 Boomerang) is
@@ -131,7 +131,7 @@ prototyped in WebGL. Designing M2 before G3 is validated is wasted work.
 ### Feature Layer (depends on Core)
 
 1. **G3 Boomerang Weapon** ⚠ — depends on: C2, C3, G1, G2, C6 — kinematic arc; auto-aim; auto-return; readable trajectory
-2. **P1a Skill Tree Architecture** ⚠ — depends on: E2, S1; produces→C6 — hex-grid graph, prereq rules, effect-application contract
+2. **P1a Skill Tree Architecture** ⚠ — depends on: E2, S1; produces→C6 — grid graph, prereq rules, effect-application contract
 3. **G4 Mod System** — depends on: G3, P1a; produces→C6 — Pierce / Chain / Explode-on-return archetypes as data-driven stat deltas + ability tags
 4. **P1b Skill Tree Node Catalog** ⚠ — depends on: P1a, G3, G4 — 25–30 individual node designs (Tier-1: ~15 nodes, 3 clusters; Tier-2: 25–30)
 5. **G6 Enemy System** — depends on: C2, C3, G1, C6 — 6 variants (3 types × 2 zones re-tinted)
@@ -144,7 +144,7 @@ prototyped in WebGL. Designing M2 before G3 is validated is wasted work.
 
 1. **M1 Accessibility & Theme Service** — depends on: S2, C1 — central palette tokens + input rebinding + reduced-motion state, consumed by U1–U4
 2. **U1 In-Run HUD** — depends on: E1, E2, G1, G8, E3, M1 — fuel gauge, currency, damage tier, run timer, boss health
-3. **U2 Skill Tree UI** ⚠ — depends on: P1a, P1b, E2, C1, S1, M1 — UGUI hex grid with custom mesh-based connector Graphic (TD mandate #6)
+3. **U2 Skill Tree UI** ⚠ — depends on: P1a, P1b, E2, C1, S1, M1 — UGUI grid
 4. **U3 Main Menu & Meta UI** — depends on: C1, C5, S1, S2, P2, M1 — start/continue/pause/settings/zone-select/save-management
 5. **U4 Run Results Screen** — depends on: C5, E2, E3, P1a, M1 — between-run summary; 1→2 dopamine-moment staging
 6. **V1 Juice Layer** — depends on: C2, C3, G2 — impact VFX, hitstop, camera shake, damage numbers (TD mandate #8 pre-allocated string pool)
