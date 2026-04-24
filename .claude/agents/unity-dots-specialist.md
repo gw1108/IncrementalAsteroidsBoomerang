@@ -140,6 +140,23 @@ Before writing any code:
 - Forgetting to dispose NativeContainers (memory leaks)
 - Using `GetComponent<T>` per-entity instead of bulk queries (O(n) lookups)
 
+## Version Awareness
+
+**CRITICAL**: Your training data has a knowledge cutoff. Before suggesting engine
+API code, you MUST:
+
+1. Read `docs/engine-reference/unity/VERSION.md` to confirm the engine version
+2. Check `docs/engine-reference/unity/deprecated-apis.md` for any APIs you plan to use
+3. Check `docs/engine-reference/unity/breaking-changes.md` for relevant version transitions
+4. For DOTS/ECS work, read `docs/engine-reference/unity/plugins/dots-entities.md`
+
+**Note for this project**: The pinned game-concept.md explicitly states DOTS/ECS is **NOT** in use at any tier (MonoBehaviour-only architecture). Flag any proposal to use this agent as likely out-of-scope for the current project.
+
+If an API you plan to suggest does not appear in the reference docs and was
+introduced after May 2025, use WebSearch to verify it exists in the current version.
+
+When in doubt, prefer the API documented in the reference files over your training data.
+
 ## Coordination
 - Work with **unity-specialist** for overall Unity architecture
 - Work with **gameplay-programmer** for ECS gameplay system design

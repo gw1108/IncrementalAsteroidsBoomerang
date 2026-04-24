@@ -37,7 +37,7 @@
 #   Each entry: name, status, source, referenced_by[], attributes{}, added, revised
 
 version: 1
-last_updated: ""
+last_updated: 2026-04-23
 
 # ─── ENTITIES ────────────────────────────────────────────────────────────────
 # Named game-world objects: enemies, NPCs, characters, factions, bosses.
@@ -106,7 +106,38 @@ items: []
 #   output_range[min, max], added
 # Optional: expression (the actual formula), notes
 
-formulas: []
+formulas:
+  - name: pierce_damage_falloff
+    status: active
+    source: design/gdd/g3-boomerang-weapon.md
+    referenced_by:
+      - design/gdd/g3-boomerang-weapon.md
+    variables:
+      - base_damage
+      - pierce_falloff
+      - n
+    output_range: [1, base_damage]
+    expression: "damage(n) = max(1, floor(base_damage * (1 - pierce_falloff)^n))"
+    notes: "n is 0-indexed contact count within a single arc. Output clamped to minimum 1 (never zero — every hit produces visible feedback). Expected to be referenced_by G4 (mod stat delta source), G5 (asteroid damage intake), G6 (enemy damage intake), G8 (boss damage intake) when those GDDs are authored."
+    added: 2026-04-23
+    revised: ""
+
+  - name: camera_shake_intensity
+    status: active
+    source: design/gdd/g3-boomerang-weapon.md
+    referenced_by:
+      - design/gdd/g3-boomerang-weapon.md
+    variables:
+      - damage_dealt
+      - base_damage
+      - base_shake_intensity
+      - max_shake_intensity
+      - detonate_shake_multiplier
+    output_range: [0.0, max_shake_intensity]
+    expression: "pierce variant: clamp(base_shake_intensity * (1 + log2(damage_dealt / base_damage)), 0.0, max_shake_intensity); detonate variant: clamp((base_shake_intensity * detonate_shake_multiplier) * (1 + log2(damage_dealt / base_damage)), 0.0, max_shake_intensity)"
+    notes: "Two variants: pierce-hit scaling and detonate-on-return scaling. Log-scaled to prevent absurd shake at tier-10+ damage. Output consumed by G2 via ICameraShakeRequester.Request. Expected to be referenced_by design/gdd/g2-camera-system.md when authored."
+    added: 2026-04-23
+    revised: ""
 
 # Example:
 #
@@ -139,7 +170,105 @@ formulas: []
 #
 # Required fields: name, status, source, referenced_by, value, unit, added
 
-constants: []
+constants:
+  - name: boomerang_base_damage_starting
+    status: active
+    source: design/gdd/g3-boomerang-weapon.md
+    referenced_by:
+      - design/gdd/g3-boomerang-weapon.md
+    value: 1
+    unit: damage (integer tier)
+    notes: "First-run base damage tier per Pillar 1 integer-tier discipline. Expected to be referenced_by C6 (hosts the stat in GameStatsContext), P1a (tree nodes modify via IUpgradeSource), G4 (mods modify via IUpgradeSource) when authored."
+    added: 2026-04-23
+    revised: ""
+
+  - name: boomerang_throw_cooldown_default
+    status: active
+    source: design/gdd/g3-boomerang-weapon.md
+    referenced_by:
+      - design/gdd/g3-boomerang-weapon.md
+    value: 0.8
+    unit: seconds
+    notes: "Default seed value for F5 cooldown timer. Safe range 0.3–5.0 s. Crosses G3 → C6 → P1a/G4."
+    added: 2026-04-23
+    revised: ""
+
+  - name: boomerang_arc_radius_default
+    status: active
+    source: design/gdd/g3-boomerang-weapon.md
+    referenced_by:
+      - design/gdd/g3-boomerang-weapon.md
+    value: 5.0
+    unit: world_units (peak deviation)
+    notes: "Peak deviation interpretation — what you set is player-visible max lateral offset. P1 Bezier control point uses 2 × arc_radius. Safe range 0.0–20.0 wu."
+    added: 2026-04-23
+    revised: ""
+
+  - name: boomerang_arc_flight_time_default
+    status: active
+    source: design/gdd/g3-boomerang-weapon.md
+    referenced_by:
+      - design/gdd/g3-boomerang-weapon.md
+    value: 0.8
+    unit: seconds
+    notes: "Outbound leg duration (same value used for inbound). Safe range 0.1–5.0 s; 0.1 s is hard safety floor (EC-5)."
+    added: 2026-04-23
+    revised: ""
+
+  - name: boomerang_pierce_falloff_default
+    status: active
+    source: design/gdd/g3-boomerang-weapon.md
+    referenced_by:
+      - design/gdd/g3-boomerang-weapon.md
+    value: 0.35
+    unit: ratio (0.0–1.0)
+    notes: "Feeds F3 pierce_damage_falloff formula. At base_damage=5 produces sequence [5,3,2,1,1]. Safe range 0.0–1.0; 0.0 = no falloff, 1.0 = only first hit does damage."
+    added: 2026-04-23
+    revised: ""
+
+  - name: boomerang_chain_count_default
+    status: active
+    source: design/gdd/g3-boomerang-weapon.md
+    referenced_by:
+      - design/gdd/g3-boomerang-weapon.md
+    value: 0
+    unit: count
+    notes: "Chain archetype locked at 0 until tree node purchased. MVP maximum is 1 (chain does not cascade per CR-7). Post-MVP values > 1 are undefined — flagged as OQ-CHAIN-SCALING."
+    added: 2026-04-23
+    revised: ""
+
+  - name: boomerang_return_detonate_radius_default
+    status: active
+    source: design/gdd/g3-boomerang-weapon.md
+    referenced_by:
+      - design/gdd/g3-boomerang-weapon.md
+    value: 0.0
+    unit: world_units
+    notes: "Detonate-on-return archetype locked at 0 until tree node purchased. Post-unlock MVP default 3.0 wu. Safe range 0.0–10.0 wu."
+    added: 2026-04-23
+    revised: ""
+
+  - name: boomerang_min_arc_flight_time_safety
+    status: active
+    source: design/gdd/g3-boomerang-weapon.md
+    referenced_by:
+      - design/gdd/g3-boomerang-weapon.md
+    value: 0.1
+    unit: seconds
+    notes: "Hard safety floor. EC-5 requires this clamp before F1/F2 Bezier evaluation to prevent division-by-zero. Not tunable as a design knob — if design needs shorter arcs, fix the interpolation math first. C6 validation should enforce this floor at stat-delta application time."
+    added: 2026-04-23
+    revised: ""
+
+  - name: boomerang_target_registry_capacity
+    status: active
+    source: design/gdd/g3-boomerang-weapon.md
+    referenced_by:
+      - design/gdd/g3-boomerang-weapon.md
+    value: 64
+    unit: entity slots (List<T> capacity)
+    notes: "TargetRegistry pre-allocation. Covers 50-entity peak density from CR-11 with headroom. Affects G5/G6/G8 Register() call timing — spawn systems must not exceed this capacity or risk allocation spike. Safe range 32–256."
+    added: 2026-04-23
+    revised: ""
 
 # Example:
 #
