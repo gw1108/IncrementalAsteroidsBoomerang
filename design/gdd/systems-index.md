@@ -39,7 +39,7 @@ of scope per game concept).
 | C3 | Fixed-Timestep Game Tick | Core | MVP | Not Started | — | (none) |
 | C4 | Addressables Content Pipeline | Core | MVP | Not Started | — | (none) |
 | S1 | Save System | Persistence | MVP | Not Started | — | (none) |
-| C6 | Stat Resolver & Upgrade Aggregation *(inferred — TD)* | Core | MVP | **Designed** *(pending `/design-review`)* | [design/gdd/c6-stat-resolver.md](./c6-stat-resolver.md) | (none at runtime; consumes registered `IUpgradeSource` producers) |
+| C6 | Stat Resolver & Upgrade Aggregation *(inferred — TD)* | Core | MVP | **In Review** *(revised 2026-04-24; re-review or Accept pending)* | [design/gdd/c6-stat-resolver.md](./c6-stat-resolver.md) | C5 (lifecycle controller — Hard runtime dep); consumes `IUpgradeSource` producers (P1a, G4) |
 | C5 | Scene & Mode Flow *(inferred)* | Core | MVP | Not Started | — | C1, C4, S1 |
 | S2 | Settings & Preferences *(inferred)* | Persistence | MVP | Not Started | — | S1, C1 |
 | G2 | Camera System *(inferred)* | Gameplay | MVP | Not Started | — | C3 |
@@ -348,7 +348,7 @@ when those GDDs are authored. Record verbatim in the listed GDDs.
 |--------|-------|
 | Total systems identified | 30 |
 | Design docs started | 2 |
-| Design docs reviewed | 0 |
+| Design docs reviewed | 1 |
 | Design docs approved | 0 |
 | MVP systems designed | 2 / 29 |
 | Vertical Slice systems designed | 0 / 1 |

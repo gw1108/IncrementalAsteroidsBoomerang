@@ -1,7 +1,8 @@
 # C6 Stat Resolver & Upgrade Aggregation
 
-> **Status**: Designed — pending independent /design-review
+> **Status**: Revised — pending re-review or Approved (see review log)
 > **Creative Director Review (CD-GDD-ALIGN)**: APPROVED 2026-04-24
+> **Independent Design Review**: NEEDS REVISION resolved 2026-04-24 — 6 blocking items addressed, 8 recommended revisions applied
 > **Author**: user + /design-system orchestration
 > **Last Updated**: 2026-04-24
 > **Implements Pillar**: P5 The Tree IS the Game (primary — this is the layer that makes P5 mechanically real); P1 Multiplicative Dopamine (integer-tier discipline enforced here); P3 Read the Arc (arc_flight_time safety floor enforced here)
@@ -29,10 +30,30 @@ This is the fantasy of *inheritance* — last session's decisions, loaded into t
 ### Core Rules
 
 **CR-1 — IUpgradeSource contract (pull model).**
-C6 drives all queries. Producers (`IUpgradeSource` implementors) are passive data suppliers between aggregation calls. A producer does not push deltas; it waits to be queried. The interface requires one method: return a flat list of stat deltas when C6 calls it. Each delta specifies: (a) the target field name as a canonical string key matching the `GameStatsContext` field inventory, (b) the delta mode (Additive or Multiplicative), and (c) the delta value typed to match the target field (int for integer-tier fields, float for float fields). A producer may return an empty list if no upgrades have been purchased — this is valid and treated as zero-delta.
+C6 drives all queries. Producers (`IUpgradeSource` implementors) are passive data suppliers between aggregation calls. A producer does not push deltas; it waits to be queried. The interface requires one method: return a flat list of `StatDelta` structs when C6 calls it. A producer may return an empty list if no upgrades have been purchased — this is valid and treated as zero-delta.
+
+**`StatDelta` struct (discriminated union — zero allocation, no boxing):**
+
+```csharp
+public readonly struct StatDelta
+{
+    public readonly string FieldKey;      // Must be a const from StatKeys static class — see below
+    public readonly DeltaMode Mode;       // Additive or Multiplicative
+    public readonly DeltaValueType Type;  // Int or Float (discriminator)
+    public readonly int   IntValue;       // Valid when Type == Int
+    public readonly float FloatValue;     // Valid when Type == Float
+}
+
+public enum DeltaMode      { Additive, Multiplicative }
+public enum DeltaValueType { Int, Float }
+```
+
+**Canonical key requirement:** All `FieldKey` values must be sourced from a shared `static class StatKeys` containing `const string` fields (e.g., `StatKeys.BaseDamage`, `StatKeys.ArcRadius`). Arbitrary string literals returned from `IUpgradeSource` are forbidden — this prevents GC allocation from string construction and protects against field-name drift. C6 compares keys via `string.Equals(key, StatKeys.X, StringComparison.Ordinal)`.
 
 **CR-2 — Registration via C5 bootstrap injection.**
 C6 does not self-wire. C5 (Scene & Mode Flow) holds the ordered producer list and injects P1a and G4 into C6 at scene-load during its bootstrap step, before any gameplay tick fires. This is the only registration mechanism. There is no `Register`/`Deregister` API on C6. Producers cannot register themselves. The injection order is fixed: P1a first, G4 second. This order is binding and determines multiplier application priority (see CR-4).
+
+**Injection method (resolves OQ-C6-7):** C6 exposes one public injection entry point: `Bootstrap(IUpgradeSource[] producers)`. C5 calls this method exactly once during scene-load bootstrap, passing `new IUpgradeSource[] { p1a, g4 }`. The internal producer list is stored as `IUpgradeSource[]` (fixed-size array — no `List<T>` to avoid heap overhead). `Bootstrap()` is callable only in S0; a second call in any other state logs an error and is ignored.
 
 **CR-3 — Aggregation is triggered once per run by C5 only.**
 C6 exposes a single `TriggerAggregation()` method. C5 calls it at run-start, after bootstrap injection but before the player ship and any gameplay system begins ticking. No other system may call this method. Mid-run re-aggregation is explicitly forbidden: if `TriggerAggregation()` is called while a run is already active, C6 ignores the call and logs a warning.
@@ -51,6 +72,8 @@ Additive-first, multiplicative-second rationale: a tree node that adds "+2 arc_r
 **CR-5 — Integer-tier fields are additive-only.**
 `base_damage` and `chain_count` accept only Additive deltas. If a producer supplies a Multiplicative delta for either field, C6 rejects that specific delta, logs an error with producer identity and field name, and continues with the remaining valid deltas. C6 does not round or truncate a rejected multiplicative delta — it is discarded.
 
+**Known design constraint:** This rule is intentional for early-game feel (P1 Multiplicative Dopamine requires felt 1→2→3 tier jumps, not diluted multipliers). However, future mid-tree node concepts requiring a *conditional* multiplier on `base_damage` (e.g., "double damage on first contact per throw") cannot exist in the C6 pipeline and must be implemented as G3 special-case behavior. This is a deliberate tradeoff: CR-5 is the pillar-enforcement mechanism for P1; G3's contact logic is the escape hatch for conditional effects that cannot be expressed as simple flat deltas.
+
 **CR-6 — Unknown field names are rejected, not silently dropped.**
 If a producer supplies a delta for a field name not present in the `GameStatsContext` field inventory, C6 logs an error (producer identity + field name + value) and discards the delta. The rest of that producer's valid deltas are still applied. This protects against a P1b node referencing a field that was renamed or never added to the context.
 
@@ -67,15 +90,19 @@ If a producer's delta query throws an unhandled exception, C6 logs the error, sk
 | VAL-4 | `base_damage` | Result < 1 | Clamp to 1. `pierce_damage_falloff` formula depends on base_damage ≥ 1; zero-damage hits violate P4 (every hit must produce visible feedback). |
 | VAL-5 | `chain_count` | Result > 1 (MVP ceiling) | Clamp to 1. Log warning (not error — ceiling rises post-MVP when chain cascade mechanics are designed). |
 | VAL-6 | All float fields | Multiplicative factor ≤ 0.0 | Reject multiplier, log error. A zero factor zeroes the field; a negative inverts it. Neither is ever a correct player-facing value. |
-| VAL-7 | (order) | — | VAL-1 runs first. All other field validations run after, confirmed fields first, then provisional. |
+| VAL-7 | (order) | — | VAL-1 runs first. All other field clamps run after, confirmed fields first, then provisional. VAL-8 (advisory) runs last — after all clamps — so it reads the final clamped value. |
+| VAL-8 | `arc_radius`, `throw_cooldown` | `arc_radius` result < 0.5 wu OR `throw_cooldown` result < 0.3 s | Log **WARNING** identifying the field, the resolved value, and the contributing producer chain. No clamp — the value is preserved. This is a P3 ("Read the Arc") safety advisory: values in this band are technically valid but may produce unreadable boomerang behavior. Future tree nodes that intentionally push toward the extreme (e.g., a straight-line pierce archetype) will trigger this warning and must document their intent. |
 
 **CR-9 — GameStatsContext is a blittable readonly value struct.**
 All fields are value types (int, float). No reference types, no arrays. This constraint is permanent: if a future field requires a reference type, it does not belong in `GameStatsContext`. Consumers take a struct copy on read — no heap allocation, no reference aliasing, no possibility of mid-run mutation from the consumer side. C6's internal aggregation loop uses index-based `for` iteration over the injected producer list (not `foreach`) per the hot-path allocation prohibition in technical preferences.
 
-**CR-10 — Context is immutable for the duration of the run.**
+**CR-10 — Consumer access pattern: Inspector-serialized `[SerializeField]` reference.**
+Each gameplay system that consumes `GameStatsContext` (G1, G3, G5, G6, G7) holds a `[SerializeField] private C6StatResolver _statResolver` field, wired in the scene by C5 or the scene setup. Consumers call `_statResolver.GetContext()` at their trigger point; they do not hold a static reference, use `FindObjectOfType`, or access a singleton. This pattern is required by `coding-standards.md` (all public methods unit-testable via dependency injection — tests inject a real or test-double C6 instance via the serialized field using reflection or a constructor overload).
+
+**CR-11 — Context is immutable for the duration of the run.**
 After `TriggerAggregation()` completes, `GameStatsContext` does not change until the next run-start. Tree purchases in the between-run shop update P1a's internal state but do not re-trigger C6. The new context takes effect at the next run's `TriggerAggregation()` call. This immutability is what makes P3 (Read the Arc) enforceable: G3 snapshots the context once per throw knowing no mid-flight stat change will alter arc geometry.
 
-**CR-11 — First-run baseline behavior.**
+**CR-12 — First-run baseline behavior.**
 If producers are injected but return empty delta lists (no upgrades purchased — first run), C6 produces a context containing only baseline values. This is valid and expected. If no producers are injected at all, behavior is identical to baseline-only. Neither condition is an error.
 
 ---
@@ -87,8 +114,8 @@ All fields in the `GameStatsContext` struct. **Confirmed** fields are locked by 
 | Field | Type | Baseline | Range | Status | Primary Consumer |
 |---|---|---|---|---|---|
 | `base_damage` | int | 1 | 1–∞ (ceiling TBD in P1b) | **Confirmed** (G3) | G3 |
-| `throw_cooldown` | float | 0.8 s | 0.1–10.0 s | **Confirmed** (G3) | G3 |
-| `arc_radius` | float | 5.0 wu | 0.0–20.0 wu | **Confirmed** (G3) | G3 |
+| `throw_cooldown` | float | 0.8 s | 0.1–10.0 s *(P3 advisory floor: 0.3 s — VAL-8 warns below this)* | **Confirmed** (G3) | G3 |
+| `arc_radius` | float | 5.0 wu | 0.0–20.0 wu *(P3 advisory floor: 0.5 wu — VAL-8 warns below this)* | **Confirmed** (G3) | G3 |
 | `arc_flight_time` | float | 0.8 s | **HARD FLOOR 0.1 s**, ceiling 10.0 s | **Confirmed** (G3) | G3 |
 | `pierce_falloff` | float | 0.35 | 0.0–1.0 | **Confirmed** (G3) | G3 |
 | `chain_count` | int | 0 | 0–1 (MVP max) | **Confirmed** (G3) | G3 |
@@ -96,7 +123,7 @@ All fields in the `GameStatsContext` struct. **Confirmed** fields are locked by 
 | `ship_move_speed` | float | TBD (G1) | TBD (G1) | **Provisional-G1** | G1 |
 | `ship_damage_resistance` | float | TBD (G1) | 0.0–1.0 | **Provisional-G1** | G1 |
 | `ship_invulnerability_duration` | float | TBD (G1) | TBD (G1) | **Provisional-G1** | G1 |
-| `mining_yield_multiplier` | float | 1.0 | 0.1–∞ (ceiling TBD in P1b) | **Provisional-G5** | G5 |
+| `mining_yield_multiplier` | float | 1.0 | **V_min = 0.1** (not 0.0) — a multiplier of 0.0 produces zero yield; ceiling TBD in P1b | **Provisional-G5** | G5 |
 | `mining_crack_threshold_delta` | int | 0 | -(baseline crack threshold)–+N | **Provisional-G5** | G5 |
 | `enemy_stagger_duration_multiplier` | float | 1.0 | 0.0–N | **Provisional-G6** | G6 |
 
@@ -192,6 +219,8 @@ First-hit damage at n=0 is simply `B`. The felt tier-jump is flat +1 per tree pu
 
 **Output range:** B ∈ [1, ∞). First-hit equals B exactly. → P1b must register the tree `base_damage` ceiling in entities.yaml when the node catalog is designed.
 
+**Ceiling absence is an active degenerate path (see OQ-C6-1):** Until P1b registers a ceiling, `V_max = ∞` for `base_damage`. A P1b node catalog without a deliberate cap could produce very large B values (e.g., B = 100+), resulting in one-shot kills on all enemies regardless of positioning. This is not an implementation defect — it is an explicitly accepted design gap that P1b must close. Any sprint that includes P1b implementation work must also close OQ-C6-1 before shipping production nodes.
+
 ---
 
 ### D.3 — arc_flight_time Safety Clamp (`ARC-FLIGHT-CLAMP`)
@@ -283,6 +312,10 @@ C6 has no runtime dependencies of its own — it does not call into engine subsy
 
 **Provisional contract:** P1a and G4 are not yet designed. The `IUpgradeSource` interface contract defined in Section C (CR-1 through CR-7) is the provisional specification. P1a's and G4's GDDs must reference this GDD as the source of the interface contract they implement.
 
+**C5 ordering conditionality (required C5 GDD constraint):** The player fantasy ("everything the tree promised is already there before the fuel clock starts") depends on P1a's purchase-commit step completing — and being durable in P1a's delta-return state — before C5 calls `TriggerAggregation()`. This ordering constraint must be written into the C5 GDD as a formal bootstrap sequencing requirement: P1a's save-load/state-restore step is atomic with respect to C5's bootstrap sequence, and `TriggerAggregation()` is called only after all producers have fully loaded their state. If this ordering is violated, C6 will produce a valid context that silently reflects pre-purchase state, and the player will perceive the run-start moment as broken.
+
+**Consumer access (note for systems-index):** The current systems-index entry for C6 lists its dependency as "(none at runtime)." This is a documentation inconsistency — C5 is a Hard runtime dependency (lifecycle controller). The systems-index should be updated to list C5 as a runtime dependency of C6.
+
 ## Tuning Knobs
 
 C6's tuning knobs are the baseline values and validation range bounds for every `GameStatsContext` field — the numbers a designer adjusts during balance iteration without code changes. The aggregation rules (additive-first, multiplicative-second, injection order) are architectural constants, not tuning knobs.
@@ -330,29 +363,37 @@ C6's tuning knobs are the baseline values and validation range bounds for every 
 
 All criteria are automatable as Unity Test Framework EditMode unit tests. Target file: `tests/unit/c6-stat-resolver/c6_stat_resolver_tests.cs`
 
-- **AC-1 (CR-1 — Pull model):** GIVEN two injected producers, WHEN `TriggerAggregation()` fires, THEN C6 calls `GetDeltas()` on each producer exactly once and neither producer has called any method on C6.
+- **AC-1 (CR-1 — Pull model):** GIVEN two mock producers injected via `Bootstrap()`, WHEN `TriggerAggregation()` fires, THEN each mock's `GetDeltas()` call-count is exactly 1 (verified via mock call-count assertion). *Structural note:* the guarantee that producers never call back into C6 is enforced by the `IUpgradeSource` interface definition (no C6 parameter or return type is present) — this is a compile-time structural guarantee, not a runtime assertion.
 
-- **AC-2 (CR-2 — Bootstrap injection only):** GIVEN C6 is instantiated, WHEN a test inspects C6's public API, THEN no `Register()` or `AddProducer()` method exists — producers can only be supplied via the C5 bootstrap injection point.
+- **AC-2a (CR-2 — No registration API):** GIVEN C6's public API, WHEN inspected via `typeof(C6StatResolver).GetMethod("Register")` and related reflection calls, THEN no method named `Register`, `AddProducer`, or `Deregister` is present (one assertion per name, explicit failure message per name).
+- **AC-2b (CR-2 — Bootstrap injection point):** GIVEN `Bootstrap(IUpgradeSource[] producers)` is called with a known producer, WHEN `TriggerAggregation()` fires subsequently, THEN the context reflects that producer's deltas — confirming Bootstrap is the sole injection mechanism.
 
-- **AC-3 (CR-3 — Single aggregation guard):** GIVEN C6 is in S2 (run active), WHEN `TriggerAggregation()` is called a second time, THEN `GameStatsContext` values are unchanged, exactly one warning log is emitted, and producer `GetDeltas()` is not called again.
+- **AC-3 (CR-3 — Single aggregation guard):** GIVEN C6 has completed one successful `TriggerAggregation()` call (S2 state confirmed), WHEN `TriggerAggregation()` is called a second time, THEN: (a) the warning log count increases by exactly 1 compared to the count recorded before the second call; (b) the mock producer `GetDeltas()` call-count does not increase from its value at the time of the second call; (c) `GetContext()` returns a struct with values byte-identical to those returned immediately before the second call.
 
 - **AC-4 (CR-4 — Additive-first sequence):** GIVEN P1a supplies `+0.5 throw_cooldown` (Additive) and G4 supplies `×0.85 throw_cooldown` (Multiplicative), baseline 0.8 s, WHEN `TriggerAggregation()` fires, THEN resolved `throw_cooldown` = 1.105 s (`(0.8 + 0.5) × 0.85`), not 1.18 s (`(0.8 × 0.85) + 0.5`).
 
-- **AC-5 (CR-5 — Integer-tier additive-only):** GIVEN a producer supplies a Multiplicative delta for `base_damage`, WHEN `TriggerAggregation()` fires, THEN the multiplier is discarded, an error log names the producer and field, and valid Additive deltas from the same producer on other fields are applied normally.
+- **AC-5 (CR-5 — Integer-tier additive-only):** GIVEN a producer supplies a Multiplicative delta for `base_damage` AND also supplies `+2.0 arc_radius` (Additive) in the same delta list, WHEN `TriggerAggregation()` fires, THEN: the multiplier is discarded; an error log names the producer and field; `arc_radius` = 7.0 wu (baseline 5.0 + 2.0), confirming the invalid delta did not suppress the producer's valid contributions.
 
-- **AC-6 (CR-6 — Unknown field rejection):** GIVEN a producer supplies a delta for `"invented_field"`, WHEN `TriggerAggregation()` fires, THEN that delta is discarded with an error log containing producer identity and field name, and all other valid deltas from that producer are applied.
+- **AC-6 (CR-6 — Unknown field rejection):** GIVEN a producer supplies a delta for `"invented_field"` AND also supplies `+1 base_damage` (Additive, valid) in the same delta list, WHEN `TriggerAggregation()` fires, THEN: the unknown delta is discarded with an error log containing producer identity and field name; `base_damage` = 2 (baseline 1 + 1), confirming rejection of the unknown field did not suppress the valid delta.
 
-- **AC-7 (CR-7 + CR-8 — Producer safety and validation):** GIVEN producers configured to trigger: (a) both P1a and G4 throwing exceptions; (b) `arc_flight_time` pre-clamp of 0.025 s; (c) `base_damage` driven to 0; (d) `chain_count` driven to 3; (e) a Multiplicative factor of −0.5 on a float field, WHEN `TriggerAggregation()` fires, THEN: (a) two distinct error logs emitted, context contains baseline values; (b) `arc_flight_time` = 0.1 s + VAL-1 warning; (c) `base_damage` = 1 with clamp; (d) `chain_count` = 1 with warning; (e) negative multiplier rejected + error log.
+- **AC-7a (CR-7 — Both producers fault):** GIVEN both P1a and G4 throw exceptions during `GetDeltas()`, WHEN `TriggerAggregation()` fires, THEN: two distinct error logs are emitted (each identifying the faulting producer by name); `GetContext()` returns all 7 confirmed fields at their registered baseline values (identical to the AC-9 result). The two fault logs must be distinguishable from the normal first-run baseline-only case (CR-12) — e.g., by log category or message prefix. *(Sub-condition (b) from the original AC-7 is a duplicate of AC-11 and has been removed.)*
+- **AC-7c (VAL-4 — base_damage clamped to 1):** GIVEN a producer supplies a total additive delta of −1 on `base_damage` (driving result to 0), WHEN `TriggerAggregation()` fires, THEN `base_damage` = 1 (VAL-4 floor clamp) and exactly one clamp warning log is emitted.
+- **AC-7d (VAL-5 — chain_count MVP ceiling):** GIVEN a producer supplies a total additive delta of +3 on `chain_count` (driving result to 3), WHEN `TriggerAggregation()` fires, THEN `chain_count` = 1 (VAL-5 MVP ceiling clamp) and exactly one clamp warning log is emitted (not error — ceiling rises post-MVP).
+- **AC-7e (VAL-6 — Negative multiplier rejected):** GIVEN a producer supplies a Multiplicative factor of −0.5 on `arc_radius`, WHEN `TriggerAggregation()` fires, THEN the multiplier is rejected (VAL-6), exactly one error log is emitted, and `arc_radius` = 5.0 wu (baseline, unaffected).
 
-- **AC-8 (CR-10 — Run-duration immutability):** GIVEN C6 is in S2 with `base_damage = 2`, WHEN P1a's internal state is mutated mid-run (adding +5 to `base_damage`), THEN `GetContext().base_damage` returns 2 for the remainder of the run and returns 7 only after `NotifyRunEnd()` followed by a new `TriggerAggregation()`.
+- **AC-8 (CR-11 — Run-duration immutability):** GIVEN C6 is in S2 with `base_damage = 2` (baseline 1 + P1a additive delta of +1), WHEN P1a's internal state is mutated to append an additional +5 to its `base_damage` delta (new cumulative delta: +6), AND `GetContext()` is called immediately after the mutation, THEN `GetContext().base_damage` = 2 (unchanged for this run). WHEN `NotifyRunEnd()` is then called followed by a new `TriggerAggregation()`, THEN `GetContext().base_damage` = 7 (baseline 1 + cumulative delta 6). *Assumption: P1a's delta list is cumulative (append) not replace — the test mock must implement this explicitly.*
 
-- **AC-9 (CR-11 — First-run baseline-only):** GIVEN both producers return empty delta lists, WHEN `TriggerAggregation()` fires, THEN all 7 confirmed fields equal their baselines (`base_damage=1`, `throw_cooldown=0.8`, `arc_radius=5.0`, `arc_flight_time=0.8`, `pierce_falloff=0.35`, `chain_count=0`, `return_detonate_radius=0.0`) with no error or warning logs emitted.
+- **AC-9 (CR-12 — First-run baseline-only):** GIVEN both producers return empty delta lists, WHEN `TriggerAggregation()` fires, THEN all 7 confirmed fields equal their baselines (`base_damage=1`, `throw_cooldown=0.8`, `arc_radius=5.0`, `arc_flight_time=0.8`, `pierce_falloff=0.35`, `chain_count=0`, `return_detonate_radius=0.0`) with no error or warning logs emitted. *Log assertion implementation:* use `LogAssert.NoUnexpectedReceived()` called after `TriggerAggregation()`. Do not call `LogAssert.Expect()` before the call — any warning or error output from C6 constitutes a failure.*
 
-- **AC-10 (D.4 — FIELD-RESOLVE worked example):** GIVEN P1a supplies `+1 base_damage`, `+1.0 arc_radius`, `−0.1 throw_cooldown` (Additive) and G4 supplies `×0.85 throw_cooldown` (Multiplicative), WHEN `TriggerAggregation()` fires, THEN `GetContext()` returns exactly: `base_damage=2`, `arc_radius=6.0 wu` (±0.0001), `throw_cooldown=0.595 s` (±0.0001), `arc_flight_time=0.8 s`, all other confirmed fields at their baseline values.
+- **AC-10 (D.4 — FIELD-RESOLVE worked example):** GIVEN P1a supplies `+1 base_damage`, `+1.0 arc_radius`, `−0.1 throw_cooldown` (Additive) and G4 supplies `×0.85 throw_cooldown` (Multiplicative), WHEN `TriggerAggregation()` fires, THEN `GetContext()` returns exactly: `base_damage=2`, `arc_radius=6.0 wu` (±0.0001), `throw_cooldown=0.595 s` (±0.0001), `arc_flight_time=0.8 s` (±0.0001), `pierce_falloff=0.35` (±0.0001), `chain_count=0`, `return_detonate_radius=0.0 wu` (±0.0001). All 7 confirmed fields must be asserted explicitly — no catch-all "other fields at baseline."
 
-- **AC-11 (D.3 — ARC-FLIGHT-CLAMP hard floor):** GIVEN three additive deltas of `−0.25 s` and one `×0.5` Multiplicative factor on `arc_flight_time` (pre-clamp result = 0.025 s), WHEN `TriggerAggregation()` fires, THEN `arc_flight_time` = 0.1 s, a VAL-1 warning log is emitted naming the contributing producers, and no other field is affected.
+- **AC-11 (D.3 — ARC-FLIGHT-CLAMP hard floor):** GIVEN P1a supplies three additive deltas of `−0.25 s` on `arc_flight_time` (cumulative: −0.75 s) and G4 supplies one `×0.5` Multiplicative factor on `arc_flight_time`, with no other deltas from either producer on any field, WHEN `TriggerAggregation()` fires, THEN: `arc_flight_time` = 0.1 s (VAL-1 clamp; pre-clamp was 0.025 s); exactly one VAL-1 warning log is emitted identifying both P1a and G4 as contributing producers; all 6 remaining confirmed fields (`base_damage=1`, `arc_radius=5.0`, `throw_cooldown=0.8`, `pierce_falloff=0.35`, `chain_count=0`, `return_detonate_radius=0.0`) equal their baseline values. All 7 confirmed fields must be asserted explicitly.
 
-- **AC-12 (Edge case — zero-context consumer guard):** GIVEN C6 is in S0 or S1 (before aggregation), WHEN any consumer calls `GetContext()`, THEN a zeroed-default struct is returned (`arc_flight_time = 0.0f`, `base_damage = 0`, etc.), one warning log is emitted identifying the current state, and no exception is thrown.
+- **AC-12a (Edge case — zero-context guard, S0):** GIVEN C6 is in S0 (no producers injected, no `Bootstrap()` call), WHEN `GetContext()` is called, THEN: a zeroed-default struct is returned with all fields at C# default values — specifically `arc_flight_time = 0.0f`, `base_damage = 0`, etc.; exactly one warning log is emitted per call identifying state S0; no exception is thrown. *Note:* `arc_flight_time = 0.0f` here is intentional and correct — the validation pass (VAL-1) does not run during `GetContext()`, only during `TriggerAggregation()`. G3 is responsible for suppressing throws when the context is pre-aggregation. This is NOT a VAL-1 violation.
+- **AC-12b (Edge case — zero-context guard, S1):** GIVEN C6 is in S1 (`Bootstrap()` has been called but `TriggerAggregation()` has not), WHEN `GetContext()` is called, THEN: a zeroed-default struct is returned (same as AC-12a); exactly one warning log is emitted per call identifying state S1; no exception is thrown. *The S1 warning message must be distinguishable from the S0 warning — include the state name in the log.*
+- **AC-13 (Edge case — TriggerAggregation in S0):** GIVEN C6 is in S0 (before `Bootstrap()` has been called), WHEN `TriggerAggregation()` is called, THEN: C6 remains in S0; exactly one error log is emitted identifying the caller (or indicating no producers are registered); `GetContext()` still returns a zeroed-default struct. C6 must NOT silently succeed and return a baseline context — that would mask a C5 initialization ordering bug.
+- **AC-14 (Edge case — duplicate delta pair from same producer):** GIVEN a producer returns two deltas for the same `(FieldKey, Mode)` pair (e.g., two Additive `base_damage` deltas of `+1` each), WHEN `TriggerAggregation()` fires, THEN: both deltas are applied (result: `base_damage = 3` — baseline 1 + 1 + 1); exactly one warning log is emitted naming the producer and the duplicated `(FieldKey, Mode)` pair. Deduplication is explicitly NOT performed.
+- **AC-15 (Edge case — null producer in Bootstrap list):** GIVEN `Bootstrap()` is called with an array containing one valid producer and one `null` entry, WHEN `TriggerAggregation()` fires, THEN: the null slot is skipped; exactly one configuration error log is emitted identifying the null slot position; the valid producer's deltas are applied normally (result reflects the valid producer's contributions).
 
 ## Open Questions
 
@@ -368,4 +409,6 @@ All criteria are automatable as Unity Test Framework EditMode unit tests. Target
 
 - **OQ-C6-6** — Does the between-run shop UI (U2) need to show a stat preview before purchase (e.g., "Damage: 4 → 5")? The current design supports reading the current resolved context only. A preview would require either a `PreviewContext(pendingDelta)` method on C6 or P1a computing previews locally without C6. *Owner: P1a and U2 GDD authoring.*
 
-- **OQ-C6-7** — Exact C5 bootstrap injection method name: constructor parameter vs. a dedicated `C5BootstrapInject(IUpgradeSource[])` method. Either is architecturally valid; the AC-2 acceptance criterion requires a concrete method name before the test can be written. *Owner: C6 architecture-decision ADR.*
+  **Known UX risk — "additive-under-multiplier silently rewrites purchased-node value"**: The additive-first ordering (CR-4) means a player who buys "+1 arc_radius" when they have no mods, then later acquires a ×1.3 arc_radius mod, will find that the same purchased node now delivers +1.3 wu instead of +1.0 wu — without any visible change to the tree display. This is a quiet breach of the "tree is a contract" (P5) fantasy. Until OQ-C6-6 is resolved with a concrete UI approach, this interaction is an accepted design risk that must be flagged when P1a and U2 GDDs are authored.
+
+- **OQ-C6-7** — ~~Exact C5 bootstrap injection method name: constructor parameter vs. a dedicated `C5BootstrapInject(IUpgradeSource[])` method.~~ **RESOLVED 2026-04-24**: Injection method is `Bootstrap(IUpgradeSource[] producers)` — a dedicated public method on C6 called once by C5 during scene-load bootstrap. Constructor injection is not viable for Unity MonoBehaviours. AC-2 is now unblocked.
