@@ -4,9 +4,9 @@
 
 Orchestrates the full combat team pipeline end-to-end for a single combat feature.
 Coordinates game-designer, gameplay-programmer, ai-programmer, technical-artist,
-sound-designer, the primary engine specialist, and qa-tester through six structured
+sound-designer, and the primary engine specialist through five structured
 phases: Design → Architecture (with engine specialist validation) → Implementation
-(parallel) → Integration → Validation → Sign-off. Uses `AskUserQuestion` at each
+(parallel) → Integration → Sign-off. Uses `AskUserQuestion` at each
 phase transition. Delegates all file writes to sub-agents. Produces a summary report
 with verdict COMPLETE / NEEDS WORK / BLOCKED and handoffs to `/code-review`,
 `/balance-check`, and `/team-polish`.
@@ -24,7 +24,7 @@ with verdict COMPLETE / NEEDS WORK / BLOCKED and handoffs to `/code-review`,
 - [ ] Uses `AskUserQuestion` at phase transitions for user approval before proceeding
 - [ ] Phase 3 is explicitly marked as parallel (gameplay-programmer, ai-programmer, technical-artist, sound-designer)
 - [ ] Phase 2 includes spawning the primary engine specialist (read from `.claude/docs/technical-preferences.md`)
-- [ ] Team Composition lists all seven roles (game-designer, gameplay-programmer, ai-programmer, technical-artist, sound-designer, engine specialist, qa-tester)
+- [ ] Team Composition lists all six roles (game-designer, gameplay-programmer, ai-programmer, technical-artist, sound-designer, engine specialist)
 
 ---
 
@@ -44,8 +44,7 @@ with verdict COMPLETE / NEEDS WORK / BLOCKED and handoffs to `/code-review`,
 2. Phase 2 — gameplay-programmer + ai-programmer spawned; produce architecture sketch with class structure, interfaces, and file list; then primary engine specialist is spawned to validate idioms; engine specialist output incorporated; `AskUserQuestion` presented with architecture options before Phase 3 begins
 3. Phase 3 — gameplay-programmer, ai-programmer, technical-artist, sound-designer spawned in parallel; all four return outputs before Phase 4 begins
 4. Phase 4 — integration wires together all Phase 3 outputs; tuning knobs verified as data-driven; `AskUserQuestion` confirms integration before Phase 5
-5. Phase 5 — qa-tester spawned; writes test cases from acceptance criteria; verifies edge cases; performance impact checked against budget
-6. Phase 6 — summary report produced: design COMPLETE, all team members COMPLETE, test cases listed, verdict: COMPLETE
+5. Phase 5 — summary report produced: design COMPLETE, all team members COMPLETE, verdict: COMPLETE
 7. Next steps listed: `/code-review`, `/balance-check`, `/team-polish`
 
 **Assertions:**
@@ -170,8 +169,7 @@ with verdict COMPLETE / NEEDS WORK / BLOCKED and handoffs to `/code-review`,
 
 ## Coverage Notes
 
-- The NEEDS WORK verdict path (qa-tester finds failures in Phase 5) is not separately tested
-  here; it follows the same error recovery and partial report protocol as Case 2.
+- All phases skip QA validation; test evidence is delegated to individual story implementation.
 - "Retry with narrower scope" error recovery option is listed in assertions but its full
   recursive behavior (splitting via `/create-stories`) is covered by the `/create-stories` spec.
 - Phase 4 integration logic (wiring gameplay, AI, VFX, audio) is validated implicitly by

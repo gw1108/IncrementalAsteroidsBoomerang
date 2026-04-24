@@ -2,7 +2,7 @@
 
 ## Agent Summary
 - **Domain**: Player-facing communications — patch notes text (player-friendly), social media post drafts, community update announcements, crisis communication response plans, bug triage and routing from player reports (not fixing)
-- **Does NOT own**: Technical patch content (devops-engineer), QA verification and test execution (qa-lead), bug fixes (programmers), brand strategy direction (creative-director)
+- **Does NOT own**: Technical patch content (devops-engineer), test execution, bug fixes (programmers), brand strategy direction (creative-director)
 - **Model tier**: Sonnet
 - **Gate IDs**: None; escalates brand voice conflicts to creative-director
 

@@ -20,7 +20,7 @@
 - **Primary Input**: Keyboard/Mouse (WebGL default; gamepad is co-supported)
 - **Gamepad Support**: Partial on WebGL (browser Gamepad API); Full on Steam port
 - **Touch Support**: None — mobile explicitly scoped out per `design/gdd/game-concept.md`
-- **Platform Notes**: WebGL-first distribution. AudioContext must be user-input-unlocked (Unity WebGL quirk). Persistent save via IndexedDB + clipboard export/import (Safari ITP mitigation). Cold-load target <30s on mid-range hardware. Peak heap <512 MB for MVP as safety margin against 32-bit Safari. Brotli compression required on host.
+- **Platform Notes**: WebGL-first distribution.
 
 ## Naming Conventions
 
@@ -28,24 +28,9 @@
 - **Public fields/properties**: PascalCase (e.g., `MoveSpeed`, `DamageTier`)
 - **Private fields**: `_camelCase` (e.g., `_currentFuel`, `_isReturning`)
 - **Methods**: PascalCase (e.g., `ThrowBoomerang()`, `TakeDamage()`)
-- **Signals/Events**: C# events in PascalCase with past-tense verb (e.g., `HealthChanged`, `BoomerangCaught`); `UnityEvent` where Inspector-exposure is required
+- **Signals/Events**: C# events in PascalCase with past-tense verb (e.g., `OnHealthChanged`, `OnBoomerangCaught`); `UnityEvent` where Inspector-exposure is required
 - **Files**: PascalCase matching class (e.g., `BoomerangController.cs`)
 - **Scenes/Prefabs**: PascalCase matching purpose (e.g., `MainMenu.unity`, `PlayerShip.prefab`)
-- **Constants**: PascalCase (C# convention) — e.g., `MaxFuel`, `BaseThrowCooldown`
-
-## Performance Budgets
-
-- **Target Framerate**: 60 fps stable (144 fps uncapped on high-refresh displays via fixed-timestep decoupling)
-- **Frame Budget**: 16.6 ms per frame
-- **Draw Calls**: <100 typical, <200 peak during heavy encounters
-- **Memory Ceiling**: <512 MB peak heap (Unity 6 WebGL has 2 GB theoretical; 1 GB floor on some 32-bit Safari builds — 512 MB target is safety margin)
-- **GC Pauses**: <10 ms during a 6-enemy pierce event (TD-FEASIBILITY success criterion); enforce via object pooling from day 1
-
-## Testing
-
-- **Framework**: Unity Test Framework (NUnit-based) — PlayMode tests for integration, EditMode tests for pure logic units
-- **Minimum Coverage**: 70% line coverage for Logic-type stories (formulas, state machines, economy math); Integration-type stories require either integration tests OR documented playtests per `.claude/docs/coding-standards.md`
-- **Required Tests**: Balance formulas (fuel economy, damage scaling, tree node effects), boomerang trajectory math, save/load round-trip integrity, skill tree prereq validation
 
 ## Forbidden Patterns
 

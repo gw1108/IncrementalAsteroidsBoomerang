@@ -3,7 +3,7 @@
 ## Skill Summary
 
 Orchestrates the release team through a 7-phase pipeline from release candidate to
-deployment and post-release monitoring. Coordinates release-manager, qa-lead,
+deployment and post-release monitoring. Coordinates release-manager,
 producer, security-engineer (optional, required for online/
 multiplayer), network-programmer (optional, required for multiplayer),
 analytics-engineer, and community-manager. Phase 3 agents run in parallel. Ends
@@ -22,7 +22,7 @@ NO-GO. Closes with a post-release monitoring plan.
 - [ ] Has an Error Recovery Protocol section with four recovery options (surface / assess / offer options / partial report)
 - [ ] Has a next-step handoff referencing post-release monitoring, `/retrospective`, and `production/stage.txt`
 - [ ] Uses `AskUserQuestion` at phase transitions requiring user approval before proceeding
-- [ ] Phase 3 agents (qa-lead, and optionally security-engineer, network-programmer) are explicitly stated to run in parallel
+- [ ] Phase 3 agents (optionally security-engineer, network-programmer) are explicitly stated to run in parallel
 - [ ] Phase 6 (Deployment) is conditional on a GO decision from Phase 5
 - [ ] security-engineer is described as conditional on online features / player data — not always spawned
 
@@ -45,15 +45,15 @@ NO-GO. Closes with a post-release monitoring plan.
 **Expected behavior:**
 1. Phase 1: Spawns `producer` via Task; confirms all milestone acceptance criteria met; identifies any deferred scope; produces release authorization; presents to user; AskUserQuestion: user approves before Phase 2
 2. Phase 2: Spawns `release-manager` via Task; cuts release branch from agreed commit; bumps version numbers; invokes `/release-checklist`; freezes branch; output: branch name and checklist; AskUserQuestion: user approves before Phase 3
-3. Phase 3 (parallel): Issues Task calls simultaneously for `qa-lead` (regression suite, critical path sign-off); security-engineer is NOT spawned (no online features); network-programmer is NOT spawned (no multiplayer); both complete successfully
+3. Phase 3 (parallel): Skips QA verification; security-engineer is NOT spawned (no online features); network-programmer is NOT spawned (no multiplayer)
 4. Phase 4: Verifies localization strings all translated; `analytics-engineer` verifies telemetry fires correctly on the release build; performance benchmarks pass; sign-off produced
-5. Phase 5: Spawns `producer` via Task; collects sign-offs from qa-lead, release-manager, no open blocking issues; producer declares GO; AskUserQuestion: user sees GO decision and confirms deployment
+5. Phase 5: Spawns `producer` via Task; collects sign-offs from release-manager, no open blocking issues; producer declares GO; AskUserQuestion: user sees GO decision and confirms deployment
 6. Phase 6: Spawns `release-manager`; tags release in version control; invokes `/changelog`; deploys to staging; smoke verification passes; deploys to production; simultaneously spawns `community-manager` to finalize patch notes via `/patch-notes v1.0.0` and prepare launch announcement
-7. Phase 7: release-manager generates release report; producer updates milestone tracking; qa-lead begins monitoring for regressions; community-manager publishes communication; analytics-engineer confirms live dashboards healthy
+7. Phase 7: release-manager generates release report; producer updates milestone tracking; community-manager publishes communication; analytics-engineer confirms live dashboards healthy
 8. Verdict: COMPLETE — release executed and deployed
 
 **Assertions:**
-- [ ] Phase 3 qa-lead Task calls are issued
+- [ ] Phase 3 QA verification is skipped
 - [ ] security-engineer is NOT spawned when the game has no online features, multiplayer, or player data
 - [ ] Phase 5 producer collects sign-offs from all required parties before declaring GO
 - [ ] Phase 6 deployment only begins after GO decision is confirmed by the user
@@ -65,30 +65,27 @@ NO-GO. Closes with a post-release monitoring plan.
 
 ---
 
-### Case 2: Go/No-Go: NO — S1 bug found in Phase 3, deployment skipped
+### Case 2: Go/No-Go: NO — Producer blocks release
 
 **Fixture:**
 - Release candidate branch exists for v0.9.0
-- qa-lead discovers a previously unreported S1 crash in the main menu during Phase 3 regression verificationing
-- producer is aware of the S1 bug
+- Critical blockers remain unresolved for this milestone
 
 **Input:** `/team-release v0.9.0`
 
 **Expected behavior:**
 1. Phases 1–2 complete normally; release candidate is cut
-2. Phase 3 (parallel): qa-lead returns with an S1 bug identified and regression suite failing; qa-lead declares quality gate: NOT PASSED
-3. Orchestrator surfaces the qa-lead result immediately: "QA-LEAD: S1 bug found — [crash description]. Quality gate: NOT PASSED."
-4. Phase 4 proceeds cautiously or is paused (AskUserQuestion: continue to Phase 4 or skip to Phase 5 for go/no-go?)
-5. Phase 5: Spawns `producer` via Task; producer receives qa-lead's NOT PASSED verdict; no S1 sign-off available; producer declares NO-GO with rationale: "S1 bug [ID] is open and unresolved. Releasing is not safe."
-6. AskUserQuestion: user is presented with the NO-GO decision and the S1 bug details; options: fix the bug and re-run, defer the release, or override (with documented rationale)
-7. Phase 6 (Deployment) is SKIPPED entirely — no branch tagging, no deploy to staging, no deploy to production
-8. community-manager is NOT spawned in Phase 6 (no deployment to announce)
-9. Skill ends with a partial report summarizing what was completed (Phases 1–5) and what was skipped (Phase 6) and why
-10. Verdict: BLOCKED — release not deployed
+2. Phase 3 (parallel): Skips QA verification
+3. Phase 4: Localization and analytics checks reveal critical blockers
+4. Phase 5: Spawns `producer` via Task; producer declares NO-GO with rationale: "Critical blockers remain unresolved. Releasing is not safe."
+5. AskUserQuestion: user is presented with the NO-GO decision; options: fix and re-run, defer the release, or override (with documented rationale)
+6. Phase 6 (Deployment) is SKIPPED entirely — no branch tagging, no deploy to staging, no deploy to production
+7. community-manager is NOT spawned in Phase 6 (no deployment to announce)
+8. Skill ends with a partial report summarizing what was completed (Phases 1–5) and what was skipped (Phase 6) and why
+9. Verdict: BLOCKED — release not deployed
 
 **Assertions:**
-- [ ] qa-lead S1 bug finding is surfaced to the user immediately after Phase 3 completes — not suppressed until Phase 5
-- [ ] producer's NO-GO decision explicitly references the S1 bug and the quality gate result
+- [ ] producer's NO-GO decision is stated clearly
 - [ ] Phase 6 Deployment is completely skipped when producer declares NO-GO
 - [ ] community-manager is NOT spawned for patch notes or launch announcement on NO-GO
 - [ ] The partial report clearly states which phases completed and which were skipped, with reasons
@@ -103,26 +100,25 @@ NO-GO. Closes with a post-release monitoring plan.
 **Fixture:**
 - Game has multiplayer features and stores player account data
 - Release candidate exists for v2.1.0
-- qa-lead return clean sign-offs
 - security-engineer audit is required per team composition rules
 
 **Input:** `/team-release v2.1.0`
 
 **Expected behavior:**
 1. Phases 1–2 complete normally
-2. Phase 3 (parallel): Orchestrator detects that the game has online/multiplayer features and player data; issues Task calls simultaneously for `qa-lead` AND `security-engineer`; also spawns `network-programmer` for netcode stability sign-off
+2. Phase 3 (parallel): Orchestrator detects that the game has online/multiplayer features and player data; issues Task calls simultaneously for `security-engineer` and `network-programmer` for netcode stability sign-off
 3. security-engineer conducts pre-release security audit: reviews authentication flows, anti-cheat presence, data privacy compliance; returns sign-off
 4. network-programmer verifies lag compensation, reconnect handling, and bandwidth under load; returns sign-off
-5. All four Phase 3 agents complete; their results are collected before Phase 4 begins
-6. Phase 5: producer collects sign-offs from all four Phase 3 agents (qa-lead, security-engineer, network-programmer) before making the go/no-go call
+5. Both Phase 3 agents complete; their results are collected before Phase 4 begins
+6. Phase 5: producer collects sign-offs from Phase 3 agents (security-engineer, network-programmer) before making the go/no-go call
 7. Remaining phases proceed normally to COMPLETE
 
 **Assertions:**
 - [ ] security-engineer IS spawned in Phase 3 when the game has online features, multiplayer, or player data — this is not skipped
 - [ ] network-programmer IS spawned in Phase 3 when the game has multiplayer
-- [ ] All four Phase 3 Task calls (qa-lead, security-engineer, network-programmer) are issued simultaneously
+- [ ] Phase 3 Task calls (security-engineer, network-programmer) are issued simultaneously
 - [ ] security-engineer audit covers authentication, anti-cheat, and data privacy compliance
-- [ ] Phase 5 producer sign-off collection includes security-engineer (four parties, not two)
+- [ ] Phase 5 producer sign-off collection includes security-engineer
 - [ ] Phase 6 deployment does not begin until security-engineer has signed off
 - [ ] Skill does NOT treat security-engineer as optional for a game with player data
 
@@ -132,7 +128,7 @@ NO-GO. Closes with a post-release monitoring plan.
 
 **Fixture:**
 - Release candidate exists for v1.2.0
-- Phase 3 (qa-lead) complete with clean sign-offs
+- Phase 3 QA verification skipped
 - Phase 4: localization verification detects 47 untranslated strings in the French locale (a supported language in the game's localization scope)
 - localization-lead is available as a delegatable agent
 

@@ -279,17 +279,6 @@ skills:
     priority: medium
     category: team
 
-  - name: team-qa
-    spec: CCGS Skill Testing Framework/skills/team/team-qa.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: team
-
   # Low — analysis, reporting, utility skills
   - name: skill-test
     spec: CCGS Skill Testing Framework/skills/utility/skill-test.md
@@ -731,12 +720,6 @@ agents:
     last_spec_result: ""
     category: lead
 
-  - name: qa-lead
-    spec: CCGS Skill Testing Framework/agents/leads/qa-lead.md
-    last_spec: ""
-    last_spec_result: ""
-    category: lead
-
   - name: narrative-director
     spec: CCGS Skill Testing Framework/agents/leads/narrative-director.md
     last_spec: ""
@@ -970,13 +953,7 @@ agents:
     last_spec_result: ""
     category: operations
 
-  # QA & Creative
-  - name: qa-tester
-    spec: CCGS Skill Testing Framework/agents/qa/qa-tester.md
-    last_spec: ""
-    last_spec_result: ""
-    category: qa
-
+  # Creative
   - name: prototyper
     spec: CCGS Skill Testing Framework/agents/specialists/prototyper.md
     last_spec: ""

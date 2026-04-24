@@ -1853,7 +1853,6 @@ Pre-commit (or CI) hook `tools/art-lint.py` must flag any asset violating the fo
 | Collision/Trails/Lights modules prohibited | **Draw-call budget** (<100 typical) |
 | MaterialPropertyBlock for tinting | **SRP Batcher integrity** (draw-call minimization) |
 | WOFF2 Latin subset | **Cold-load <30 s** |
-| Brotli-compressed initial bundle <8 MB wire | **Cold-load <30 s + Safari 32-bit memory floor** |
 
 ### 8.13 Asset Standards Production Notes (handoff)
 

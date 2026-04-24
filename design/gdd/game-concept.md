@@ -154,7 +154,7 @@ This section is the foundation of the forthcoming art bible and the gate all ass
 
 - [x] **Achievers** (primary) — Progression-driven. Measuring power thresholds. Filling the tree. Clearing bosses.
 - [x] **Explorers** (secondary) — Discovering mod synergies, exploring tree paths, theorycrafting builds.
-- [x] **Killers / Competitors** (secondary) — Boss kills, score optimization within runs, potential leaderboard fit post-launch.
+- [ ] **Killers / Competitors** — Not served. Out of scope.
 - [ ] **Socializers** — Not served. Out of scope.
 
 ### Flow State Design
@@ -202,10 +202,9 @@ Run → persistent skill-tree shop → run → shop → … → boss defeated �
 
 ### Retention Hooks
 
-- **Curiosity**: The next locked tree node. What does the next mod archetype do?
 - **Investment**: Accumulated tree purchases are permanent. Fill progress visible at a glance.
 - **Social**: None in MVP (AP5).
-- **Mastery**: Positional micro-optimization. Boss routing. Build theorycraft.
+- **Mastery**: Positional micro-optimization. Boss routing.
 
 ---
 
@@ -294,7 +293,6 @@ Run → persistent skill-tree shop → run → shop → … → boss defeated �
 | **Physics** | **Physics 2D (Box2D)** for collision detection only. Boomerang motion is **kinematic scripted**, not Rigidbody2D. Strip Physics 3D from build entirely. |
 | **Asset Management** | **Addressables from day 1** — even if MVP ships a single bundle, the integration is architectural. |
 | **Persistence** | **File Based Player Prefs** replaces the standard Unity PlayerPrefs. |
-| **Key Technical Challenges** | WebGL cold-load time; GC pauses mid-pierce; Safari ITP save eviction; skill tree UI performance; |
 | **Art Style** | 2D sprite-based; Deep Forge palette; flat per-surface color (no normals, no PBR); hand-drawn or AI-assisted |
 | **Art Pipeline Complexity** | Medium — custom 2D sprites, sprite-sheet animation, sprite-based VFX |
 | **Audio Needs** | Moderate — SFX critical for P4 weighty feel; 2–3 music tracks for MVP; AudioContext must be unlocked on first user input (Unity WebGL quirk) |
@@ -321,7 +319,6 @@ The following are inputs to `/create-architecture` and `/architecture-decision`:
 - Prototype week 1: boomerang feels weighty in a **WebGL browser build**, not just editor
 - First WebGL build (pre-content): <20 MB Brotli, <10s cold-load on target hardware
 - Gameplay slice: no GC pauses >10ms during a 6-enemy pierce event
-- Save persistence verified on Chrome AND Safari after 7+ days inactivity
 
 ---
 
@@ -338,9 +335,7 @@ The following are inputs to `/create-architecture` and `/architecture-decision`:
 
 - **Unity WebGL cold-load size** — hard ceiling ~40–50 MB Brotli-compressed for <30s first-interaction load on mid-range hardware
 - **Boehm GC pauses mid-pierce** (30–80ms) — mitigated only by aggressive pooling from day 1
-- **Safari ITP save eviction** after 7 days of inactivity — mitigated by clipboard export/import feature (ship day 1)
 - **Skill tree UI performance** under naive UGUI implementation — mitigated by single-mesh connector Graphic
-- **Unity 6 WebGL memory ceiling** (~2 GB heap, ~1 GB on 32-bit Safari) — budget <512 MB peak for MVP as safety
 - **Brotli/COOP-COEP host support** — verify at target launch date for whichever free-play portal is chosen
 
 ### Market Risks
@@ -416,7 +411,7 @@ Operational recommendations from PR-SCOPE. Not pillars, but project-level rules 
 
 - **Budget 5 months for Tier 2, not 4.** TD's architectural mandates front-load ~3 weeks of non-visible infrastructure. 4 months is optimistic.
 - **Prototype Week 1 is a hard gate.** Boomerang-in-isolation feel test in actual WebGL browser build (not editor). If it does not feel weighty after 5 working days, the concept is HIGH RISK and the plan is revised before any further content is built.
-- **Month 3 "WebGL Stability Week".** Dedicated time to test on Safari, Firefox, low-end laptops, and verify save persistence under storage pressure. Do not launch without this check — ~30% of the audience will otherwise hit silent failures.
+- **Month 3 "WebGL Stability Week".** Dedicated time to test on Firefox.
 - **External playtests at Week 10 and Week 16.** Resets calibration, restores motivation during the Month 3–4 "messy middle." Do not skip as premature.
 - **Record 30-second "reference feel clips"** at every major feel-tuning milestone. Monthly A/B against latest build to catch silent feel regressions (solo-dev has no QA safety net).
 - **Hard-cap first-10-nodes polish time at 3 weeks** across the entire project. P1's "felt power jump" quality bar invites infinite polish; the cap is the circuit-breaker.
@@ -428,10 +423,10 @@ Operational recommendations from PR-SCOPE. Not pillars, but project-level rules 
 
 Ordered — do not skip ahead.
 
-- [ ] 1. `/setup-engine` — configure Unity 6 LTS + URP 2D in the repo; populate `docs/engine-reference/unity/` with version-aware API snapshots (LLM knowledge cutoff is May 2025; engine version is newer)
-- [ ] 2. `/art-bible` — Deep Forge visual anchor expanded into a full production-gating art bible (asset standards, character/enemy/boss design direction, VFX palette)
-- [ ] 3. `/design-review design/gdd/game-concept.md` — validate this document against the 8-section GDD standard before downstream GDD authoring
-- [ ] 4. `/map-systems` — decompose the concept into individual systems (ship control, boomerang weapon, mod system, fuel economy, asteroid mining, enemy waves, boss encounter, skill tree, shop/progression, save system, run/session state) with dependency map and priority tiers
+- [x] 1. `/setup-engine` — configure Unity 6 LTS + URP 2D in the repo; populate `docs/engine-reference/unity/` with version-aware API snapshots (LLM knowledge cutoff is May 2025; engine version is newer)
+- [x] 2. `/art-bible` — Deep Forge visual anchor expanded into a full production-gating art bible (asset standards, character/enemy/boss design direction, VFX palette)
+- [x] 3. `/design-review design/gdd/game-concept.md` — validate this document against the 8-section GDD standard before downstream GDD authoring
+- [x] 4. `/map-systems` — decompose the concept into individual systems (ship control, boomerang weapon, mod system, fuel economy, asteroid mining, enemy waves, boss encounter, skill tree, shop/progression, save system, run/session state) with dependency map and priority tiers
 - [ ] 5. `/design-system [system]` — author per-system GDDs in dependency order. Start with the Boomerang Weapon system (highest-risk, validates Week 1 prototype gate).
 - [ ] 6. `/review-all-gdds` — holistic cross-system consistency check before architecture
 - [ ] 7. `/gate-check concept-to-architecture` — phase gate

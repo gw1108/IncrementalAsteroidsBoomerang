@@ -36,7 +36,7 @@ CCGS Skill Testing Framework/
 │   ├── godot/             ← Godot-specific specialists
 │   ├── unity/             ← Unity-specific specialists
 │   ├── unreal/            ← Unreal-specific specialists
-│   ├── operations/        ← QA, live-ops, release, localization, etc.
+│   ├── operations/        ← live-ops, release, localization, etc.
 │   └── creative/          ← writer, world-builder, game-designer, etc.
 │
 ├── templates/             ← spec file templates for writing new specs
@@ -97,7 +97,7 @@ All testing is driven by two skills already in the framework:
 | `readiness` | story-readiness, story-done | Blockers surfaced, director gate in full mode |
 | `pipeline` | create-epics, create-stories, dev-story, map-systems, … | Upstream dependency check, handoff path clear |
 | `analysis` | consistency-check, balance-check, code-review, tech-debt, … | Read-only report, verdict keyword, no writes |
-| `team` | team-combat, team-narrative, team-audio, … | All required agents spawned, blocked surfaced |
+| `team` | team-combat, team-narrative, team-audio, team-level, team-ui, team-release, team-polish, team-live-ops | All required agents spawned, blocked surfaced |
 | `sprint` | sprint-plan, sprint-status, milestone-review, … | Reads sprint data, status keywords present |
 | `utility` | start, adopt, hotfix, localize, setup-engine, … | Passes static checks |
 
@@ -108,7 +108,7 @@ All testing is driven by two skills already in the framework:
 | Tier | Agents |
 |------|--------|
 | `directors` | creative-director, technical-director, producer, art-director |
-| `leads` | lead-programmer, narrative-director, audio-director, ux-designer, qa-lead, release-manager, localization-lead |
+| `leads` | lead-programmer, narrative-director, audio-director, ux-designer, release-manager, localization-lead |
 | `specialists` | gameplay-programmer, engine-programmer, ui-programmer, tools-programmer, network-programmer, ai-programmer, level-designer, sound-designer, technical-artist |
 | `godot` | godot-specialist, godot-gdscript-specialist, godot-csharp-specialist, godot-shader-specialist, godot-gdextension-specialist |
 | `unity` | unity-specialist, unity-ui-specialist, unity-shader-specialist, unity-dots-specialist, unity-addressables-specialist |

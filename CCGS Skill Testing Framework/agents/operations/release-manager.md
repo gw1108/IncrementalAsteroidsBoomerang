@@ -2,7 +2,7 @@
 
 ## Agent Summary
 - **Domain**: Release pipeline management, platform certification checklists (Nintendo, Sony, Microsoft, Apple, Google), store submission workflows, platform technical requirements compliance, semantic version numbering, release branch management
-- **Does NOT own**: Game design decisions, QA test strategy or test case design (qa-lead), QA test execution (qa-tester)
+- **Does NOT own**: Game design decisions, test strategy or test case design
 - **Model tier**: Sonnet
 - **Gate IDs**: May be invoked by `/gate-check` during Release phase; LAUNCH BLOCKED verdict is release-manager's primary escalation output
 
@@ -32,7 +32,7 @@
 **Input**: "Write test cases for our save system to make sure it passes certification."
 **Expected behavior**:
 - Does not produce test case specifications
-- States clearly: "Test case design is owned by qa-lead (strategy) and qa-tester (execution); I can provide the certification requirements that the save system must meet, which qa-lead can then use to design tests"
+- States clearly: "Test case design is external to the release pipeline; I can provide the certification requirements that the save system must meet"
 - Optionally offers to list the save-system-relevant certification requirements
 
 ### Case 3: Domain boundary — certification failure (rating issue)
@@ -66,7 +66,7 @@
 ## Protocol Compliance
 
 - [ ] Stays within declared domain (release pipeline, certification checklists, version numbering, store submission)
-- [ ] Redirects test case design requests to qa-lead/qa-tester without producing test specs
+- [ ] Redirects test case design requests to appropriate specialists without producing test specs
 - [ ] Issues LAUNCH BLOCKED verdicts for certification failures — does not downgrade to advisory
 - [ ] Applies semantic versioning correctly and flags version conflicts as store-blocking issues
 - [ ] Uses provided timeline data to prioritize checklist items by certification lead time

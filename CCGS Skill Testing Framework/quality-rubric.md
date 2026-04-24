@@ -124,7 +124,7 @@ analysis and must ask before recommending any file writes.
 
 ### `team`
 
-**Skills**: team-combat, team-narrative, team-audio, team-level, team-ui, team-qa,
+**Skills**: team-combat, team-narrative, team-audio, team-level, team-ui,
 team-release, team-polish, team-live-ops
 
 Team skills orchestrate multiple specialist agents for a department. They must
@@ -191,12 +191,12 @@ Used to validate agent spec files in `tests/agents/`.
 
 ### `lead`
 
-**Agents**: lead-programmer, qa-lead, narrative-director, audio-director, game-designer,
+**Agents**: lead-programmer, narrative-director, audio-director, game-designer,
 systems-designer, level-designer
 
 | Metric | PASS criteria |
 |---|---|
-| **L1 — Domain verdict** | Returns a domain-specific verdict (e.g., FEASIBLE/INFEASIBLE for lead-programmer, PASS/FAIL for qa-lead) |
+| **L1 — Domain verdict** | Returns a domain-specific verdict (e.g., FEASIBLE/INFEASIBLE for lead-programmer) |
 | **L2 — Escalates to shared parent** | Out-of-domain conflicts escalate to creative-director (design) or technical-director (tech) |
 | **L3 — Sonnet model tier** | Agent is assigned Sonnet model (default) per coordination-rules.md |
 
@@ -205,7 +205,7 @@ systems-designer, level-designer
 **Agents**: gameplay-programmer, ai-programmer, technical-artist, sound-designer,
 engine-programmer, tools-programmer, network-programmer, security-engineer,
 accessibility-specialist, ux-designer, ui-programmer, performance-analyst, prototyper,
-qa-tester, writer, world-builder
+writer, world-builder
 
 | Metric | PASS criteria |
 |---|---|
@@ -226,16 +226,6 @@ ue-replication-specialist
 | **E1 — Version-aware** | References engine version from `docs/engine-reference/` before suggesting API calls; flags post-cutoff risk |
 | **E2 — File routing** | Routes file types to the correct sub-specialist (e.g., `.gdshader` → godot-shader-specialist, not godot-gdscript-specialist) |
 | **E3 — Engine-specific patterns** | Enforces engine-specific idioms (e.g., GDScript static typing, C# attribute exports, Blueprint function libraries) |
-
-### `qa`
-
-**Agents**: qa-tester, qa-lead, security-engineer, accessibility-specialist
-
-| Metric | PASS criteria |
-|---|---|
-| **Q1 — Produces artifacts not code** | Primary output is test cases, bug reports, or coverage gaps — not implementation code |
-| **Q2 — Evidence format** | Test cases follow the project's test evidence format (unit/integration/visual/UI per coding-standards.md) |
-| **Q3 — No scope creep** | Does not propose new features; flags gaps for humans to decide |
 
 ### `operations`
 

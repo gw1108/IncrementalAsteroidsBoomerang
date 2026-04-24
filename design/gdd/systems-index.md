@@ -216,20 +216,6 @@ pace (see Soft-cut Triggers below).
 
 ---
 
-## High-Risk Systems
-
-| System | Risk Type | Risk Description | Mitigation |
-|--------|-----------|-----------------|------------|
-| **G3 Boomerang Weapon** *(pillar-validation gate)* | Technical + Design + Scope | Week-1 prototype gate from TD-FEASIBILITY; entire game rests on feel; Pillar 3 "Read the Arc" lives here. **G3 is a gate, not just a system** — if Week-1 feel target fails, downstream consumers G4 (mod archetypes), V1 (impact juice event targets), and U1 (reticle/HUD feedback if any) are invalidated and require rescope before their GDDs are authored. | Prototype in **WebGL browser build** Week 1 per concept's Production Guidance; do not defer to later sprint. **If G3 Week-1 prototype fails**, escalate to concept-level revision — do not author G4, V1, U1 GDDs against an invalidated weapon feel. |
-| **U2 Skill Tree UI** | Technical | UGUI custom mesh connector at PoE fidelity within 512 MB WebGL budget; PR-SCOPE flagged as 3–4 week hidden cost | Spike-prototype the connector Graphic in parallel with U2 GDD; TD mandate #6 is non-negotiable |
-| **P1a + P1b Skill Tree** | Design | Pillar 1 requires each early node to deliver a felt power jump; 25–30 distinct "feel-jump" nodes is the known hard problem | Author P1a before G4; author P1b only after G3 + G4 so stat deltas are concrete; playtest-tune per concept's cut-order |
-| **C6 Stat Resolver** | Architectural | Wrong contract here pollutes all gameplay GDDs downstream | Design-gate per PR — other GDDs that consume `GameStatsContext` should not be written until C6 is approved |
-| **E1 Fuel Economy** | Design | Tight pacing curve (20s first run → 3min max); diminishing-returns math is subtle | Formulas tested against 3–4 reference runs before lock; expect playtest iteration |
-| **A1 Audio System** | Technical | WebGL AudioContext unlock + Safari quirks from TD-FEASIBILITY | Verify on Safari during Month-3 "WebGL Stability Week" per concept's Production Guidance |
-| **G4 Mod System** | Design | 3 mod archetypes must feel distinct (Pierce / Chain / Explode-on-return); Pillar 3 constrains how many can stack simultaneously | Design after G3 prototype confirms arc-reading feel; max-stack count is a derived constraint from Pillar 3 watch-item |
-
----
-
 ## Architectural Constraints
 
 Decisions adopted from TD-SYSTEM-BOUNDARY (CONCERNS, 2026-04-23). These bind all

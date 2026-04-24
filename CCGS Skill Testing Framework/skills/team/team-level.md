@@ -4,12 +4,11 @@
 
 Orchestrates the full level design team for a single level or area. Coordinates
 narrative-director, world-builder, level-designer, systems-designer, art-director,
-accessibility-specialist, and qa-tester through five sequential steps with one
+and accessibility-specialist through five sequential steps with one
 parallel phase (Step 4). Compiles all team outputs into a single level design
 document saved to `design/levels/[level-name].md`. Uses `AskUserQuestion` at each
 step transition. Delegates all file writes to sub-agents. Produces a summary report
-with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`,
-`/qa-plan`.
+with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`.
 
 ---
 
@@ -19,12 +18,12 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`,
 - [ ] Has ≥2 phase/step headings (Step 1 through Step 5 are all present)
 - [ ] Contains verdict keywords: COMPLETE, BLOCKED
 - [ ] Contains "May I write" or "File Write Protocol" — writes delegated to sub-agents, orchestrator does not write files directly
-- [ ] Has a next-step handoff at the end (references `/design-review`, `/dev-story`, `/qa-plan`)
+- [ ] Has a next-step handoff at the end (references `/design-review`, `/dev-story`)
 - [ ] Error Recovery Protocol section is present with all four recovery steps
 - [ ] Uses `AskUserQuestion` at step transitions for user approval before proceeding
 - [ ] Step 4 is explicitly marked as parallel (art-director and accessibility-specialist run simultaneously)
 - [ ] Context gathering reads: `design/gdd/game-concept.md`, `design/gdd/game-pillars.md`, `design/levels/`, `design/narrative/`, and relevant world-building docs
-- [ ] Team Composition lists all seven roles (narrative-director, world-builder, level-designer, systems-designer, art-director, accessibility-specialist, qa-tester)
+- [ ] Team Composition lists all six roles (narrative-director, world-builder, level-designer, systems-designer, art-director, accessibility-specialist)
 - [ ] accessibility-specialist output includes severity ratings (BLOCKING / RECOMMENDED / NICE TO HAVE)
 - [ ] Final level design document saved to `design/levels/[level-name].md`
 
@@ -48,10 +47,9 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`,
 3. Step 2 — level-designer spawned: designs spatial layout (critical path, optional paths, secrets), pacing curve, encounters, puzzles, entry/exit points and connections to adjacent areas; `AskUserQuestion` confirms layout before Step 3
 4. Step 3 — systems-designer spawned: specifies enemy compositions, loot tables, difficulty balance, area-specific mechanics, resource distribution; `AskUserQuestion` confirms systems before Step 4
 5. Step 4 — art-director and accessibility-specialist spawned in parallel; art-director: visual theme, color palette, lighting, asset list, VFX needs; accessibility-specialist: navigation clarity, colorblind safety, cognitive load check — each concern rated BLOCKING / RECOMMENDED / NICE TO HAVE; `AskUserQuestion` presents both outputs before Step 5
-6. Step 5 — qa-tester spawned: test cases for critical path, boundary/edge cases (sequence breaks, softlocks), playtest checklist, acceptance criteria
-7. Orchestrator compiles all team outputs into level design document format; sub-agent asked "May I write to `design/levels/forest-dungeon.md`?"; file saved
-8. Summary report: area overview, encounter count, estimated asset list, narrative beats, cross-team dependencies, verdict: COMPLETE
-9. Next steps listed: `/design-review design/levels/forest-dungeon.md`, `/dev-story`, `/qa-plan`
+6. Step 5 — Orchestrator compiles all team outputs into level design document format; sub-agent asked "May I write to `design/levels/forest-dungeon.md`?"; file saved
+7. Summary report: area overview, encounter count, estimated asset list, narrative beats, cross-team dependencies, verdict: COMPLETE
+8. Next steps listed: `/design-review design/levels/forest-dungeon.md`, `/dev-story`
 
 **Assertions:**
 - [ ] All five sources read during context gathering before any agent is spawned
@@ -61,7 +59,7 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`,
 - [ ] All file writes delegated to sub-agents — orchestrator does not write directly
 - [ ] Level doc saved to `design/levels/forest-dungeon.md` (slugified from argument)
 - [ ] Verdict COMPLETE in final summary report
-- [ ] Next steps include `/design-review`, `/dev-story`, `/qa-plan`
+- [ ] Next steps include `/design-review`, `/dev-story`
 - [ ] Summary report includes: area overview, encounter count, estimated asset list, narrative beats
 
 ---
@@ -142,7 +140,7 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`,
 **Assertions:**
 - [ ] BLOCKING accessibility concern is not treated as advisory — it is surfaced as a blocker
 - [ ] `AskUserQuestion` presents the specific concern text (not just "accessibility issue found")
-- [ ] Step 5 (qa-tester) does NOT begin without user acknowledging the BLOCKING concern
+- [ ] Step 5 (compilation) does NOT begin without user acknowledging the BLOCKING concern
 - [ ] Revision path offered: level-designer + art-director can be sent back before proceeding
 - [ ] Final report includes the accessibility concern and its resolution status
 - [ ] art-director's completed output is NOT discarded when accessibility-specialist blocks
