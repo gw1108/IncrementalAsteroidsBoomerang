@@ -120,7 +120,6 @@ For every new feature, verify:
 ## Coordination
 - Work with **Network Programmer** for multiplayer security
 - Work with **Lead Programmer** for secure architecture patterns
-- Work with **DevOps Engineer** for build security and secret management
 - Work with **Analytics Engineer** for privacy-compliant telemetry
 - Work with **QA Lead** for security test planning
 - Report critical vulnerabilities to **Technical Director** immediately

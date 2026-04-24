@@ -302,17 +302,6 @@ skills:
     priority: medium
     category: utility
 
-  - name: skill-improve
-    spec: CCGS Skill Testing Framework/skills/utility/skill-improve.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: utility
-
   - name: start
     spec: CCGS Skill Testing Framework/skills/utility/start.md
     last_static: ""
@@ -522,28 +511,6 @@ skills:
     priority: low
     category: analysis
 
-  - name: test-evidence-review
-    spec: CCGS Skill Testing Framework/skills/analysis/test-evidence-review.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: analysis
-
-  - name: test-flakiness
-    spec: CCGS Skill Testing Framework/skills/analysis/test-flakiness.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: analysis
-
   - name: reverse-document
     spec: CCGS Skill Testing Framework/skills/utility/reverse-document.md
     last_static: ""
@@ -689,72 +656,6 @@ skills:
 
   - name: adopt
     spec: CCGS Skill Testing Framework/skills/utility/adopt.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: utility
-
-  - name: smoke-check
-    spec: CCGS Skill Testing Framework/skills/utility/smoke-check.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: utility
-
-  - name: soak-test
-    spec: CCGS Skill Testing Framework/skills/utility/soak-test.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: utility
-
-  - name: test-setup
-    spec: CCGS Skill Testing Framework/skills/utility/test-setup.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: utility
-
-  - name: test-helpers
-    spec: CCGS Skill Testing Framework/skills/utility/test-helpers.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: utility
-
-  - name: regression-suite
-    spec: CCGS Skill Testing Framework/skills/utility/regression-suite.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: utility
-
-  - name: qa-plan
-    spec: CCGS Skill Testing Framework/skills/utility/qa-plan.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -1033,12 +934,6 @@ agents:
     category: engine
 
   # Operations
-  - name: devops-engineer
-    spec: CCGS Skill Testing Framework/agents/operations/devops-engineer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: operations
-
   - name: release-manager
     spec: CCGS Skill Testing Framework/agents/operations/release-manager.md
     last_spec: ""

@@ -23,7 +23,7 @@ Verified automatically by `/skill-test static` — no fixture needed.
 - [ ] Contains "May I write" collaborative protocol language (for quick-note file)
 - [ ] Has a next-step handoff at the end
 - [ ] Explicitly notes: no director gates (lightweight skill by design)
-- [ ] Mentions scope check: redirects to `/design-system` if scope exceeds sub-4h threshold
+- [ ] Mentions scope check: redirects to `/design-system` if scope exceeds sub-2h threshold
 
 ---
 
@@ -99,30 +99,6 @@ No director gates. Full GDD review is not needed for sub-4-hour single-system fe
 
 ---
 
-### Case 5: Director Gate — No gate spawned; explicitly noted for sub-2h features
-
-**Fixture:**
-- Feature is within scope for quick-design
-- `production/session-state/review-mode.txt` exists with `full`
-
-**Input:** `/quick-design [feature-name]`
-
-**Expected behavior:**
-1. Skill asks scoping questions and determines scope is within threshold
-2. Skill does NOT read `production/session-state/review-mode.txt`
-3. Skill does NOT spawn any director gate agent
-4. Spec is drafted, "May I write" asked, file written after approval
-5. Output explicitly notes: "No director gate review — quick-design is for sub-4h features"
-
-**Assertions:**
-- [ ] No director gate agents are spawned (no CD-, TD-, PR-, AD- prefixed gates)
-- [ ] Skill does NOT read `production/session-state/review-mode.txt`
-- [ ] Output contains a note explaining why no gate review is needed
-- [ ] Review mode has no effect on this skill's behavior
-- [ ] Full GDD review path (`/design-system`) is mentioned as the alternative for larger features
-
----
-
 ## Protocol Compliance
 
 - [ ] Scope check runs before drafting (redirects to `/design-system` if scope too large)
@@ -134,7 +110,7 @@ No director gates. Full GDD review is not needed for sub-4-hour single-system fe
 
 ## Coverage Notes
 
-- The scope threshold heuristic (sub-4h, single-system) is a judgment call —
+- The scope threshold heuristic (sub-2h, single-system) is a judgment call —
   the skill's internal check is the authoritative definition and is not
   independently tested by counting hours.
 - The `design/quick-notes/` directory is created automatically if it does not

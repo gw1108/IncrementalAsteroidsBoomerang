@@ -54,7 +54,7 @@ engine is configured.
 5. `AskUserQuestion` presents SFX spec and accessibility requirements; user approves before Step 3 begins
 6. Step 3: technical-artist and primary engine specialist are spawned in parallel; technical-artist designs bus structure, middleware integration, memory budgets, and streaming strategy; engine specialist validates that the integration approach is idiomatic for the configured engine
 7. `AskUserQuestion` presents technical plan; user approves before Step 4 begins
-8. Step 4: gameplay-programmer is spawned; wires up audio events to gameplay triggers, implements adaptive music, sets up occlusion zones, writes unit tests for audio event triggers
+8. Step 4: gameplay-programmer is spawned; wires up audio events to gameplay triggers, implements adaptive music, sets up occlusion zones, writes verifications for audio event triggers
 9. Orchestrator compiles all outputs into a single audio design document
 10. Subagent asks "May I write the audio design document to `design/gdd/audio-combat.md`?" before writing
 11. Summary output lists: audio event count, estimated asset count, implementation tasks, and any open questions

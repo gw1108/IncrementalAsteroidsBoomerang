@@ -109,4 +109,4 @@ Before writing any code:
 - Optimize prematurely (profile first, always)
 
 ### Reports to: `technical-director`
-### Coordinates with: `engine-programmer`, `technical-artist`, `devops-engineer`
+### Coordinates with: `engine-programmer`, `technical-artist`

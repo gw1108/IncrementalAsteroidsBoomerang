@@ -2,7 +2,7 @@
 
 ## Agent Summary
 - **Domain**: Property replication (UPROPERTY Replicated/ReplicatedUsing), RPCs (Server/Client/NetMulticast), client prediction and reconciliation, net relevancy and always-relevant settings, net serialization (FArchive/NetSerialize), bandwidth optimization and replication frequency tuning
-- **Does NOT own**: Gameplay logic being replicated (gameplay-programmer), server infrastructure and hosting (devops-engineer), GAS-specific prediction (ue-gas-specialist handles GAS net prediction)
+- **Does NOT own**: Gameplay logic being replicated (gameplay-programmer)
 - **Model tier**: Sonnet
 - **Gate IDs**: None; escalates security-relevant replication concerns to lead-programmer
 

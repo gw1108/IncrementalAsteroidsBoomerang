@@ -1,6 +1,6 @@
 ---
 name: team-release
-description: "Orchestrate the release team: coordinates release-manager, qa-lead, devops-engineer, and producer to execute a release from candidate to deployment."
+description: "Orchestrate the release team: coordinates release-manager, qa-lead, and producer to execute a release from candidate to deployment."
 argument-hint: "[version number or 'next']"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
@@ -20,7 +20,6 @@ The user must approve before moving to the next phase.
 ## Team Composition
 - **release-manager** — Release branch, versioning, changelog, deployment
 - **qa-lead** — Test sign-off, regression suite, release quality gate
-- **devops-engineer** — Build pipeline, artifacts, deployment automation
 - **security-engineer** — Pre-release security audit (invoke if game has online/multiplayer features or player data)
 - **analytics-engineer** — Verify telemetry events fire correctly and dashboards are live
 - **community-manager** — Patch notes, launch announcement, player-facing messaging
@@ -31,7 +30,6 @@ The user must approve before moving to the next phase.
 Use the Task tool to spawn each team member as a subagent:
 - `subagent_type: release-manager` — Release branch, versioning, changelog, deployment
 - `subagent_type: qa-lead` — Test sign-off, regression suite, release quality gate
-- `subagent_type: devops-engineer` — Build pipeline, artifacts, deployment automation
 - `subagent_type: security-engineer` — Security audit for online/multiplayer/data features
 - `subagent_type: analytics-engineer` — Telemetry event verification and dashboard readiness
 - `subagent_type: community-manager` — Patch notes and launch communication
@@ -60,7 +58,6 @@ Delegate to **release-manager**:
 ### Phase 3: Quality Gate (parallel)
 Delegate in parallel:
 - **qa-lead**: Execute full regression test suite. Test all critical paths. Verify no S1/S2 bugs. Sign off on quality.
-- **devops-engineer**: Build release artifacts for all target platforms. Verify builds are clean and reproducible. Run automated tests in CI.
 - **security-engineer** *(if game has online features, multiplayer, or player data)*: Conduct pre-release security audit. Review authentication, anti-cheat, data privacy compliance. Sign off on security posture.
 - **network-programmer** *(if game has multiplayer)*: Sign off on netcode stability. Verify lag compensation, reconnect handling, and bandwidth usage under load.
 
@@ -73,7 +70,7 @@ Delegate (can run in parallel with Phase 3 if resources available):
 
 ### Phase 5: Go/No-Go
 Delegate to **producer**:
-- Collect sign-off from: qa-lead, release-manager, devops-engineer, security-engineer (if spawned in Phase 3), network-programmer (if spawned in Phase 3), and technical-director
+- Collect sign-off from: qa-lead, release-manager, security-engineer (if spawned in Phase 3), network-programmer (if spawned in Phase 3), and technical-director
 - Evaluate any open issues — are they blocking or can they ship?
 - Make the go/no-go call
 - Output: release decision with rationale
@@ -89,7 +86,7 @@ Delegate to **producer**:
 - Verdict: **BLOCKED** — release not deployed.
 
 ### Phase 6: Deployment (if GO)
-Delegate to **release-manager** + **devops-engineer**:
+Delegate to **release-manager**:
 - Tag the release in version control
 - Generate changelog using `/changelog`
 - Deploy to staging for final smoke test

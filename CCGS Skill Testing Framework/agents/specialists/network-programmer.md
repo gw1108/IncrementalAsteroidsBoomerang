@@ -2,7 +2,7 @@
 
 ## Agent Summary
 Domain: Multiplayer networking, state replication, lag compensation, matchmaking protocol design, and network message schemas.
-Does NOT own: gameplay logic (only the networking of it), server infrastructure and deployment (devops-engineer).
+Does NOT own: gameplay logic (only the networking of it)
 Model tier: Sonnet (default).
 No gate IDs assigned.
 
@@ -30,15 +30,7 @@ No gate IDs assigned.
 - Does NOT implement the player movement logic itself (defers to gameplay-programmer)
 - Proposes dead-reckoning or prediction strategy to reduce visible lag
 
-### Case 2: Out-of-domain request — redirects correctly
-**Input:** "Deploy our game server to AWS EC2 and set up auto-scaling."
-**Expected behavior:**
-- Does NOT produce server deployment configuration, Terraform, or AWS setup scripts
-- Explicitly states that server infrastructure belongs to `devops-engineer`
-- Redirects the request to `devops-engineer`
-- May note it can provide the network protocol spec the server needs to implement once infrastructure is set up
-
-### Case 3: State divergence — rollback/reconciliation
+### Case 2: State divergence — rollback/reconciliation
 **Input:** "Under high latency, clients are diverging from the authoritative server state for physics objects."
 **Expected behavior:**
 - Proposes a rollback-and-reconciliation approach (client-side prediction + server authoritative correction)
@@ -46,7 +38,7 @@ No gate IDs assigned.
 - Notes the input buffer pattern for deterministic replay
 - Does NOT change the physics simulation itself — documents the interface contract for engine-programmer
 
-### Case 4: Anti-cheat conflict
+### Case 3: Anti-cheat conflict
 **Input:** "We want client-authoritative position for smooth movement, but anti-cheat requires server validation."
 **Expected behavior:**
 - Surfaces the direct conflict: client-authority is fast but exploitable; server-authority is secure but requires latency compensation
@@ -54,7 +46,7 @@ No gate IDs assigned.
 - Proposes a compromise (server validates position within a tolerance band, flags outliers) rather than unilaterally deciding
 - Documents the trade-off and escalates the final decision to `technical-director` if security-engineer and network-programmer cannot agree
 
-### Case 5: Context pass — latency budget
+### Case 4: Context pass — latency budget
 **Input:** Technical preferences provided in context: target latency 80ms RTT for 95th percentile players. Request: "Design the input replication scheme for a fighting game."
 **Expected behavior:**
 - References the 80ms RTT budget explicitly in the design
@@ -67,7 +59,6 @@ No gate IDs assigned.
 ## Protocol Compliance
 
 - [ ] Stays within declared domain (replication, lag compensation, protocol design, matchmaking)
-- [ ] Redirects server deployment to devops-engineer
 - [ ] Returns structured findings (sync strategies, protocol specs, bandwidth estimates)
 - [ ] Does not implement gameplay logic — only specifies the network contract for it
 - [ ] Coordinates with security-engineer on anti-cheat boundaries

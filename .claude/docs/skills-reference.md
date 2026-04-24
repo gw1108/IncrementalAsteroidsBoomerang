@@ -119,7 +119,7 @@ Coordinate multiple agents on a single feature area:
 | `/team-combat` | game-designer + gameplay-programmer + ai-programmer + technical-artist + sound-designer + qa-tester |
 | `/team-narrative` | narrative-director + writer + world-builder + level-designer |
 | `/team-ui` | ux-designer + ui-programmer + art-director + accessibility-specialist |
-| `/team-release` | release-manager + qa-lead + devops-engineer + producer |
+| `/team-release` | release-manager + qa-lead + producer |
 | `/team-polish` | performance-analyst + technical-artist + sound-designer + qa-tester |
 | `/team-audio` | audio-director + sound-designer + technical-artist + gameplay-programmer |
 | `/team-level` | level-designer + narrative-director + world-builder + art-director + systems-designer + qa-tester |

@@ -55,7 +55,6 @@ No gate IDs assigned.
   - `Addressables.DownloadDependenciesAsync()` to pre-warm the updated content
 - Notes catalog hash checking for change detection
 - Addresses the edge case: what happens if a player starts a session, the catalog updates mid-session — defines behavior (complete current session on old catalog, reload on next launch)
-- Does NOT design the server-side CDN infrastructure (defers to devops-engineer)
 
 ### Case 5: Context pass — platform memory constraints
 **Input:** Platform context: Nintendo Switch target, 4GB RAM, practical asset memory ceiling 512MB. Request: "Design the Addressables loading strategy for a large open-world level."
@@ -77,7 +76,6 @@ No gate IDs assigned.
 - [ ] Returns structured output (loading patterns, handle lifecycle code, streaming zone designs)
 - [ ] Always pairs `LoadAssetAsync` with a corresponding `Release()` — flags handle leaks as a memory bug
 - [ ] Designs loading strategies against provided memory ceilings
-- [ ] Does not design CDN/server infrastructure — defers to devops-engineer for server side
 
 ---
 

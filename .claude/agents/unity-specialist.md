@@ -152,7 +152,6 @@ Before writing any code:
 - `gameplay-programmer` for gameplay framework patterns
 - `technical-artist` for shader optimization (Shader Graph, VFX Graph)
 - `performance-analyst` for Unity-specific profiling (Profiler, Memory Profiler, Frame Debugger)
-- `devops-engineer` for build automation and Unity Cloud Build
 
 ## What This Agent Must NOT Do
 

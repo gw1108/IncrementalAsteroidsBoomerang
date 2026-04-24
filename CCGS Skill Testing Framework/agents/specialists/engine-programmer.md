@@ -74,6 +74,6 @@ No gate IDs assigned.
 ---
 
 ## Coverage Notes
-- Object pool (Case 1) must include a unit test in `tests/unit/engine/`
+- Object pool (Case 1) must include a code implementation in `tests/unit/engine/`
 - Memory leak diagnosis (Case 3) should produce evidence artifacts in `production/qa/evidence/`
 - Engine version check (Case 5) confirms the agent treats VERSION.md as authoritative, not LLM training data

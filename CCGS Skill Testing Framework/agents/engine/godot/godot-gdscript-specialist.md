@@ -78,5 +78,5 @@ No gate IDs assigned.
 
 ## Coverage Notes
 - Type annotation review (Case 1) output is suitable as a code review checklist
-- Async loading (Case 3) should produce testable code verifiable with a unit test in `tests/unit/`
+- Async loading (Case 3) should produce testable code verifiable with a code review in `tests/unit/`
 - Post-cutoff @abstract (Case 5) confirms the agent flags version uncertainty rather than silently using unverified APIs

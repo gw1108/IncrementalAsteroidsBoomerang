@@ -69,8 +69,7 @@ Verified automatically by `/skill-test static` — no fixture needed.
 
 **Fixture:**
 - Story file has an acceptance criterion: "Player sees correct animation on pickup"
-- No automated test for this criterion exists
-- Manual verification has not been performed
+- This criterion requires manual verification (cannot be verified via code inspection alone)
 - All other criteria are met
 
 **Input:** `/story-done production/epics/core/story-light-pickup.md`

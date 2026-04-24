@@ -31,7 +31,7 @@ Verified by reading the agent's `.claude/agents/qa-lead.md` frontmatter:
 - [ ] Output stays within QA scope — does not comment on whether the mechanic is designed well
 
 ### Case 2: Out-of-domain request — redirects or escalates
-**Scenario:** A developer asks qa-lead to implement the automated test harness for the new physics system.
+**Scenario:** A developer asks qa-lead to implement the manual verification harness for the new physics system.
 **Expected:** Agent declines to implement the test code and redirects to the appropriate programmer (gameplay-programmer or lead-programmer).
 **Assertions:**
 - [ ] Does not write or propose code implementation
@@ -48,8 +48,8 @@ Verified by reading the agent's `.claude/agents/qa-lead.md` frontmatter:
 - [ ] Provides actionable guidance on how to rewrite the AC to be testable
 
 ### Case 4: Conflict escalation — correct parent
-**Scenario:** gameplay-programmer and qa-lead disagree on whether a test that asserts "enemy patrol path visits all waypoints within 5 seconds" is deterministic enough to be a valid automated test. gameplay-programmer argues timing variability makes it flaky; qa-lead believes it is acceptable.
-**Expected:** qa-lead acknowledges the technical flakiness concern and escalates to lead-programmer for a technical ruling on what constitutes an acceptable determinism standard for automated tests.
+**Scenario:** gameplay-programmer and qa-lead disagree on whether a test that asserts "enemy patrol path visits all waypoints within 5 seconds" is deterministic enough to be a valid manual verification. gameplay-programmer argues timing variability makes it flaky; qa-lead believes it is acceptable.
+**Expected:** qa-lead acknowledges the technical flakiness concern and escalates to lead-programmer for a technical ruling on what constitutes an acceptable determinism standard for manual verifications.
 **Assertions:**
 - [ ] Escalates to `lead-programmer` for the technical ruling on determinism standards
 - [ ] Does not unilaterally override the gameplay-programmer's flakiness concern
@@ -57,11 +57,11 @@ Verified by reading the agent's `.claude/agents/qa-lead.md` frontmatter:
 - [ ] Does not abandon the coverage requirement — asks for a deterministic alternative if the current approach is ruled flaky
 
 ### Case 5: Context pass — uses provided context
-**Scenario:** Agent receives a gate context block that includes the coding-standards.md testing standards section, which specifies: Logic stories require blocking automated unit tests, Visual/Feel stories require screenshots + lead sign-off (advisory), Config/Data stories require smoke check pass (advisory). A story classified as "Logic" type is submitted with only a manual walkthrough document as evidence.
-**Expected:** Assessment references the specific test evidence requirements from coding-standards.md, identifies that a "Logic" story requires an automated unit test (not just a manual walkthrough), and returns INADEQUATE with the specific requirement cited.
+**Scenario:** Agent receives a gate context block that includes the coding-standards.md testing standards section, which specifies: Logic stories require blocking automated code implementations, Visual/Feel stories require screenshots + lead sign-off (advisory), Config/Data stories require smoke check pass (advisory). A story classified as "Logic" type is submitted with only a manual walkthrough document as evidence.
+**Expected:** Assessment references the specific test evidence requirements from coding-standards.md, identifies that a "Logic" story requires an automated code implementation (not just a manual walkthrough), and returns INADEQUATE with the specific requirement cited.
 **Assertions:**
 - [ ] References the specific story type classification ("Logic") from the provided context
-- [ ] Cites the specific evidence requirement for Logic stories (automated unit test) from coding-standards.md
+- [ ] Cites the specific evidence requirement for Logic stories (automated code implementation) from coding-standards.md
 - [ ] Identifies the submitted evidence type (manual walkthrough) as insufficient for this story type
 - [ ] Does not apply advisory-level requirements as blocking requirements
 

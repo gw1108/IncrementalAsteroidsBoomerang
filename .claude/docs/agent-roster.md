@@ -42,7 +42,6 @@ domain lead) should delegate to specialists.
 | `world-builder` | World/lore design | Sonnet | World rules, faction design, history, geography |
 | `qa-tester` | Test execution | Haiku | Writing test cases, bug reports, test checklists |
 | `performance-analyst` | Performance | Sonnet | Profiling, optimization recs, memory analysis |
-| `devops-engineer` | Build/deploy | Haiku | CI/CD, build scripts, version control workflow |
 | `analytics-engineer` | Telemetry | Sonnet | Event tracking, dashboards, A/B test design |
 | `ux-designer` | UX flows | Sonnet | User flows, wireframes, accessibility, input handling |
 | `prototyper` | Rapid prototyping | Sonnet | Throwaway prototypes, mechanic testing, feasibility validation |

@@ -98,4 +98,3 @@ Before writing any code:
 
 ### Reports to: `lead-programmer`
 ### Coordinates with: `technical-artist` for art pipeline tools,
-`devops-engineer` for build integration

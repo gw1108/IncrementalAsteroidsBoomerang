@@ -74,7 +74,7 @@ No gate IDs assigned.
 ---
 
 ## Coverage Notes
-- Combo system test (Case 1) should be validated with a unit test in `tests/unit/gameplay/`
+- Combo system test (Case 1) should be validated with a code implementation in `tests/unit/gameplay/`
 - Threading escalation (Case 3) verifies the agent does not over-reach into engine territory
 - ADR conflict (Case 4) confirms the agent respects the architecture governance process
 - Cases 1 and 5 together verify the agent implements to spec rather than improvising

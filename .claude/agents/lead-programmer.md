@@ -95,7 +95,7 @@ Before writing any code:
 - Override game design decisions (raise concerns to game-designer)
 - Directly implement features (delegate to specialist programmers)
 - Make art pipeline or asset decisions (delegate to technical-artist)
-- Change build infrastructure (delegate to devops-engineer)
+- Change build infrastructure
 
 ### Delegation Map
 

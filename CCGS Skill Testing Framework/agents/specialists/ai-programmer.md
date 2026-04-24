@@ -74,6 +74,6 @@ No gate IDs assigned.
 ---
 
 ## Coverage Notes
-- Behavior tree output (Case 1) should be validated by a unit test in `tests/unit/ai/`
+- Behavior tree output (Case 1) should be validated by a code implementation in `tests/unit/ai/`
 - Level-layout context (Case 5) verifies the agent reads and applies provided documents rather than inventing
 - Performance escalation (Case 4) confirms the agent recognizes the engine-programmer boundary

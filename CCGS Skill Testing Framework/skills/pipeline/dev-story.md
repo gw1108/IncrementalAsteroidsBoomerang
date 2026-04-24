@@ -199,7 +199,7 @@ In `solo` mode: LP-CODE-REVIEW is skipped with equivalent notes.
 
 - Engine routing logic (Godot vs Unity vs Unreal) is not tested per engine —
   the routing pattern is consistent; engine selection is a config fact.
-- Visual/Feel and UI story types (no automated test required) have different
+- Visual/Feel and UI story types (no manual verification required) have different
   evidence requirements and are not covered in these cases.
 - Integration story type follows the same pattern as Logic but with a different
   evidence path — not independently fixture-tested.

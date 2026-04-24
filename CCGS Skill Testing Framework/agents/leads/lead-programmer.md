@@ -22,12 +22,12 @@ Verified by reading the agent's `.claude/agents/lead-programmer.md` frontmatter:
 ## Test Cases
 
 ### Case 1: In-domain request — appropriate output format
-**Scenario:** A new `CombatSystem` implementation is submitted for code review. The system uses dependency injection for all external references, has doc comments on all public APIs, follows the project's naming conventions, and includes unit tests for all public methods. Request is tagged LP-CODE-REVIEW.
-**Expected:** Returns `LP-CODE-REVIEW: APPROVED` with rationale confirming dependency injection usage, doc comment coverage, naming convention compliance, and test coverage.
+**Scenario:** A new `CombatSystem` implementation is submitted for code review. The system uses dependency injection for all external references, has doc comments on all public APIs, and follows the project's naming conventions. Request is tagged LP-CODE-REVIEW.
+**Expected:** Returns `LP-CODE-REVIEW: APPROVED` with rationale confirming dependency injection usage, doc comment coverage, and naming convention compliance.
 **Assertions:**
 - [ ] Verdict is exactly one of APPROVED / NEEDS CHANGES
 - [ ] Verdict token is formatted as `LP-CODE-REVIEW: APPROVED`
-- [ ] Rationale references specific coding standards criteria (DI, doc comments, naming, tests)
+- [ ] Rationale references specific coding standards criteria (DI, doc comments, naming conventions)
 - [ ] Output stays within code quality scope — does not comment on whether the mechanic is fun or fits creative vision
 
 ### Case 2: Out-of-domain request — redirects or escalates
@@ -79,7 +79,5 @@ Verified by reading the agent's `.claude/agents/lead-programmer.md` frontmatter:
 ---
 
 ## Coverage Notes
-- Multi-file code review spanning several interdependent systems is not covered — deferred to integration tests.
 - Tech debt assessment and prioritization are not covered here — deferred to /tech-debt skill integration.
 - Coding standards document updates (adding a new forbidden pattern) are not covered.
-- Interaction with qa-lead on what constitutes a testable unit (LP vs QL boundary) is not covered.

@@ -44,7 +44,6 @@ Ask yourself: "What department would handle this in a real studio?"
 | Write test cases | `qa-tester` |
 | Design a level | `level-designer` |
 | Fix a performance problem | `performance-analyst` |
-| Set up CI/CD | `devops-engineer` |
 | Design a loot table | `economy-designer` |
 | Resolve a creative conflict | `creative-director` |
 | Make an architecture decision | `technical-director` |

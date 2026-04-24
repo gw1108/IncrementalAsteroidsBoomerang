@@ -5,7 +5,7 @@
 `/help` analyzes what has been done and what comes next in the project workflow.
 It runs on the Haiku model (read-only, formatting task) and reads `production/stage.txt`,
 the active sprint file, and recent session state to produce a concise situational
-guidance summary. The skill optionally accepts a context query (e.g., `/help testing`)
+guidance summary. The skill optionally accepts a context query (e.g., `/help verificationing`)
 to surface relevant skills for a specific topic.
 
 The output is always informational — no files are written and no director gates
@@ -16,7 +16,7 @@ navigator, suggesting 2-3 next skills based on the current project state.
 
 ## Static Assertions (Structural)
 
-Verified automatically by `/skill-test static` — no fixture needed.
+Verified automatically by `/skill-verification static` — no fixture needed.
 
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
@@ -108,24 +108,24 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 
 ---
 
-### Case 4: Context Query — User asks for help with testing
+### Case 4: Context Query — User asks for help with verificationing
 
 **Fixture:**
 - `production/stage.txt` contains `Production`
 - Active sprint has a story with `Status: In Review`
 
-**Input:** `/help testing`
+**Input:** `/help verificationing`
 
 **Expected behavior:**
-1. Skill reads context query: "testing"
-2. Skill surfaces skills relevant to testing: `/qa-plan`, `/smoke-check`,
-   `/regression-suite`, `/test-setup`, `/test-evidence-review`
-3. Output is focused on testing workflow, not general sprint navigation
-4. Currently in-review story is highlighted as a testing candidate
+1. Skill reads context query: "verificationing"
+2. Skill surfaces skills relevant to verificationing: `/qa-plan`, `/smoke-check`,
+   `/regression-suite`, `/verification-setup`, `/verification-evidence-review`
+3. Output is focused on verificationing workflow, not general sprint navigation
+4. Currently in-review story is highlighted as a verificationing candidate
 
 **Assertions:**
-- [ ] Context query is acknowledged in output ("Help topic: testing")
-- [ ] At least 3 testing-relevant skills are listed
+- [ ] Context query is acknowledged in output ("Help topic: verificationing")
+- [ ] At least 3 verificationing-relevant skills are listed
 - [ ] General sprint skills (e.g., `/sprint-plan`) are not the primary suggestions
 - [ ] Verdict is HELP COMPLETE
 
@@ -165,8 +165,8 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 ## Coverage Notes
 
 - The case where the active sprint is complete (all stories Done) is not
-  separately tested; the skill would suggest `/sprint-plan` for the next sprint.
+  separately verificationed; the skill would suggest `/sprint-plan` for the next sprint.
 - The `/help` skill does not validate whether suggested skills are available —
   it assumes standard skill catalog availability.
 - Stage detection fallback (when stage.txt is absent) delegates to the same
-  logic as `/project-stage-detect` and is not re-tested here in detail.
+  logic as `/project-stage-detect` and is not re-verificationed here in detail.

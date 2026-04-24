@@ -239,7 +239,7 @@ ue-replication-specialist
 
 ### `operations`
 
-**Agents**: devops-engineer, release-manager, live-ops-designer, community-manager,
+**Agents**: release-manager, live-ops-designer, community-manager,
 analytics-engineer, economy-designer, localization-lead
 
 | Metric | PASS criteria |

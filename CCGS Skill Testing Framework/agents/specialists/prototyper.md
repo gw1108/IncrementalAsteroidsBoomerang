@@ -23,7 +23,7 @@
 **Input**: "Prototype a card-drawing mechanic in 2 hours. The core question: does drawing 3 cards per turn with hand-size limit of 7 feel good? I need something to test in a playtest today."
 **Expected behavior**:
 - Produces a minimal working prototype written in the project's engine scripting language, scoped to `prototypes/card-draw-mechanic/`
-- Code prioritizes speed over correctness: no unit tests, no doc comments required, global state is acceptable for a prototype
+- Code prioritizes speed over correctness: no manual tests, no doc comments required, global state is acceptable for a prototype
 - Implements the minimal viable mechanic: a deck, a draw function (draw N cards), a hand container with a size limit, and a simple UI or debug print to verify state
 - Does NOT implement production patterns (dependency injection, signals, data-driven config) unless they take less time than not using them
 - Includes a `README.md` in the prototype folder: hypothesis being tested, how to run, what to observe in the playtest

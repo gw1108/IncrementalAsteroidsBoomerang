@@ -2,7 +2,7 @@
 
 ## Agent Summary
 - **Domain**: Release pipeline management, platform certification checklists (Nintendo, Sony, Microsoft, Apple, Google), store submission workflows, platform technical requirements compliance, semantic version numbering, release branch management
-- **Does NOT own**: Game design decisions, QA test strategy or test case design (qa-lead), QA test execution (qa-tester), build infrastructure (devops-engineer)
+- **Does NOT own**: Game design decisions, QA test strategy or test case design (qa-lead), QA test execution (qa-tester)
 - **Model tier**: Sonnet
 - **Gate IDs**: May be invoked by `/gate-check` during Release phase; LAUNCH BLOCKED verdict is release-manager's primary escalation output
 
@@ -48,7 +48,7 @@
 **Input**: "Our release branch is at v1.2.0. A hotfix was applied directly on main and tagged v1.2.1. Now the release branch also has changes that need to ship as v1.2.1 but they're different changes."
 **Expected behavior**:
 - Identifies the conflict: two different changesets have been assigned the same version tag
-- Applies semantic versioning resolution: one must be re-tagged — the release branch changes should become v1.2.2 if v1.2.1 is already published; if v1.2.1 is not yet published, coordinate with devops-engineer to merge or re-tag
+- Applies semantic versioning resolution: one must be re-tagged — the release branch changes should become v1.2.2 if v1.2.1 is already published; if v1.2.1 is not yet published
 - Does NOT accept a state where the same version number refers to two different builds
 - Notes that once a version is submitted to a store, it cannot be reused — flags this as a potential store submission blocker
 

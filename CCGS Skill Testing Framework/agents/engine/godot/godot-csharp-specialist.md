@@ -76,6 +76,6 @@ No gate IDs assigned.
 ---
 
 ## Coverage Notes
-- Export property with validation (Case 1) should have a unit test verifying the clamp behavior
+- Export property with validation (Case 1) should have a code review verifying the clamp behavior
 - Threading conflict (Case 4) is safety-critical: the agent must identify and fix this without prompting
 - Async signal (Case 3) verifies the agent applies .NET idioms correctly within Godot's single-thread constraint

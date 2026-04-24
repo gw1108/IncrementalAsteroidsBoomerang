@@ -6,7 +6,7 @@ Orchestrates the polish team through a six-phase pipeline: performance assessmen
 (performance-analyst) → optimization (performance-analyst, optionally with
 engine-programmer when engine-level root causes are found) → visual polish
 (technical-artist, parallel with Phase 2) → audio polish (sound-designer, parallel
-with Phase 2) → hardening (qa-tester) → sign-off (orchestrator collects all results
+with Phase 2) → hardening (qa-verificationer) → sign-off (orchestrator collects all results
 and issues READY FOR RELEASE or NEEDS MORE WORK). Uses `AskUserQuestion` at each
 phase transition. Engine-programmer is spawned conditionally only when Phase 1
 identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE WORK.
@@ -51,8 +51,8 @@ identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE 
    - Phase 3: technical-artist reviews VFX for quality, optimizes particle systems, adds screen shake and visual juice
    - Phase 4: sound-designer reviews audio events for completeness, checks mix levels, adds ambient audio layers
 5. All three parallel phases complete; `AskUserQuestion` presents results; user approves before Phase 5 begins
-6. Phase 5: qa-tester runs edge case tests, soak tests, stress tests, and regression tests; all pass
-7. `AskUserQuestion` presents test results; user approves before Phase 6
+6. Phase 5: qa-verificationer runs edge case verifications, soak verifications, stress verifications, and regression verifications; all pass
+7. `AskUserQuestion` presents verification results; user approves before Phase 6
 8. Phase 6: orchestrator collects all results; compares before/after performance metrics against budgets; all metrics pass
 9. Subagent asks "May I write the polish report to `production/qa/evidence/polish-combat-[date].md`?" before writing
 10. Verdict: READY FOR RELEASE
@@ -62,9 +62,9 @@ identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE 
 - [ ] `AskUserQuestion` appears after Phase 1 output and before Phases 2/3/4 launch
 - [ ] Phases 3 and 4 Task calls are issued at the same time as Phase 2 (not after Phase 2 completes)
 - [ ] engine-programmer is NOT spawned when Phase 1 finds no engine-level root causes
-- [ ] qa-tester (Phase 5) is not launched until the parallel phases complete and user approves
+- [ ] qa-verificationer (Phase 5) is not launched until the parallel phases complete and user approves
 - [ ] Phase 6 verdict is based on comparison of metrics against defined budgets
-- [ ] Summary report includes: before/after performance metrics, visual polish changes, audio polish changes, test results
+- [ ] Summary report includes: before/after performance metrics, visual polish changes, audio polish changes, verification results
 - [ ] No files are written by the orchestrator directly
 - [ ] Verdict is READY FOR RELEASE
 
@@ -85,7 +85,7 @@ identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE 
 2. `AskUserQuestion` presents the violation; user chooses to proceed with optimization attempt
 3. Phase 2: performance-analyst applies optimizations; achieves 9ms — reduced but still over budget; reports "Optimization reduced cost to 9ms (was 12ms) — 3ms over budget. No further gains achievable without design changes."
 4. Phases 3 and 4 run in parallel with Phase 2 (visual and audio polish)
-5. Phase 5: qa-tester runs regression and edge case tests; all pass
+5. Phase 5: qa-verificationer runs regression and edge case verifications; all pass
 6. Phase 6: orchestrator collects results; frame budget violation (9ms vs 6ms budget) remains unresolved
 7. Verdict: NEEDS MORE WORK
 8. Report lists the specific unresolved issue: "particle-storm frame cost (9ms) exceeds budget (6ms) by 3ms — requires design scope reduction or budget renegotiation"
@@ -98,7 +98,7 @@ identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE 
 - [ ] The specific unresolved issue is listed by name with the remaining gap quantified
 - [ ] Next Steps references `/sprint-plan update` for scheduling the remaining fix
 - [ ] Phases 3 and 4 still run (polish work is not abandoned due to a Phase 2 partial resolution)
-- [ ] Phase 5 qa-tester still runs (regression testing is independent of the performance outcome)
+- [ ] Phase 5 qa-verificationer still runs (regression verificationing is independent of the performance outcome)
 
 ---
 
@@ -138,7 +138,7 @@ identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE 
 4. Phase 2: performance-analyst is spawned for game-code-level optimizations AND engine-programmer is spawned in parallel for the engine-level rendering fix
 5. Phases 3 and 4 also run in parallel with Phase 2 (visual and audio polish)
 6. engine-programmer addresses the spatial indexer traversal; provides profiler validation showing the fix reduces overhead
-7. Phase 5: qa-tester runs regression tests including tests for the engine-level fix
+7. Phase 5: qa-verificationer runs regression verifications including verifications for the engine-level fix
 8. Phase 6: orchestrator collects all results; if metrics are now within budget, verdict is READY FOR RELEASE; if not, NEEDS MORE WORK
 
 **Assertions:**
@@ -147,7 +147,7 @@ identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE 
 - [ ] engine-programmer and performance-analyst Task calls in Phase 2 are issued simultaneously (not sequentially)
 - [ ] Phases 3 and 4 also run in parallel with Phase 2 (not deferred until Phase 2 completes)
 - [ ] engine-programmer's output includes profiler validation of the fix
-- [ ] qa-tester in Phase 5 runs regression tests that cover the engine-level change
+- [ ] qa-verificationer in Phase 5 runs regression verifications that cover the engine-level change
 - [ ] Verdict correctly reflects whether all metrics including the engine fix now meet budgets
 
 ---
@@ -157,15 +157,15 @@ identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE 
 **Fixture:**
 - Feature being polished: `inventory-ui`
 - Phases 1–4 complete successfully; performance and polish changes are applied
-- Phase 5: qa-tester runs regression tests and finds that a shader optimization applied in Phase 3 broke the item highlight glow effect on hover — an existing feature that was working before the polish pass
+- Phase 5: qa-verificationer runs regression verifications and finds that a shader optimization applied in Phase 3 broke the item highlight glow effect on hover — an existing feature that was working before the polish pass
 
 **Input:** `/team-polish inventory-ui` (Phase 5 scenario)
 
 **Expected behavior:**
 1. Phases 1–4 complete; polish changes include a shader optimization from technical-artist
-2. Phase 5: qa-tester runs regression tests and detects "Item highlight glow on hover no longer renders — regression introduced by shader optimization in Phase 3"
-3. qa-tester returns test results with the regression noted
-4. Orchestrator surfaces the regression immediately: "qa-tester: REGRESSION FOUND — `item-highlight-hover` glow broken by Phase 3 shader optimization"
+2. Phase 5: qa-verificationer runs regression verifications and detects "Item highlight glow on hover no longer renders — regression introduced by shader optimization in Phase 3"
+3. qa-verificationer returns verification results with the regression noted
+4. Orchestrator surfaces the regression immediately: "qa-verificationer: REGRESSION FOUND — `item-highlight-hover` glow broken by Phase 3 shader optimization"
 5. Subagent files a bug report asking "May I write the bug report to `production/qa/evidence/bug-polish-inventory-ui-[date].md`?" before writing
 6. Bug report is written after approval; it includes: the broken behavior, the polish change that caused it, reproduction steps, and severity
 7. `AskUserQuestion` presents the regression with options:
@@ -181,7 +181,7 @@ identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE 
 - [ ] Bug report includes: broken behavior, causal change, reproduction steps, severity
 - [ ] `AskUserQuestion` offers options including revert, fix in place, and schedule later
 - [ ] Verdict is NEEDS MORE WORK when a regression is present and unresolved
-- [ ] Verdict may become READY FOR RELEASE only if the regression is fixed within the current polish session and qa-tester re-runs to confirm
+- [ ] Verdict may become READY FOR RELEASE only if the regression is fixed within the current polish session and qa-verificationer re-runs to confirm
 
 ---
 
@@ -204,15 +204,15 @@ identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE 
 ## Coverage Notes
 
 - The tools-programmer optional agent (for content pipeline tool verification) is not
-  separately tested — it follows the same conditional spawn pattern as engine-programmer
+  separately verificationed — it follows the same conditional spawn pattern as engine-programmer
   and is invoked only when content authoring tools are involved in the polished area.
 - The "Retry with narrower scope" and "Skip this agent" resolution paths from the Error
-  Recovery Protocol are not separately tested — they follow the same `AskUserQuestion`
+  Recovery Protocol are not separately verificationed — they follow the same `AskUserQuestion`
   + partial-report pattern validated in Cases 2 and 5.
 - Phase 6 sign-off logic (collecting and comparing all metrics) is validated implicitly
   by Cases 1 and 2. The distinction between READY FOR RELEASE and NEEDS MORE WORK is
   exercised in both directions across these cases.
-- Soak testing and stress testing (Phase 5) are validated implicitly by Case 1's
-  qa-tester output. Case 5 focuses on the regression detection aspect of Phase 5.
-- The "minimum spec hardware" test path in Phase 5 is not separately tested — it follows
-  the same qa-tester delegation pattern when the hardware is available.
+- Soak verificationing and stress verificationing (Phase 5) are validated implicitly by Case 1's
+  qa-verificationer output. Case 5 focuses on the regression detection aspect of Phase 5.
+- The "minimum spec hardware" verification path in Phase 5 is not separately verificationed — it follows
+  the same qa-verificationer delegation pattern when the hardware is available.

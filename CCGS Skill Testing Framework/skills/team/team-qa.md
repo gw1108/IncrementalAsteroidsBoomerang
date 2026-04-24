@@ -92,7 +92,7 @@ independent stories.
 ### Case 3: Bug Found — Visual/Feel story fails manual QA, bug report filed
 
 **Fixture:**
-- `production/sprints/sprint-05/` exists with 2 story files: 1 Logic (passes automated tests), 1 Visual/Feel
+- `production/sprints/sprint-05/` exists with 2 story files: 1 Logic (passes manual verifications), 1 Visual/Feel
 - `tests/smoke/` smoke check passes
 - The Visual/Feel story's animation timing is visibly wrong (acceptance criterion not met)
 - `production/qa/bugs/` directory exists (empty or with existing bugs)
@@ -155,7 +155,7 @@ independent stories.
 **Fixture:**
 - `production/sprints/sprint-07/` exists with 4 story files
 - Smoke check passes
-- Story A (Logic): automated test passes — PASS
+- Story A (Logic): manual verification passes — PASS
 - Story B (UI): manual QA — PASS WITH NOTES (minor text overflow)
 - Story C (Visual/Feel): manual QA — FAIL; tester identifies S1 crash on ability activation
 - Story D (Integration): cannot test — BLOCKED (dependency system not yet implemented)
@@ -200,5 +200,5 @@ independent stories.
 
 - The "APPROVED WITH CONDITIONS" verdict path (S3/S4 bugs, PASS WITH NOTES) is covered implicitly by Case 5's PASS WITH NOTES story (Story B) — if no S1/S2 bugs existed, that case would produce APPROVED WITH CONDITIONS. A dedicated case is not required as the verdict logic is table-driven.
 - The `feature: [system-name]` argument form is not separately tested — it follows the same Phase 1 logic as the sprint form, using glob instead of directory read. The no-argument inference path (Case 4) provides sufficient coverage of the detection logic.
-- Logic stories with passing automated tests do not need manual QA — this is validated implicitly by Case 5 (Story A) where the Logic story receives no manual QA phase.
+- Logic stories with passing manual verifications do not need manual QA — this is validated implicitly by Case 5 (Story A) where the Logic story receives no manual QA phase.
 - Parallel qa-tester spawning in Phase 5 is validated implicitly by Case 1 (multiple Visual/Feel stories issued simultaneously); no dedicated parallelism case is required beyond the Static Assertions check.

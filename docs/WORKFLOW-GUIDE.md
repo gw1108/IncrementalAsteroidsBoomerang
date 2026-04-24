@@ -1098,7 +1098,7 @@ Generates an internal changelog (more technical, for the team).
 /team-release
 ```
 
-Coordinates release-manager, QA, and DevOps through:
+Coordinates release-manager, QA:
 1. Pre-release validation
 2. Build management
 3. Final QA sign-off
@@ -1208,7 +1208,7 @@ Tier 3 (Specialists):  gameplay-programmer, engine-programmer,
                        tools-programmer, systems-designer, level-designer,
                        economy-designer, world-builder, writer,
                        technical-artist, sound-designer, ux-designer,
-                       qa-tester, performance-analyst, devops-engineer,
+                       qa-tester, performance-analyst,
                        analytics-engineer, accessibility-specialist,
                        live-ops-designer, prototyper, security-engineer,
                        community-manager, godot-specialist,
@@ -1362,7 +1362,6 @@ Reads existing code and generates GDD-format design documentation from it.
 | Write test cases | `qa-tester` | 3 |
 | Plan test strategy | `qa-lead` | 2 |
 | Profile performance | `performance-analyst` | 3 |
-| Set up CI/CD | `devops-engineer` | 3 |
 | Design analytics | `analytics-engineer` | 3 |
 | Check accessibility | `accessibility-specialist` | 3 |
 | Plan live operations | `live-ops-designer` | 3 |
@@ -1392,12 +1391,12 @@ Reads existing code and generates GDD-format design documentation from it.
                     creative-director / technical-director / producer
                                          |
           ---------------------------------------------------------------
-          |            |           |           |          |        |       |
-    game-designer  lead-prog  art-dir  audio-dir  narr-dir  qa-lead  release-mgr
-          |            |           |           |          |        |        |
-     specialists  programmers  tech-art  snd-design  writer   qa-tester  devops
-     (systems,    (gameplay,             (sound)     (world-  (perf,     (analytics,
-      economy,     engine,                           builder)  access.)   security)
+          |            |           |           |          |        |        
+    game-designer  lead-prog  art-dir  audio-dir  narr-dir  qa-lead             
+          |            |           |           |          |        |         
+     specialists  programmers  tech-art  snd-design  writer   qa-tester  
+     (systems,    (gameplay,             (sound)     (world-  (perf,     
+      economy,     engine,                           builder)  access.)
       level)       ai, net,
                    ui, tools)
 ```

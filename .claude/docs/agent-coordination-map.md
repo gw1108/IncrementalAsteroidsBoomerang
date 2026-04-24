@@ -17,9 +17,9 @@
      |  |  |     |     |     |  |  |  |  |  |  |   |        |
     sys lvl eco  ta   wrt  wrld gp ep  ai net tl ui qa-t    snd
                                  |
-                             +---+---+
-                             |       |
-                          perf-a   devops   analytics
+                             +---+    
+                             |        
+                          perf-a            analytics
 
   Additional Leads (report to producer/directors):
     release-manager         -- Release pipeline, versioning, deployment
@@ -69,7 +69,7 @@ art-dir = art-director
 | From | Can Delegate To |
 |------|----------------|
 | creative-director | game-designer, art-director, audio-director, narrative-director |
-| technical-director | lead-programmer, devops-engineer, performance-analyst, technical-artist (technical decisions) |
+| technical-director | lead-programmer, performance-analyst, technical-artist (technical decisions) |
 | producer | Any agent (task assignment within their domain only) |
 | game-designer | systems-designer, level-designer, economy-designer |
 | lead-programmer | gameplay-programmer, engine-programmer, ai-programmer, network-programmer, tools-programmer, ui-programmer |
@@ -77,7 +77,7 @@ art-dir = art-director
 | audio-director | sound-designer |
 | narrative-director | writer, world-builder |
 | qa-lead | qa-tester |
-| release-manager | devops-engineer (release builds), qa-lead (release testing) |
+| release-manager | qa-lead (release testing) |
 | localization-lead | writer (string review), ui-programmer (text fitting) |
 | prototyper | (works independently, reports findings to producer and relevant leads) |
 | security-engineer | network-programmer (security review), lead-programmer (secure patterns) |
@@ -193,11 +193,10 @@ art-dir = art-director
 3. qa-lead              -- Runs full regression, signs off on quality
 4. localization-lead    -- Verifies all strings translated, text fitting passes
 5. performance-analyst  -- Confirms performance benchmarks within targets
-6. devops-engineer      -- Builds release artifacts, runs deployment pipeline
-7. release-manager      -- Generates /changelog, tags release, creates release notes
-8. technical-director   -- Final sign-off on major releases
-9. release-manager      -- Deploys and monitors for 48 hours
-10. producer            -- Marks release complete
+6. release-manager      -- Generates /changelog, tags release, creates release notes
+7. technical-director   -- Final sign-off on major releases
+8. release-manager      -- Deploys and monitors for 48 hours
+9. producer             -- Marks release complete
 ```
 
 ### Pattern 8: Rapid Prototype
@@ -252,7 +251,6 @@ When an ADR is created or modified, the technical-director must notify:
 When the art bible or asset standards change, the art-director must notify:
 - technical-artist (pipeline changes)
 - All content creators working with affected assets
-- devops-engineer (if build pipeline is affected)
 
 ## Anti-Patterns to Avoid
 
