@@ -1,5 +1,5 @@
 # IncrementalAsteroidsBoomerang
-A copy of Astro Prospector, but with a boomerang projectile. For researching how to build an entire game completely with Claude code.
+A copy of Astro Prospector, but with a boomerang projectile. For researching how to build an entire game completely with Claude code. Then we use Bezi to refine the game if needed so we can submit to the game jam.
 
 ## Setup
 Because Unity uses Unix LF line endings for serializing prefabs and meta assets we just leave them alone. Add the following line to %UserProfile%\.gitconfig.
