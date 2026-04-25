@@ -46,6 +46,7 @@ public class C6StatResolver : MonoBehaviour
     private void Awake()
     {
         _state = ResolverState.Ready;
+        TriggerAggregation();
     }
 
     private void OnDestroy()

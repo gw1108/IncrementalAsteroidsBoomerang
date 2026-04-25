@@ -252,6 +252,3 @@ G3 does not depend on: camera system, audio, VFX, UI, object pool, or fixed-time
 - [ ] ArcFlightTime values of 0.0, -1.0, 0.05 all clamp to 0.1 s with no exception.
 - [ ] Target destroyed mid-flight: no NullReferenceException; boomerang completes arc to P2.
 - [ ] Chain still in flight when primary caught: chain continues independently, primary cooldown seeds normally.
-
-### Performance (basic)
-- [ ] No heap allocations per-frame during boomerang flight (no LINQ, no new collections in Update/FixedUpdate hot paths).
