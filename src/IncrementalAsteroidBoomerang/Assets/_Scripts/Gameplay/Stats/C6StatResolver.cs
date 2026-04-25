@@ -27,27 +27,31 @@ public class C6StatResolver : MonoBehaviour
         }
     }
 
-    // Ranges sourced from GDD field inventory table
+    // All player-facing and upgradeable stats are registered here so P1a/P1b have a single
+    // authoritative extension point. Never put tuning values in MonoBehaviour inspector fields
+    // if they are meant to be upgrade-influenced.
+    // Ranges sourced from GDD field inventory table.
     private static readonly Dictionary<string, FieldSpec> Specs = new Dictionary<string, FieldSpec>
     {
-        { StatKeys.BaseDamage,           new FieldSpec(1f,    1f,   float.MaxValue, true)  },
-        { StatKeys.ThrowCooldown,        new FieldSpec(0.8f,  0.1f, 10.0f,          false) },
-        { StatKeys.ArcRadius,            new FieldSpec(5.0f,  0.0f, 20.0f,          false) },
-        { StatKeys.ArcFlightTime,        new FieldSpec(0.8f,  0.1f, 10.0f,          false) },
-        { StatKeys.PierceFalloff,        new FieldSpec(0.35f, 0.0f, 1.0f,           false) },
-        { StatKeys.ChainCount,           new FieldSpec(0f,    0f,   1f,             true)  },
+        { StatKeys.BaseDamage,                    new FieldSpec(1f,    1f,   float.MaxValue, true)  },
+        { StatKeys.ThrowCooldown,                 new FieldSpec(0.8f,  0.1f, 10.0f,          false) },
+        { StatKeys.ArcRadius,                     new FieldSpec(5.0f,  0.0f, 20.0f,          false) },
+        { StatKeys.ArcFlightTime,                 new FieldSpec(0.8f,  0.1f, 10.0f,          false) },
+        { StatKeys.PierceFalloff,                 new FieldSpec(0.35f, 0.0f, 1.0f,           false) },
+        { StatKeys.ChainCount,                    new FieldSpec(0f,    0f,   1f,             true)  },
+
+        // E1 — Fuel Economy
+        { StatKeys.FuelStartingAmount,            new FieldSpec(20f,  5f,    120f,  false) },
+        { StatKeys.FuelDecayRate,                 new FieldSpec(1.0f, 0.1f,  5.0f,  false) },
+        { StatKeys.FuelPerKill,                   new FieldSpec(0.0f, 0.0f,  30.0f, false) },
+        { StatKeys.FuelDiminishingReturnsFactor,  new FieldSpec(0.8f, 0.0f,  1.0f,  false) },
+        { StatKeys.FuelMinExtension,              new FieldSpec(0.1f, 0.0f,  10.0f, false) },
     };
 
     [SerializeField] private UpgradeSource[] _producers; // ordered: P1a first, G4 second
 
     private ResolverState _state = ResolverState.Ready;
     private GameStatsContext _context;
-
-    private void Awake()
-    {
-        _state = ResolverState.Ready;
-        TriggerAggregation();
-    }
 
     private void OnDestroy()
     {
@@ -217,7 +221,12 @@ public class C6StatResolver : MonoBehaviour
             arcRadius: ResolveFloat(StatKeys.ArcRadius),
             arcFlightTime: ResolveFloat(StatKeys.ArcFlightTime),
             pierceFalloff: ResolveFloat(StatKeys.PierceFalloff),
-            chainCount: chainCount
+            chainCount: chainCount,
+            fuelStartingAmount:           ResolveFloat(StatKeys.FuelStartingAmount),
+            fuelDecayRate:                ResolveFloat(StatKeys.FuelDecayRate),
+            fuelPerKill:                  ResolveFloat(StatKeys.FuelPerKill),
+            fuelDiminishingReturnsFactor: ResolveFloat(StatKeys.FuelDiminishingReturnsFactor),
+            fuelMinExtension:             ResolveFloat(StatKeys.FuelMinExtension)
         );
     }
 
@@ -227,15 +236,13 @@ public class C6StatResolver : MonoBehaviour
     {
         TriggerAggregation();
         var ctx = GetContext();
-        Debug.Log(
-            $"[C6StatResolver] Resolved Context:\n" +
-            $"  BaseDamage:           {ctx.BaseDamage}\n" +
-            $"  ThrowCooldown:        {ctx.ThrowCooldown:F3} s\n" +
-            $"  ArcRadius:            {ctx.ArcRadius:F3} wu\n" +
-            $"  ArcFlightTime:        {ctx.ArcFlightTime:F3} s\n" +
-            $"  PierceFalloff:        {ctx.PierceFalloff:F3}\n" +
-            $"  ChainCount:           {ctx.ChainCount}\n" +
-            this);
+        var sb = new System.Text.StringBuilder("[C6StatResolver] Resolved Context:\n");
+        foreach (var field in typeof(GameStatsContext).GetFields(
+            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
+        {
+            sb.AppendLine($"  {field.Name}: {field.GetValue(ctx)}");
+        }
+        Debug.Log(sb.ToString(), this);
     }
 #endif
 }

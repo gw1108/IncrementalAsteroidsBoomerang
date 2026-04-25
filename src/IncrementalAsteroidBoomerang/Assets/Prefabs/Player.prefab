@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5551452662614218799}
   - component: {fileID: -8914768890513665968}
   - component: {fileID: 572193160141944015}
+  - component: {fileID: 6205075498163484824}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -187,6 +188,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48fd176924e9d234187698b6e71cdf86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWallet
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  Money: 0
+--- !u!114 &6205075498163484824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3404230650981048978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc992ddb82eca2a4e938a837a0fa7c48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FuelManager
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 

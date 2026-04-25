@@ -15,5 +15,6 @@ public class BoomerangTarget : MonoBehaviour
         if (!IsAlive) return;
         IsAlive = false;
         gameObject.SetActive(false);
+        FuelManager.Instance.OnTargetKilled();
     }
 }
