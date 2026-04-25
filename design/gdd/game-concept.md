@@ -170,7 +170,7 @@ This section is the foundation of the forthcoming art bible and the gate all ass
 
 ### Moment-to-Moment (30 seconds)
 
-Player pilots the ship with WASD/gamepad. The boomerang auto-throws at the nearest enemy on a short cooldown, travels on a visible weighty arc, punches through targets (pierce mods), triggers mod behaviors on contact (chain, explode-on-return), and auto-returns on a fixed arc. During the flight-and-return window, the player **reads enemy density and repositions** — the returning boomerang should chain through the next cluster on its way back. Mining asteroids yields currency; killing enemies yields XP/currency. Fuel ticks down continuously.
+Player pilots the ship with WASD. The boomerang auto-throws at the nearest enemy on a short cooldown, travels on a visible weighty arc, punches through targets (pierce mods), triggers mod behaviors on contact (chain, explode-on-return), and auto-returns on a fixed arc. During the flight-and-return window, the player **reads enemy density and repositions** — the returning boomerang should chain through the next cluster on its way back. Mining asteroids yields currency; killing enemies yields XP/currency. Fuel ticks down continuously.
 
 **What makes it satisfying in isolation**:
 - **Audio**: heavy "thunk" on asteroid crack; whistle-arc during flight; low chime on catch
@@ -289,10 +289,10 @@ Run → persistent skill-tree shop → run → shop → … → boss defeated �
 | ---- | ---- |
 | **Recommended Engine** | **Unity 6 LTS** — confirmed; locked in by user preference |
 | **Rendering** | **URP 2D Renderer** (for 2D lights + 2D post-processing + modern sprite shaders). Ruthless feature stripping required for WebGL bundle size. |
-| **Input** | **New Input System** (Old Input Manager has known WebGL gamepad issues) |
+| **Input** | **New Input System** — keyboard only (WASD and arrow keys) |
 | **Physics** | **Physics 2D (Box2D)** for collision detection only. Boomerang motion is **kinematic scripted**, not Rigidbody2D. Strip Physics 3D from build entirely. |
-| **Asset Management** | **Addressables from day 1** — even if MVP ships a single bundle, the integration is architectural. |
-| **Persistence** | **File Based Player Prefs** replaces the standard Unity PlayerPrefs. |
+| **Asset Management** | Direct asset references in the scene; `Resources.Load` for runtime-loaded assets only. |
+| **Persistence** | Unity `PlayerPrefs` for lightweight persistent state (skill tree purchases, currency). No save-system abstraction. |
 | **Art Style** | 2D sprite-based; Deep Forge palette; flat per-surface color (no normals, no PBR); hand-drawn or AI-assisted |
 | **Art Pipeline Complexity** | Medium — custom 2D sprites, sprite-sheet animation, sprite-based VFX |
 | **Audio Needs** | Moderate — SFX critical for P4 weighty feel; 2–3 music tracks for MVP; AudioContext must be unlocked on first user input (Unity WebGL quirk) |
@@ -304,14 +304,11 @@ Run → persistent skill-tree shop → run → shop → … → boss defeated �
 The following are inputs to `/create-architecture` and `/architecture-decision`:
 
 1. **Object pooling layer** — `Pool<T>` with pre-warm; mandatory for boomerang, enemies, damage numbers, VFX, audio sources, asteroids, pickups
-2. **Save-layer abstraction** — `ISaveStore` with `BrowserIndexedDBStore` and (post-MVP) `SteamCloudStore` implementations. JSON blob, schema-versioned, node IDs as stable strings
-3. **Kinematic scripted boomerang** — not Rigidbody2D
-4. **Addressables from day 1**
-5. **URP 2D with ruthless feature stripping** — document enabled features
-6. **UGUI for skill tree** with custom mesh-based connector Graphic (NOT one Image per line, NOT UI Toolkit for MVP)
-7. **Custom fixed-timestep game tick decoupled from render** — consistent feel across 60/120/144 Hz displays
-8. **Pre-allocated string pool** for damage numbers / UI labels — no per-frame string allocation
-9. **No `Resources.Load`, no `FindObjectsOfType` in hot paths**
+2. **Kinematic scripted boomerang** — not Rigidbody2D
+3. **URP 2D with ruthless feature stripping** — document enabled features
+4. **UGUI for skill tree** with custom mesh-based connector Graphic (NOT one Image per line, NOT UI Toolkit for MVP)
+5. **Pre-allocated string pool** for damage numbers / UI labels — no per-frame string allocation
+6. **No `FindObjectsOfType` in hot paths**
 
 ### TD success criteria (to validate this verdict at implementation time)
 
@@ -367,11 +364,10 @@ The MVP answers one question: **Is the core loop fun enough to retain the Optimi
 2. Fuel-limited run economy with diminishing-return kill/mine extension
 3. Persistent hex-grid skill tree with ~25–30 nodes, center-out, prereq-gated
 4. 2 zones, each with 3 enemy types + 1 boss (in-field escalating-wave boss pattern)
-5. IndexedDB persistent save + clipboard export/import
-6. WebGL desktop-browser deployment, <30s cold-load target
-7. Deep Forge visual polish on Tier-1 weight surfaces (boomerang impact, enemy deaths, asteroid cracks)
-8. Sound design pass (2 music tracks, weighty impact SFX)
-9. Balance pass on fuel economy and tree pacing
+5. WebGL desktop-browser deployment, <30s cold-load target
+6. Deep Forge visual polish on Tier-1 weight surfaces (boomerang impact, enemy deaths, asteroid cracks)
+7. Sound design pass (2 music tracks, weighty impact SFX)
+8. Balance pass on fuel economy and tree pacing
 
 ### Explicitly NOT in MVP
 
@@ -387,7 +383,7 @@ The MVP answers one question: **Is the core loop fun enough to retain the Optimi
 
 | Tier | Content | Timeline (solo, pro dev) |
 | ---- | ---- | ---- |
-| **Tier 1 — Must Ship** | 1 zone, 3 enemies, 1 boss; 1 boomerang + 2 mods (Pierce, Chain); ~15 tree nodes, 3 clusters; fuel economy; save system; WebGL build | **~3 months** |
+| **Tier 1 — Must Ship** | 1 zone, 3 enemies, 1 boss; 1 boomerang + 2 mods (Pierce, Chain); ~15 tree nodes, 3 clusters; fuel economy; WebGL build | **~3 months** |
 | **Tier 2 — Should Ship (realistic target)** | Tier 1 + 2nd zone + 2nd boss + 3rd mod (Explode-on-return) + tree at 25–30 nodes + Tier-1 weight polish + sound pass + balance pass | **~4–5 months** (PR recommends planning for 5) |
 | **Tier 3 — Stretch** | Tier 2 + 4th mod (Multi-throw) + tree to ~40 nodes + prestige/NG+ + elites/enemy variants + full juice polish pass | **~5–6 months** |
 | **Tier 4 — Post-launch** | Steam port (3–4 weeks) + Steam achievements/leaderboards/cloud saves + 3rd zone + daily challenges | Post-MVP |
@@ -419,12 +415,12 @@ Ordered — do not skip ahead.
 - [x] 1. `/setup-engine` — configure Unity 6 LTS + URP 2D in the repo; populate `docs/engine-reference/unity/` with version-aware API snapshots (LLM knowledge cutoff is May 2025; engine version is newer)
 - [x] 2. `/art-bible` — Deep Forge visual anchor expanded into a full production-gating art bible (asset standards, character/enemy/boss design direction, VFX palette)
 - [x] 3. `/design-review design/gdd/game-concept.md` — validate this document against the 8-section GDD standard before downstream GDD authoring
-- [x] 4. `/map-systems` — decompose the concept into individual systems (ship control, boomerang weapon, mod system, fuel economy, asteroid mining, enemy waves, boss encounter, skill tree, shop/progression, save system, run/session state) with dependency map and priority tiers
+- [x] 4. `/map-systems` — decompose the concept into individual systems (ship control, boomerang weapon, mod system, fuel economy, asteroid mining, enemy waves, boss encounter, skill tree, shop/progression, run/session state) with dependency map and priority tiers
 - [ ] 5. `/design-system [system]` — author per-system GDDs in dependency order. Start with the Boomerang Weapon system (highest-risk, validates Week 1 prototype gate).
 - [ ] 6. `/review-all-gdds` — holistic cross-system consistency check before architecture
 - [ ] 7. `/gate-check concept-to-architecture` — phase gate
 - [ ] 8. `/create-architecture` — master architecture blueprint and Required ADR list
-- [ ] 9. `/architecture-decision (×N)` — write ADRs for each Required decision (object pooling, save abstraction, Addressables structure, URP feature stripping, UI framework choice, fixed-timestep tick, kinematic motion pattern, …)
+- [ ] 9. `/architecture-decision (×N)` — write ADRs for each Required decision (object pooling, URP feature stripping, UI framework choice, kinematic motion pattern, …)
 - [ ] 10. `/create-control-manifest` — compile decisions into actionable rules sheet
 - [ ] 11. `/architecture-review` — validate coverage
 - [ ] 12. `/ux-design` — UX specs for main menu, pre-run, in-run HUD, skill tree, death/return screens

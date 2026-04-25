@@ -8,7 +8,6 @@ public class TestUpgradeSource : UpgradeSource
         new StatDelta(StatKeys.BaseDamage,    DeltaMode.Additive,       1),
         new StatDelta(StatKeys.ArcRadius,     DeltaMode.Additive,       1.0f),
         new StatDelta(StatKeys.ThrowCooldown, DeltaMode.Additive,       -0.1f),
-        new StatDelta(StatKeys.ThrowCooldown, DeltaMode.Multiplicative, 0.85f), // G4 mod: ×0.85
     };
 }
 #endif

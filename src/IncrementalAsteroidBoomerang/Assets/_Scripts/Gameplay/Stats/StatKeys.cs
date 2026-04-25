@@ -6,5 +6,4 @@ public static class StatKeys
     public const string ArcFlightTime        = "arc_flight_time";
     public const string PierceFalloff        = "pierce_falloff";
     public const string ChainCount           = "chain_count";
-    public const string ReturnDetonateRadius = "return_detonate_radius";
 }

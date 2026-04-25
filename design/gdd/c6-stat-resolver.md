@@ -159,7 +159,7 @@ Happy path per run: `S1 → S2 → S3 → S1 → …`
 | **P1a Skill Tree Architecture** | P1a → C6 (at query) | Implements `IUpgradeSource`. Injected first. Returns deltas for purchased tree nodes. Does not hold a reference to C6. |
 | **G4 Mod System** | G4 → C6 (at query) | Implements `IUpgradeSource`. Injected second. Returns deltas for active mod loadout. Multipliers applied after P1a. |
 | **G1, G3, G5, G6, G7** | Consumer → C6 (read-only) | Each calls `C6.GetContext()` to obtain a struct copy. G3 calls once per throw at `ArmedForThrow`. G1 calls at run-start. G5/G6/G7 call at their appropriate trigger points. None reference P1a or G4 directly. |
-| **U2 Skill Tree UI / U3 Meta UI** | U → C6 (read-only pull) | U2 may call `C6.GetContext()` on user-input triggers (node panel open) to display current resolved stats. Not a frame poll. Pre-purchase stat preview is an open question — see OQ-C6-6. |
+| **U2 Skill Tree UI / U3 Meta UI** | U → C6 (read-only pull) | U2 may call `C6.GetContext()` on user-input triggers (node panel open) to display current resolved stats. Not a frame poll. |
 | **Not connected** | — | E1, E2, E3, S1, V1, A1, G2, M1, M2 have no interaction with C6. |
 
 ## Formulas
@@ -405,9 +405,5 @@ All criteria are automatable as Unity Test Framework EditMode unit tests. Target
 - **OQ-C6-4** — The three Provisional-G1 fields (`ship_move_speed`, `ship_damage_resistance`, `ship_invulnerability_duration`) have no baseline values yet. G1's GDD must confirm baselines so C6 can initialise defaults correctly. *Owner: G1 GDD authoring.*
 
 - **OQ-C6-5** — If C6 is in S0 when C5 triggers aggregation (fresh first install, no producers registered yet), the result is baseline-only context (CR-11). C5's run-start flow must not treat an unregistered C6 as an error. *Owner: C5 GDD authoring.*
-
-- **OQ-C6-6** — Does the between-run shop UI (U2) need to show a stat preview before purchase (e.g., "Damage: 4 → 5")? The current design supports reading the current resolved context only. A preview would require either a `PreviewContext(pendingDelta)` method on C6 or P1a computing previews locally without C6. *Owner: P1a and U2 GDD authoring.*
-
-  **Known UX risk — "additive-under-multiplier silently rewrites purchased-node value"**: The additive-first ordering (CR-4) means a player who buys "+1 arc_radius" when they have no mods, then later acquires a ×1.3 arc_radius mod, will find that the same purchased node now delivers +1.3 wu instead of +1.0 wu — without any visible change to the tree display. This is a quiet breach of the "tree is a contract" (P5) fantasy. Until OQ-C6-6 is resolved with a concrete UI approach, this interaction is an accepted design risk that must be flagged when P1a and U2 GDDs are authored.
 
 - **OQ-C6-7** — ~~Exact C5 bootstrap injection method name: constructor parameter vs. a dedicated `C5BootstrapInject(IUpgradeSource[])` method.~~ **RESOLVED 2026-04-24**: Injection method is `Bootstrap(IUpgradeSource[] producers)` — a dedicated public method on C6 called once by C5 during scene-load bootstrap. Constructor injection is not viable for Unity MonoBehaviours. AC-2 is now unblocked.

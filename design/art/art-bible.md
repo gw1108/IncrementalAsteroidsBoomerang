@@ -1471,7 +1471,7 @@ Audio sync point: F12 (Point Light2D fade-in start).
 - Text: Blueprint Gold 100%, Panel: `#221E18`, inner chamfered-edge highlight 25% Blueprint Gold
 - 2-frame transition
 
-#### 7.5.5 Focus Ring (gamepad / keyboard nav) — Conflict 1 resolved
+#### 7.5.5 Focus Ring (keyboard nav) — Conflict 1 resolved
 
 - **Outer chamfered-rectangle, 1px Blueprint Gold at 75% opacity, 2px outside element boundary**
 - **Persistent** until navigation moves (unlike hover which requires pointer/focus)
@@ -1501,34 +1501,23 @@ Prevents accidental irreversible spends.
 #### 7.6.3 Tooltip Behavior
 
 - **Mouse hover**: 400ms dwell delay, then appear instantly. Dismiss immediately on cursor-leave.
-- **Gamepad**: North button (Y/Triangle) **toggles** tooltip for focused node. Tooltip tracks focus on d-pad movement (does not require re-press). Dismisses on Cancel (East) or screen context change.
 - **DO NOT use hold-to-confirm for tooltip** — conflicts with purchase-confirm flow, creates accidental-purchase risk.
 
-#### 7.6.4 Skill Tree Navigation (d-pad / Tab)
+#### 7.6.4 Skill Tree Navigation (Tab)
 
 **UGUI default scene order will produce broken-feeling navigation on a hex grid.** Required: explicit UGUI Navigation override on every node.
-
-**D-pad mapping**: spatial-nearest-neighbor per quadrant. Hex has 6 logical neighbors → collapse to 4 d-pad directions (up-right + right → Right, down-right + right → Right, etc.). Nearest wins. Pre-computed at tree load.
 
 **Keyboard Tab**: spatial left-to-right, tier-by-tier. Root = Tab start. Shift+Tab reverses.
 
 #### 7.6.5 Zoom / Pan
 
 - **Mouse**: scroll-wheel zoom; middle-mouse or right-click-drag to pan; left-click-drag on empty parchment to pan; cursor changes to grab on parchment hover
-- **Gamepad**: L/R triggers = smooth zoom (analog) or bumpers = stepped zoom. Left stick = pan when zoomed in (faster than d-pad repositioning).
 - **"Scroll to zoom" hint**: first-entry-only Share Tech Mono text at bottom of skill tree screen (HUD Neutral, small), dismisses after first zoom input.
 
-#### 7.6.6 Gamepad Action Bindings (tree screen)
+#### 7.6.6 Pause
 
-- **South (A/Cross)**: confirm purchase
-- **East (B/Circle)**: cancel / close tree / return to run-start
-- **North (Y/Triangle)**: toggle tooltip
-- **Start/Options**: no-op in tree screen (reserved for pause in-run)
-
-#### 7.6.7 Pause
-
-- **Key/button**: Escape (keyboard) / Start/Options (gamepad). Genre standard.
-- **Behavior**: halt game tick (separate from render, per TD custom fixed-timestep mandate), present pause menu within 1 frame of input (no fade-in delay — input-delay anxiety in bullet-hell context)
+- **Key**: Escape (keyboard). Genre standard.
+- **Behavior**: pause via `Time.timeScale = 0`, present pause menu within 1 frame of input (no fade-in delay — input-delay anxiety in bullet-hell context)
 - **WebGL focus-trap (REQUIRED)**: pause must apply JS-side canvas focus lock. Without it, Tab escapes to browser chrome. Handoff to ui-programmer.
 
 ### 7.7 Accessibility Baseline (UX-added, REQUIRED at MVP)
@@ -1595,7 +1584,7 @@ Prevents accidental irreversible spends.
 >
 > **Conflicts resolved against art-director preferences:**
 > 1. **Audio sample rate: 44.1 kHz** (AD preferred 48 kHz). WebGL AudioContext defaults to 44.1 kHz; runtime resampling wastes CPU and can introduce pitch artifacts on low-end browsers. AD's artifact concern at impact moments is mitigated by pre-mastering at 44.1 kHz rather than resampling at load.
-> 2. **Zone 1 / Zone 2 separate atlases** (AD preferred co-packing). `Addressables.Release()` operates at whole-atlas granularity; co-packing would prevent Zone 1 memory reclaim during Zone 2 play and break TD's <512 MB peak heap budget.
+> 2. **Zone 1 / Zone 2 separate atlases** (AD preferred co-packing). Separate atlases allow Zone 1 assets to be unloaded during Zone 2 play, keeping the peak heap under TD's <512 MB budget.
 
 ### 8.1 Sprite Assets
 
@@ -1638,7 +1627,7 @@ Prevents accidental irreversible spends.
 
 ### 8.2 Sprite Atlases
 
-**Atlas technology:** Unity **Sprite Atlas V2** (built-in). No external packers (TexturePacker etc.). V2 enables Late Binding for Addressables and proper group-scope variants.
+**Atlas technology:** Unity **Sprite Atlas V2** (built-in). No external packers (TexturePacker etc.).
 
 **Atlas inventory (5 atlases):**
 
@@ -1774,7 +1763,7 @@ Prevents accidental irreversible spends.
 - **Snake_case only.** No spaces, no hyphens, no PascalCase in asset filenames. (Unity meta files preserve case exactly; cross-OS case-sensitivity bites WebGL CI on Linux.)
 - **Variant suffix** (`_01`, `_02`) is two-digit, zero-padded.
 - **Size suffix** matches authored tier — a 128 px sprite is `_128`, never omit or round.
-- **No spaces anywhere in the Assets path.** Breaks Addressables catalog paths.
+- **No spaces anywhere in the Assets path.** Breaks Linux CI builds.
 
 ### 8.9 Directory Layout (`Assets/Art/` + `Assets/Audio/`)
 
@@ -1809,20 +1798,7 @@ Assets/
 │       ├── Zone1/
 │       ├── Zone2/
 │       └── Stingers/
-└── AddressableAssetsData/   # catalogs, group assets
 ```
-
-### 8.10 Addressables Group Structure
-
-- **Group_Core** — always loaded. Contains: `Atlas_Core`, `Atlas_VFX`, font atlases, core UI prefabs, player ship prefab, boomerang prefab. Flagged as **Cannot Change Post Release** (shipped in initial bundle).
-- **Group_Zone1** — loaded on Zone 1 enter, released on Zone 1 exit. Contains: `Atlas_Zone1_Field`, Zone 1 enemy prefabs, Zone 1 boss prefab, Zone 1 music stems, Zone 1 SFX pack.
-- **Group_Zone2** — mirror of Zone 1.
-- **Group_SkillTree** — loaded on tree open, optionally released on tree close (Tier 2 optimization). Contains: `Atlas_SkillTree`, tree panel prefabs, schematic parchment texture.
-- **Group_Stingers** — preloaded at session start (small footprint, frequent access): death stinger, zone-complete stinger, purchase confirmation SFX.
-
-**Labels:** `zone1`, `zone2`, `boss`, `ui`, `persistent`, `audio`. Used for filtered preload queries.
-
-**Initial download target:** **<8 MB compressed (Brotli)**, **<20 MB decompressed** on first cold-load — per TD <30s cold-load mandate. Only `Group_Core` + `Group_Stingers` + `Group_SkillTree` (if skill tree is the landing screen) ship in the initial bundle. Zone groups stream on demand.
 
 ### 8.11 CI Validation (asset-lint hooks)
 
@@ -1835,7 +1811,7 @@ Pre-commit (or CI) hook `tools/art-lint.py` must flag any asset violating the fo
 | `Filter Mode: Trilinear` on any sprite | No mipmap chain — defaults to bilinear anyway, but flag as misconfiguration |
 | `Texture Compression: Crunch` on game-field sprite | Breaks flat-color edges |
 | `Read/Write Enabled: true` on any sprite | Doubles runtime memory; unnecessary outside procedural mesh cases |
-| Filename contains space or uppercase outside category prefix | Breaks Linux CI + Addressables catalog paths |
+| Filename contains space or uppercase outside category prefix | Breaks Linux CI |
 | WAV source sample rate ≠ 44.1 kHz | Forces runtime resampling |
 | Audio peak exceeds −3 dBFS | Loudness discipline violation |
 | Asset is not referenced by any atlas, scene, or prefab for 30 days | Garbage — flag for removal |
@@ -1848,7 +1824,7 @@ Pre-commit (or CI) hook `tools/art-lint.py` must flag any asset violating the fo
 | Separate Zone 1 / Zone 2 atlases | **TD** (memory reclaim under 512 MB ceiling) |
 | 44.1 kHz audio source | **WebGL AudioContext compatibility** (cold-load <30 s) |
 | RGBA straight alpha, no premultiplied | **WebGL shader correctness** |
-| Snake_case + no-spaces filenames | **Linux CI + Addressables catalog reliability** |
+| Snake_case + no-spaces filenames | **Linux CI reliability** |
 | Shuriken particles (not VFX Graph) | **WebGL 2.0 compute-shader non-support** |
 | Collision/Trails/Lights modules prohibited | **Draw-call budget** (<100 typical) |
 | MaterialPropertyBlock for tinting | **SRP Batcher integrity** (draw-call minimization) |

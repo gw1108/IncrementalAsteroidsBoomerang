@@ -259,4 +259,3 @@ Note: the ×0.85 mod applies to the post-additive 0.7 s value — additive-first
 
 - **OQ-C6-4** — Provisional G1 fields (`ship_move_speed`, `ship_damage_resistance`, `ship_invulnerability_duration`) have no baselines. G1 GDD must confirm them. *Owner: G1 GDD.*
 
-- **OQ-C6-6** — Does U2 need a stat preview before purchase ("Damage: 4 → 5")? Current design supports reading the current resolved context only. Preview would require a `PreviewContext(pendingDelta)` method or P1a handling it locally. **Known UX risk:** additive-under-multiplier silently changes a purchased node's effective value when a mod is added — quiet breach of the "tree is a contract" (P5) promise. Must be flagged when P1a and U2 GDDs are authored. *Owner: P1a and U2 GDD.*

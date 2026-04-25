@@ -22,7 +22,7 @@ cooldown and returns. Skill
 expression lives in positioning — moving the ship to
 maximize contacts on flight and return.
 
-> **Quick reference** — Layer: `Feature` · Priority: `MVP` · Key deps: `C2 Object Pooling, C3 Fixed-Timestep Tick, G1 Player Ship Controller, G2 Camera System, C6 Stat Resolver`
+> **Quick reference** — Layer: `Feature` · Priority: `MVP` · Key deps: `C2 Object Pooling, G1 Player Ship Controller, G2 Camera System, C6 Stat Resolver`
 
 ## Overview
 
@@ -147,7 +147,7 @@ Rules are numbered. Each is unambiguous. Formulas live in Section Formulas;
 edge-case handling lives in Section Edge Cases.
 
 **CR-1 Throw Conditions.** The ship fires a throw when ALL are true in the same
-fixed tick:
+each `Update()` frame:
 1. Boomerang state machine is in `Idle`.
 2. Throw cooldown timer ≤ 0. Timer is seeded from `GameStatsContext.throw_cooldown`
    at the moment of the *previous catch*, not the previous throw.
@@ -219,7 +219,7 @@ enters another entity's trigger during any flight state:
 5. If this is the primary boomerang's **first outbound contact**, trigger
    chain (CR-7).
 
-Multi-entity contact in a single fixed-timestep frame: process in order of
+Multi-entity contact in a single single frame: process in order of
 Physics2D collider-enumeration (first-enter = first-processed). Flag for
 Section Edge Cases (frame-ordering determinism).
 
@@ -260,9 +260,9 @@ a live target at the apex — apex is a geometric point, not a re-acquisition
 event.
 
 **CR-9 Catch Rule.** Catch detection is only active during `Inbound`. Each
-fixed-timestep frame, the primary boomerang checks whether its collider
+single frame, the primary boomerang checks whether its collider
 intersects G1's ship-collider. On intersection:
-1. Transition to `CaughtLate` transient state (one fixed-timestep frame).
+1. Transition to `CaughtLate` transient state (one single frame).
 2. If `GameStatsContext.return_detonate_radius > 0`, fire AoE damage to all
    valid targets within radius from catch position. This is the only moment
    the AoE fires. Formula applies full `base_damage` (no pierce falloff —
@@ -283,7 +283,7 @@ with no cooldown effect (CR-7).
 candidates in registry):
 - No throw fires.
 - Cooldown is not reset, not modified.
-- State remains `Idle`; system re-evaluates next fixed tick.
+- State remains `Idle`; system re-evaluates next each `Update()` frame.
 - No audio, no VFX, no UI feedback. Silence is the signal that the field is
   clear.
 
@@ -305,12 +305,12 @@ lifecycle. They run independently but share the same underlying arc integrator.
 
 | State | Entry Condition | Behavior During State | Exit Condition |
 |-------|----------------|----------------------|----------------|
-| **Idle** | Game start; OR `CaughtLate` completes; OR throw suppressed (no target / bounds fail) | Cooldown timer counts down. Each fixed tick re-evaluates throw conditions (CR-1). | All throw conditions met → `ArmedForThrow` (same tick) |
+| **Idle** | Game start; OR `CaughtLate` completes; OR throw suppressed (no target / bounds fail) | Cooldown timer counts down. Each `Update()` re-evaluates throw conditions (CR-1). | All throw conditions met → `ArmedForThrow` (same frame) |
 | **ArmedForThrow** | Throw conditions satisfied in `Idle` | Run CR-4 target acquisition. Compute arc (CR-2). Run bounds clamp (CR-3). Snapshot `GameStatsContext` from C6. Acquire pool instance. Set arc parameters on instance. | Arc committed + instance acquired → `Outbound`. If bounds fails at `arc_radius=0` → back to `Idle` |
-| **Outbound** | Entry from `ArmedForThrow` | Boomerang interpolates along outbound arc leg each fixed tick. Contact detection active. On contact: CR-5 fires; if first contact: CR-7 also fires. | Boomerang position reaches apex (target position) → `PeakTurn` |
-| **PeakTurn** | Apex reached | Single fixed-timestep frame. Assigns inbound vector. Contact detection remains active this frame. | Frame ends → `Inbound` |
-| **Inbound** | Entry from `PeakTurn` | Boomerang interpolates along inbound arc leg each fixed tick, homing on ship's live anchor. Contact detection active (CR-5 fires on overlaps with enemies/asteroids but NOT chain — chain is outbound-only per CR-7). Catch-check against ship-collider each tick (CR-9). | Boomerang collider overlaps ship-collider → `CaughtLate` |
-| **CaughtLate** | Catch detected in `Inbound` | Single fixed-timestep frame. Fire detonate AoE if active. Seed cooldown. Release to pool. Raise `BoomerangCaught` event. | Frame ends → `Idle` |
+| **Outbound** | Entry from `ArmedForThrow` | Boomerang interpolates along outbound arc leg each `Update()`. Contact detection active. On contact: CR-5 fires; if first contact: CR-7 also fires. | Boomerang position reaches apex (target position) → `PeakTurn` |
+| **PeakTurn** | Apex reached | Single frame. Assigns inbound vector. Contact detection remains active this frame. | Frame ends → `Inbound` |
+| **Inbound** | Entry from `PeakTurn` | Boomerang interpolates along inbound arc leg each `Update()`, homing on ship's live anchor. Contact detection active (CR-5 fires on overlaps with enemies/asteroids but NOT chain — chain is outbound-only per CR-7). Catch-check against ship-collider each frame (CR-9). | Boomerang collider overlaps ship-collider → `CaughtLate` |
+| **CaughtLate** | Catch detected in `Inbound` | Single frame. Fire detonate AoE if active. Seed cooldown. Release to pool. Raise `BoomerangCaught` event. | Frame ends → `Idle` |
 
 Happy path: `Idle → ArmedForThrow → Outbound → PeakTurn → Inbound → CaughtLate → Idle`.
 
@@ -330,7 +330,7 @@ Happy path: `Spawned → ChainOutbound → ChainReturning → Vanished`.
 | Dependency | G3 reads | G3 writes | Ownership | Notes |
 |---|---|---|---|---|
 | **C2 Object Pooling** | `primaryPool.Acquire()`; `chainPool.Acquire()` | `primaryPool.Release(instance)`; `chainPool.Release(instance)` | C2 owns pool lifetime; G3 calls acquire/release | Two pools: primary (pre-warm 1), chain (pre-warm 1). Seeded at run-start, not lazily — avoids first-throw allocation spike. |
-| **C3 Fixed-Timestep Tick** | `GameTick` event via `OnTick(float fixedDeltaTime)` subscription | — | C3 owns tick cadence | G3 subscribes `OnEnable`, unsubscribes `OnDisable`. All arc integration, contact evaluation, and catch-check run in this callback. Never in `Update`. |
+| **Unity Update()** | `Update(float deltaTime)` | — | Unity owns tick cadence | All arc integration, contact evaluation, and catch-check run in `Update()`. |
 | **C6 Stat Resolver** | `GameStatsContext` snapshot read **once per primary throw** at `ArmedForThrow`. Chain inherits parent's snapshot, does NOT re-query C6. | — | C6 owns resolution. G3 is consumer-only. | Stats: `base_damage`, `throw_cooldown`, `arc_radius`, `arc_flight_time`, `pierce_falloff`, `chain_count`, `return_detonate_radius`. Mid-flight stat changes do NOT affect in-flight instances — immutable per throw by design (predictability; Pillar 2). |
 | **G1 Player Ship Controller** | `IShipAnchor.WorldPosition` (throw origin, sampled at throw-commit); `IShipAnchor.ShipCollider` reference (catch detection) | — | G1 exposes stable interface; G3 holds cached reference injected at scene-load (no `Find`) | Catch detection: each `Inbound` tick, G3 checks overlap of own collider with ship-collider. |
 | **G2 Camera System** | `ICameraBounds.PlayArea` (for bounds enforcement, CR-3) | `ICameraShakeRequester.Request(intensity, duration, direction)` on contact events | G2 owns camera; G3 is requester via concrete interface (NOT event bus per TD-SYSTEM-BOUNDARY #2) | Shake intensity derives from stats × per-event scalar — exact mapping in Game Feel section. |
@@ -346,8 +346,7 @@ Happy path: `Spawned → ChainOutbound → ChainReturning → Vanished`.
 #### Unity 6.3 LTS Implementation Requirement (not implementation)
 
 **Requirement**: Kinematic scripted motion with reliable trigger-based contact
-detection on a pooled 2D collider at fixed-timestep cadence, with interpolated
-render between ticks for smooth playback on 60/120/144 Hz displays.
+detection on a pooled 2D collider, updated each `Update()` frame.
 
 **Implementation path deferred to ADR.** Two candidates are both viable and
 must be evaluated by the kinematic-motion ADR:
@@ -368,10 +367,7 @@ LTS (per `docs/engine-reference/unity/breaking-changes.md` MEDIUM risk). If
 option 1 is selected, verify trigger-enter callback ordering at Week-1
 prototype against dense-cluster pierce scenarios.
 
-**Fixed-tick render interpolation**: idiomatic pattern — store
-`_previousPosition` and `_currentPosition` in the controller each C3 tick; in
-`Update`, lerp by `(Time.time - Time.fixedTime) / Time.fixedDeltaTime`. Both
-implementation candidates use this pattern.
+**Smooth motion**: position is updated each `Update()` frame using `Time.deltaTime`. Motion is smooth at all frame rates.
 
 #### Edge Cases Flagged for Section Edge Cases
 
@@ -390,7 +386,7 @@ Recorded here so nothing is lost when Section Edge Cases is authored:
 7. Primary boomerang's detonate-AoE re-damages an entity already hit in
    this arc (double damage within one throw?).
 8. Frame-level ordering when primary hits 2+ entities in a single
-   fixed-timestep frame (which is "first" for chain-trigger?).
+   single frame (which is "first" for chain-trigger?).
 9. `arc_flight_time` tuning value = 0 (division-by-zero in interpolation).
 10. Pool exhaustion attempt on primary or chain pool (unreachable per
     CR-11 but needs defensive behavior).
@@ -403,7 +399,7 @@ Recorded here so nothing is lost when Section Edge Cases is authored:
 
 ## Formulas
 
-All formulas are evaluated in the C3 `OnTick(float fixedDeltaTime)` callback.
+All formulas are evaluated in Unity's `Update()` callback.
 No heap allocations occur in formula evaluation paths — all intermediate values
 are `float` or `Vector2` stack locals.
 
@@ -461,7 +457,7 @@ where `t_norm = t / arc_flight_time` (normalized 0 → 1, clamped).
 | `P1` | Vector2 | derived | Bezier control point: midpoint(P0,P2) + perp_right × 2 × arc_radius. Frozen. |
 | `arc_radius` | float | 0.0–20.0 world units | Peak deviation of the arc from the straight line. Clamped by CR-3 before throw. |
 | `arc_flight_time` | float | 0.1–5.0 s | Outbound leg duration. Must be > 0; clamped at 0.1 before use. |
-| `t` | float | 0.0–arc_flight_time s | Elapsed time since throw. Accumulated each fixed tick. |
+| `t` | float | 0.0–arc_flight_time s | Elapsed time since throw. Accumulated each each `Update()` frame. |
 | `t_norm` | float | 0.0–1.0 | `t / arc_flight_time`. Clamped. |
 | `pos_out` | Vector2 | play area bounds | World position of boomerang at time t. |
 
@@ -509,7 +505,7 @@ where `s_norm = s / arc_flight_time` (s = elapsed time since `PeakTurn`).
 | Symbol | Type | Range | Description |
 |---|---|---|---|
 | `P2_in` | Vector2 | play area bounds | Apex position = F1's P2. Frozen at throw commit. |
-| `P3_live` | Vector2 | play area bounds | Ship anchor sampled each fixed tick from `IShipAnchor.WorldPosition`. |
+| `P3_live` | Vector2 | play area bounds | Ship anchor sampled each each `Update()` frame from `IShipAnchor.WorldPosition`. |
 | `P1_in` | Vector2 | derived | Recomputed each tick: midpoint(P2_in, P3_live) + perp_left × 2 × arc_radius. |
 | `perp_left` | Vector2 | unit vector | `-perp_right` from F1. Frozen. |
 | `arc_radius`, `arc_flight_time` | float | same as F1 | Unchanged between legs. |
@@ -519,7 +515,7 @@ where `s_norm = s / arc_flight_time` (s = elapsed time since `PeakTurn`).
 
 **Output range**: guaranteed to reach `P3_live` at `s_norm = 1.0`. If the ship
 moves during return, `P1_in` shifts each tick — change per tick bounded by
-`ship_max_speed × fixedDeltaTime`, small enough to read as smooth.
+`ship_max_speed × deltaTime`, small enough to read as smooth.
 
 ---
 
@@ -600,11 +596,11 @@ identical.
 **Named expression**:
 
 ```
-cooldown_remaining(tick) = max(0.0, cooldown_remaining(tick - 1) - fixedDeltaTime)
+cooldown_remaining(tick) = max(0.0, cooldown_remaining(tick - 1) - deltaTime)
 ```
 
 Initialized to `throw_cooldown` at the tick `CaughtLate` resolves (CR-9
-step 3). Decrements each fixed tick. Clamps at 0.0 and holds. Throw permitted
+step 3). Decrements each each `Update()` frame. Clamps at 0.0 and holds. Throw permitted
 when `cooldown_remaining <= 0` (CR-1 condition 2).
 
 **Variables**:
@@ -612,7 +608,7 @@ when `cooldown_remaining <= 0` (CR-1 condition 2).
 | Symbol | Type | Range | Description |
 |---|---|---|---|
 | `throw_cooldown` | float | 0.1–10.0 s | Seed value from `GameStatsContext`. Loaded at catch, not at throw. |
-| `fixedDeltaTime` | float | > 0 s | Unity's `Time.fixedDeltaTime`, typically 0.02 s (50 Hz). From C3. |
+| `deltaTime` | float | > 0 s | Unity's `Time.deltaTime`. |
 | `cooldown_remaining` | float | 0.0–throw_cooldown s | Current value. Read by CR-1 condition 2 and by U1's cooldown wheel. |
 
 **Output range**: `[0.0, throw_cooldown]`. Terminal state 0.0 is stable.
@@ -700,7 +696,7 @@ makes this correct.
 | F2 Inbound position | Bezier(P2, P1_in live, P3_live) at s_norm | Vector2 | Play area |
 | F3 Pierce falloff | max(1, floor(base_damage × (1-pierce_falloff)^n)) | int | [1, base_damage] |
 | F4 Detonate damage | base_damage | int | [1, ∞) |
-| F5 Cooldown timer | max(0, remaining - fixedDeltaTime) per tick | float | [0, throw_cooldown] |
+| F5 Cooldown timer | max(0, remaining - deltaTime) per tick | float | [0, throw_cooldown] |
 | F6 Shake intensity (pierce) | clamp(base_shake × (1 + log2(dmg/base_dmg)), 0, max_shake) | float | [0, max_shake_intensity] |
 | F6 Shake intensity (detonate) | clamp(2·base_shake × (1 + log2(dmg/base_dmg)), 0, max_shake) | float | [0, max_shake_intensity] |
 
@@ -838,7 +834,7 @@ incentivized to set up by catching over a cluster (P2, P4) — by design.
 
 **EC-14 Frame-ordering when primary hits multiple entities in one fixed
 tick.** **If** the boomerang's collider overlaps two or more entity
-colliders in a single `Physics2D` resolution step within one fixed tick,
+colliders in a single `Physics2D` resolution step within one each `Update()` frame,
 **then** contacts are processed in the order `Physics2D` enumerates them.
 For option 1 (Kinematic Rigidbody2D + MovePosition), this is
 `OnTriggerEnter2D` callback order — deterministic within a frame but
@@ -854,14 +850,7 @@ simultaneous-contact test — exactly one `ChainTriggered` fires;
 
 ### Cross-System
 
-**EC-15 Pause, menu, or scene transition during flight.** **If** C3's
-fixed-tick loop is paused while the boomerang is in any active state,
-**then** the boomerang freezes at its last computed position. G3 subscribes
-to C3's `GameTick` event and receives no ticks when C3 is paused. Render
-interpolation (`Update` lerp) also freezes. On resume, ticking continues
-from the frozen state. No state corruption. Scene transitions that unload
-the current scene trigger `OnDisable` on `BoomerangController`, which
-unsubscribes and returns pool instances before scene unload.
+**EC-15 Pause, menu, or scene transition during flight.** **If** `Time.timeScale = 0` while the boomerang is in any active state, **then** the boomerang freezes at its last computed position since `Update()` is gated by `Time.deltaTime`. On resume, motion continues from the frozen state. No state corruption. Scene transitions that unload the current scene trigger `OnDisable` on `BoomerangController`, which returns pool instances before scene unload.
 **→ AC flag**: pause-resume determinism test — pausing 2 s mid-flight and
 resuming produces the same arc completion as uninterrupted.
 
@@ -890,7 +879,7 @@ cover the happy-path throw lifecycle only.* **→ AC flag**: verify pool
 `ActiveCount == 0` after run-end cleanup.
 
 **EC-18 Boomerang enters and exits a trigger before Physics2D resolves the
-contact.** **If** `arc_flight_time` is short and `fixedDeltaTime` is large
+contact.** **If** `arc_flight_time` is short and `deltaTime` is large
 enough that the boomerang travels more than one entity's trigger diameter
 in a single tick, **then** `OnTriggerEnter2D` may not fire for that entity
 (tunnel-through). For option 1 (Kinematic Rigidbody2D + MovePosition):
@@ -922,7 +911,7 @@ ship layer. **→ AC flag**: layer-mask configuration test — chain boomerang
 
 | System | Direction | Nature of Dependency |
 |--------|-----------|---------------------|
-| **C3 Fixed-Timestep Tick** | This depends on C3 | Structural — simulation cadence. Hard — all motion + contact detection runs in C3's tick callback. |
+| **Unity Update()** | This depends on Unity's Update loop | Structural — simulation cadence. All motion and contact detection runs in `Update()`. |
 | **C6 Stat Resolver** | This depends on C6 | Data — consumes `GameStatsContext` snapshot. Hard — G3 has no standalone stats; all boomerang behavior is stat-driven. |
 | **G1 Player Ship Controller** | This depends on G1 | Data — throw anchor + catch collider. Hard — boomerang has no origin without ship. |
 | **G2 Camera System** | This depends on G2 (for bounds) + requests to G2 (for shake) | Data (bounds) + Request (shake). Bounds-dep is hard (CR-3); shake-dep is soft (cosmetic if disabled). |
@@ -1012,9 +1001,8 @@ independently.
 ### Hitstop Implementation Note
 
 Hitstop is **render-layer only**. The boomerang sprite's rendered position
-freezes for N render frames while C3's fixed-tick continues. Motion integration
-does not pause; render interpolation is skipped during hitstop frames (position
-lerp held at contact position). This keeps physics consistent while delivering
+freezes for N render frames. `Update()` is skipped during hitstop frames (position
+held at contact position). This keeps physics consistent while delivering
 the feel signal. Exact implementation is V1's responsibility per the V1-primary
 decision. V1 must confirm this approach with `unity-specialist` during its GDD
 authoring.
@@ -1074,8 +1062,8 @@ feel-relevant "inputs" are (a) ship arriving inside the catch window, and
 
 | Action | Max Input-to-Response Latency | Notes |
 |--------|-------------------------------|-------|
-| Ship repositions into catch window | One fixed tick (≤ 20 ms at 50 Hz) | Catch detection runs every fixed tick (CR-9). Overlap this tick → catch this tick. Zero latency above fixed-tick cadence. |
-| Throw commit becomes visible to player | One fixed tick + one render frame (≤ 36 ms worst case at 50 Hz + 60 fps) | `ArmedForThrow` commits and raises `BoomerangThrown` in the tick; V1 throw-spark fires same tick; render interpolation displays at next render frame. |
+| Ship repositions into catch window | One `Update()` frame | Catch detection runs every `Update()` frame (CR-9). Overlap this frame → catch this frame. |
+| Throw commit becomes visible to player | One each `Update()` frame + one render frame (≤ 36 ms worst case at 50 Hz + 60 fps) | `ArmedForThrow` commits and raises `BoomerangThrown` in the tick; V1 throw-spark fires same tick; render interpolation displays at next render frame. |
 | Cooldown-wheel reflects catch | One render frame after `BoomerangCaught` fires (≤ 16 ms) | U1 subscribes to `BoomerangCaught` for wheel reset animation trigger. |
 | Detonate AoE fires (if archetype active) | Same frame as catch (CR-9 step 2) | AoE and catch are atomic in `CaughtLate`. No additional frame. |
 
@@ -1088,7 +1076,7 @@ visible motion. "Frames" = render frames at 60 fps (~ 16.6 ms each).
 |-------|---------|------------------------|----------|-----------|
 | Throw (release effect on ship) | 0 frames (auto-fire, no anticipation anim at MVP; TBD for Tier-3 wind-up) | 2 frames (spark burst) | 0 frames | Committed release, no build-up |
 | Outbound arc flight | 0 | `arc_flight_time` (default 0.8 s ≈ 48 frames) | 0 (trail fades per schedule) | Weighted transit, predictable |
-| PeakTurn transition | 0 | 1 fixed tick (≤ 20 ms) | 0 (inbound begins next tick) | Continuous, no corner (CR-2) |
+| PeakTurn transition | 0 | 1 frame | 0 (inbound begins next frame) | Continuous, no corner (CR-2) |
 | Inbound arc flight | 0 | `arc_flight_time` (same as outbound) | 0 | Returning with intent |
 | Catch (absorb on ship) | 0 | 2 frames (flash + sparks) | 0 | Seated, settled — door closing, not explosion |
 | Chain spawn | 0 | 2 frames (ring burst) | 0 | Secondary launch, subordinate to primary |
@@ -1115,7 +1103,6 @@ Using F6 values: `base_shake_intensity = 0.15` (TBD),
 | ChainVanished | 0 | None | None | None | None |
 
 **TBD flags (Week-1 prototype validation)**:
-- All rumble amplitudes/durations are placeholders — validate against physical gamepad at prototype stage.
 - Detonate camera zoom-out: at-risk for WebGL. Cut and compensate with VFX if it reads as judder.
 - `base_shake_intensity = 0.15` and `max_shake_intensity = 0.6` require calibration against G2's actual shake-implementation units and camera scale.
 
@@ -1158,7 +1145,6 @@ cost is a sub-optimal arc next throw.
 - [ ] No playtester describes a clean first hit (n=0) as "soft." White-yellow flash, 2-frame hitstop, and impact crack must register as a perceivable weight event even on `base_damage = 1` first run.
 - [ ] A playtester watching floor-damage hits (n=3+) and clean hits (n=0) side-by-side perceives them as different **in kind**, not just in degree. Zero-hitstop + scrape-only audio + minimal sparks at n=3+ must read as "this hit barely registered" against n=0's full flash + thud.
 - [ ] A playtester can identify the catch moment by audio alone, with no visual reference. The catch chime must be sufficiently distinct from impact SFX to survive audio-only identification.
-- [ ] Gamepad playtesters do NOT describe the throw-to-catch cycle as "weightless." Rumble events (throw, clean hit, catch) must collectively produce a physical texture across the cycle.
 - [ ] A playtester can anticipate the catch window and reposition toward it during the inbound leg.
 
 ## UI Requirements
@@ -1189,7 +1175,7 @@ dependency entry.
 | This Document References | Target GDD | Specific Element Referenced | Nature |
 |--------------------------|-----------|----------------------------|--------|
 | `GameStatsContext` snapshot per throw | `design/gdd/c6-stat-resolver.md` *(undesigned)* | `GameStatsContext` + `IUpgradeSource` contract | Data dependency |
-| `GameTick` event subscription | `design/gdd/c3-fixed-timestep-tick.md` *(undesigned)* | `OnTick(float fixedDeltaTime)` | State trigger |
+| Unity `Update()` loop | Unity MonoBehaviour lifecycle | `Update()` | State trigger |
 | `IShipAnchor.WorldPosition` + `ShipCollider` | `design/gdd/g1-player-ship-controller.md` *(undesigned)* | Ship anchor + catch collider interface | Data dependency |
 | `ICameraShakeRequester` + `ICameraBounds` | `design/gdd/g2-camera-system.md` *(undesigned)* | Shake-request contract + play-area bounds | Ownership handoff (shake budget) + Data dependency (bounds) |
 | `BoomerangThrown/Hit/ChainTriggered/ReturnStarted/Caught/ChainVanished` events | `design/gdd/g4-mod-system.md` *(undesigned)* | C# event subscriptions; `pierceIndex = -1` sentinel for detonate | State trigger |
@@ -1210,7 +1196,7 @@ scope.
 
 ### Core Rules Coverage
 
-- [Logic] **GIVEN** the state machine is in `Idle`, cooldown ≤ 0, and at least one valid `IBoomerangTarget` exists in `TargetRegistry`, **WHEN** a fixed tick fires, **THEN** the machine transitions to `ArmedForThrow` within the same tick and the arc is committed before any subsequent tick. *Covers CR-1.*
+- [Logic] **GIVEN** the state machine is in `Idle`, cooldown ≤ 0, and at least one valid `IBoomerangTarget` exists in `TargetRegistry`, **WHEN** a each `Update()` frame fires, **THEN** the machine transitions to `ArmedForThrow` within the same tick and the arc is committed before any subsequent tick. *Covers CR-1.*
 - [Logic] **GIVEN** `arc_radius = 5.0 wu` and ship at (0,0) targeting (10,0), **WHEN** `t_norm = 0.5`, **THEN** the boomerang world position is (5.0, -5.0) ± 0.01 wu and the inbound leg mirrors on the left-perpendicular. *Covers CR-2.*
 - [Logic] **GIVEN** a computed arc would exceed the play-area rectangle, **WHEN** `ArmedForThrow` runs the bounds check, **THEN** `arc_radius` is reduced iteratively until all samples lie within bounds; if even `arc_radius = 0` exits bounds, the throw is suppressed, state returns to `Idle`, no event fires, cooldown is not decremented. *Covers CR-3.*
 - [Logic] **GIVEN** a `TargetRegistry` with one `IsAlive == false` entity and zero live entities, **WHEN** CR-4 runs, **THEN** the returned `TargetHandle.IsValid == false` and no throw fires. *Covers CR-4.*
@@ -1219,7 +1205,7 @@ scope.
 - [Integration] **GIVEN** `chain_count == 1`, primary is `Outbound`, and ≥ 1 valid target exists other than the first-contact entity, **WHEN** the primary's first outbound contact fires (`pierceIndex == 0`), **THEN** exactly one chain-boomerang is acquired, `ChainTriggered(TargetHandle, spawnPosition)` is raised, the chain selects the nearest valid non-contact target, and no second chain spawns on the chain's own first contact. *Covers CR-7.*
 - [Logic] **GIVEN** the primary is `Outbound` and has reached the `arc_flight_time` apex (P2 geometric point), **WHEN** the apex tick fires, **THEN** the machine transitions to `PeakTurn` without pausing or re-acquiring — even if P2's originating entity is dead. *Covers CR-8.*
 - [Integration] **GIVEN** the primary is `Inbound` and `return_detonate_radius > 0`, **WHEN** the boomerang collider overlaps the ship collider, **THEN** atomically within `CaughtLate`: (1) AoE `base_damage` is applied to every `IHittable` within `return_detonate_radius`, (2) cooldown is seeded from `throw_cooldown`, (3) instance returns to pool, (4) `BoomerangCaught(catchPosition, detonateTargetsHit)` is raised. *Covers CR-9.*
-- [Logic] **GIVEN** `TargetRegistry.GetCandidateCount() == 0` while in `Idle`, **WHEN** any number of fixed ticks fire, **THEN** no throw, no audio/VFX, cooldown unchanged, state remains `Idle`. *Covers CR-10.*
+- [Logic] **GIVEN** `TargetRegistry.GetCandidateCount() == 0` while in `Idle`, **WHEN** any number of each `Update()` frames fire, **THEN** no throw, no audio/VFX, cooldown unchanged, state remains `Idle`. *Covers CR-10.*
 - [Integration] **GIVEN** both boomerang pools active, **WHEN** primary and chain are simultaneously in flight, **THEN** `primaryPool.ActiveCount + chainPool.ActiveCount ≤ 2` holds every tick and no acquire fires while both slots are occupied. *Covers CR-11.*
 
 ### Formula Coverage
@@ -1228,7 +1214,7 @@ scope.
 - [Logic] **GIVEN** primary is `Inbound`, apex at `P2_in`, `arc_radius = 5.0`, ship moves 2.0 wu laterally between consecutive ticks, **WHEN** `pos_in(s_norm)` is evaluated each tick, **THEN** `P1_in` recomputes from live ship position every tick, `pos_in` at `s_norm = 1.0` equals current `IShipAnchor.WorldPosition` ± 0.01 wu, arc remains C-shaped (left-perpendicular axis never flips). *Covers F2.*
 - [Logic] **GIVEN** `base_damage = 5`, `pierce_falloff = 0.35`, **WHEN** F3 evaluated for n = 0..5, **THEN** output is `[5, 3, 2, 1, 1, 1]` exactly; no output < 1 for any non-negative integer n or any `pierce_falloff` in [0.0, 1.0]. *Covers F3.*
 - [Logic] **GIVEN** `base_damage = 7`, `return_detonate_radius = 3.0 wu`, two `IHittable` entities within radius at catch, **WHEN** `CaughtLate` fires, **THEN** both entities receive `TakeDamage(7)` (not F3-reduced), a `BoomerangHit` event is raised for each with `pierceIndex = -1` (detonate sentinel), no entity outside radius receives damage. *Covers F4.*
-- [Logic] **GIVEN** `throw_cooldown = 1.0 s`, `fixedDeltaTime = 0.02 s`, **WHEN** `CaughtLate` resolves and 50 ticks elapse, **THEN** `cooldown_remaining` reaches exactly 0.0, does not go negative, holds at 0.0 thereafter, CR-1 condition 2 evaluates true on tick 50. *Covers F5.*
+- [Logic] **GIVEN** `throw_cooldown = 1.0 s`, `deltaTime = 0.02 s`, **WHEN** `CaughtLate` resolves and 50 ticks elapse, **THEN** `cooldown_remaining` reaches exactly 0.0, does not go negative, holds at 0.0 thereafter, CR-1 condition 2 evaluates true on tick 50. *Covers F5.*
 - [Logic] **GIVEN** `base_damage = 5`, `base_shake_intensity = 0.15`, `max_shake_intensity = 0.6`, **WHEN** F6 pierce variant evaluated for `damage_dealt` of 5 / 3 / 1 / 10, **THEN** outputs are `0.15`, `≈0.039`, `0.0` (clamped), `0.30`. **AND** F6 detonate variant for `damage_dealt = 5` → `0.30`; for `10` → `0.60` (clamped at max). *Covers F6 pierce + detonate variants.*
 
 ### Edge Case Coverage
@@ -1237,7 +1223,7 @@ scope.
 - [Logic] **GIVEN** `arc_flight_time` is set to 0.0, -1.0, or 0.05, **WHEN** `ArmedForThrow` processes the stat snapshot, **THEN** the value is clamped to 0.1 s, `t_norm` stays in [0.0, 1.0] during flight, no divide-by-zero. *Covers EC-5.*
 - [Integration] **GIVEN** primary is `Inbound` while chain is in `ChainReturning`, **WHEN** primary is caught (`CaughtLate` resolves), **THEN** chain continues uninterrupted to `Vanished`, `ChainVanished` is raised at spawn position, `chainPool.ActiveCount` drops to 0 only after `Vanished`. *Covers EC-12.*
 - [Integration] **GIVEN** primary contacts exactly two `IBoomerangTarget`s overlapping in the same Physics2D resolution step, **WHEN** contacts are processed, **THEN** exactly one `ChainTriggered` fires (for the first-enumerated contact at `pierceIndex = 0`); the second entity's `BoomerangHit` has `pierceIndex = 1`; no duplicate `ChainTriggered`. *Covers EC-14.*
-- [Integration] **GIVEN** primary is `Outbound` with `Time.timeScale = 1.0` and C3 ticking, **WHEN** `Time.timeScale = 0` for 2 real seconds then restored, **THEN** the boomerang resumes from frozen position; arc-completion tick count equals the reference (no-pause) run; final catch position matches a deterministic reference. *Covers EC-15.*
+- [Integration] **GIVEN** primary is `Outbound` with `Time.timeScale = 1.0`, **WHEN** `Time.timeScale = 0` for 2 real seconds then restored, **THEN** the boomerang resumes from frozen position and final catch position matches a deterministic reference. *Covers EC-15.*
 - [Integration] **GIVEN** player ship is destroyed while primary is `Outbound`, **WHEN** `IShipDestroyedListener` callback fires, **THEN** both primary and any in-flight chain transition to `Dissolving` and release to pools; after scene teardown `primaryPool.ActiveCount == 0 && chainPool.ActiveCount == 0`; `BoomerangCaught` is NOT raised. *Covers EC-17.*
 - [Integration] **GIVEN** `arc_flight_time = 0.1 s` (minimum), small asteroid collider at maximum ship-to-target distance within play bounds, **WHEN** primary is thrown, **THEN** the asteroid's `IHittable.TakeDamage` is called exactly once (no tunnel-through); `BoomerangHit` raised with `pierceIndex = 0`. *Covers EC-18.* **🔹 Week-1 Gate**
 - [Logic] **GIVEN** chain is `ChainOutbound` and the ship collider layer is in scene, **WHEN** chain's contact detection runs (per selected ADR option), **THEN** no hit event is raised against the ship-layer collider; chain's Physics2D layer mask excludes the ship layer in all configurations. *Covers EC-19.*
@@ -1256,9 +1242,9 @@ scope.
 
 ### Performance Budget
 
-- [Logic] **GIVEN** 6 simultaneous `IHittable` entities overlap the boomerang's collider in a single fixed tick (worst-case pierce event), **WHEN** the tick is profiled, **THEN** total GC allocation for that tick is 0 bytes and GC pause duration is < 10 ms. *Covers TD-FEASIBILITY GC criterion.*
+- [Logic] **GIVEN** 6 simultaneous `IHittable` entities overlap the boomerang's collider in a single each `Update()` frame (worst-case pierce event), **WHEN** the tick is profiled, **THEN** total GC allocation for that tick is 0 bytes and GC pause duration is < 10 ms. *Covers TD-FEASIBILITY GC criterion.*
 - [Logic] **GIVEN** `TargetRegistry` contains 50 candidates, **WHEN** CR-4 is called 1000 times in an EditMode benchmark, **THEN** mean duration < 0.05 ms and 0 bytes heap allocation per call (`GC.GetTotalMemory` before/after batch). *Covers CR-4 budget.*
-- [Logic] **GIVEN** the boomerang is `Outbound` during a frame with 6 simultaneous pierce contacts, **WHEN** G3's `OnTick` callback is profiled in WebGL IL2CPP, **THEN** total CPU time charged to G3 within a single tick ≤ 2 ms. *Covers per-tick frame budget.*
+- [Logic] **GIVEN** the boomerang is `Outbound` during a frame with 6 simultaneous pierce contacts, **WHEN** G3's `Update()` is profiled in WebGL IL2CPP, **THEN** total CPU time charged to G3 within a single frame ≤ 2 ms. *Covers per-frame budget.*
 - [Config] **GIVEN** implementation ships without gameplay-value literals (damage, cooldown, arc parameters, shake intensities, falloff values) embedded in C# outside `GameStatsContext` or the designated tuning-knob constants file, **WHEN** a grep for magic numbers in G3 files is performed, **THEN** all gameplay values source exclusively from `GameStatsContext`, G3-internal named constants, or config assets — no inline literals. *Covers data-driven discipline.*
 
 ### Game Feel (subjective — playtest sign-off)
@@ -1267,7 +1253,6 @@ scope.
 - [Visual/Feel] **GIVEN** a playtester is shown a clean n=0 first hit at `base_damage = 1`, **WHEN** they describe the impact, **THEN** no playtester describes it as "soft." The flash + 2-frame hitstop + impact crack must register as a perceptible weight event independent of damage value. **🔹 Week-1 Gate**
 - [Visual/Feel] **GIVEN** a playtester sees an n=3+ floor hit (0-frame hitstop, scrape-only audio, 2 shards max) next to an n=0 clean hit, **WHEN** asked to compare, **THEN** the playtester perceives them as different **in kind**, not merely degree. Both events must be visually unambiguous without GDD context. **🔹 Week-1 Gate**
 - [Visual/Feel] **GIVEN** a playtester is performing standard throw cycles with audio only (screen covered/eyes closed), **WHEN** the catch occurs, **THEN** the playtester identifies the catch moment by `sfx_boomerang_catch_chime` alone — correctly distinguishing it from impact SFX in ≥ 4 of 5 attempts. **🔹 Week-1 Gate**
-- [Visual/Feel] **GIVEN** a gamepad playtester completes 5 consecutive cycles, **WHEN** asked to describe the physical texture of the cycle, **THEN** no gamepad playtester uses "weightless." Rumble at throw, clean hit, and catch must collectively produce a perceivable tactile rhythm (amplitudes TBD at prototype). **🔹 Week-1 Gate**
 - [Visual/Feel] **GIVEN** a new playtester has completed 3 throw cycles, **WHEN** the boomerang is `Inbound`, **THEN** the playtester repositions the ship toward the return arc without prompting. **🔹 Week-1 Gate**
 
 ### Test Locations

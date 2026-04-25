@@ -36,7 +36,6 @@ public class C6StatResolver : MonoBehaviour
         { StatKeys.ArcFlightTime,        new FieldSpec(0.8f,  0.1f, 10.0f,          false) },
         { StatKeys.PierceFalloff,        new FieldSpec(0.35f, 0.0f, 1.0f,           false) },
         { StatKeys.ChainCount,           new FieldSpec(0f,    0f,   1f,             true)  },
-        { StatKeys.ReturnDetonateRadius, new FieldSpec(0.0f,  0.0f, 10.0f,          false) },
     };
 
     [SerializeField] private UpgradeSource[] _producers; // ordered: P1a first, G4 second
@@ -157,24 +156,6 @@ public class C6StatResolver : MonoBehaviour
                     {
                         Debug.LogError($"[C6StatResolver] VAL-3: Non-integer delta on integer-tier field '{delta.FieldKey}' from '{producer.name}'; rejecting.", this);
                         continue;
-                    }
-
-                    // Integer-tier fields are additive-only; reject multiplicative mode
-                    if (spec.IntegerTier && delta.Mode == DeltaMode.Multiplicative)
-                    {
-                        Debug.LogError($"[C6StatResolver] Multiplicative delta on integer-tier field '{delta.FieldKey}' from '{producer.name}'; rejecting.", this);
-                        continue;
-                    }
-
-                    // VAL-6: reject multiplicative factors <= 0
-                    if (delta.Mode == DeltaMode.Multiplicative)
-                    {
-                        float factor = delta.Type == DeltaValueType.Float ? delta.FloatValue : (float)delta.IntValue;
-                        if (factor <= 0f)
-                        {
-                            Debug.LogError($"[C6StatResolver] VAL-6: Multiplicative factor {factor} <= 0 on '{delta.FieldKey}' from '{producer.name}'; rejecting.", this);
-                            continue;
-                        }
                     }
 
                     if (!seen.Add((delta.FieldKey, delta.Mode)))

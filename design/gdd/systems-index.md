@@ -7,53 +7,13 @@
 
 ## Overview
 
-20 systems across five layers for a 2D incremental bullet-hell on Unity 6.3 LTS + URP 2D, WebGL-first. The core loop is a 1–3 minute combat run feeding a persistent grid skill tree. "The Tree IS the Game" — the skill tree (P1a/P1b) and stat-resolution layer (C6) are the architectural center of gravity. The boomerang (G3) is the mechanical identity and the Week-1 prototype gate.
+16 systems across five layers for a 2D incremental bullet-hell on Unity 6.3 LTS + URP 2D, WebGL-first. The core loop is a 1–3 minute combat run feeding a persistent grid skill tree. "The Tree IS the Game" — the skill tree (P1a/P1b) and stat-resolution layer (C6) are the architectural center of gravity. The boomerang (G3) is the mechanical identity and the Week-1 prototype gate. All gameplay systems use Unity's built-in `Update()` function directly — no custom fixed-timestep abstraction.
 
 ---
 
 ## Systems
 
-### 1. C1 — Input & Control Abstraction
-
-**Coding:** Wraps Unity's New Input System behind a single `IInputProvider` interface consumed by all gameplay systems. Handles keyboard, gamepad, and WebGL browser input quirks. Re-mappable bindings are stored as data.
-
-**Art:** None required.
-
-**Audio:** None required.
-
----
-
-### 2. C3 — Fixed-Timestep Game Tick
-
-**Coding:** Provides a deterministic simulation tick decoupled from Unity's render frame rate. All physics-dependent gameplay systems subscribe to this tick via `ITickable` rather than `Update()` to ensure consistent behavior across frame rates.
-
-**Art:** None required.
-
-**Audio:** None required.
-
----
-
-### 3. S1 — Save System
-
-**Coding:** Implements `ISaveStore` backed by browser IndexedDB for WebGL with a JSON blob format and schema versioning. Supports clipboard export/import as a fallback. All persistent game state (upgrades, currency, run history) serializes through this interface.
-
-**Art:** None required.
-
-**Audio:** None required.
-
----
-
-### 4. C4 — Addressables Content Pipeline
-
-**Coding:** Manages async asset loading via Unity Addressables, establishing the content taxonomy and load conventions used across the project. All runtime asset references go through this system rather than direct `Resources.Load`. `ScriptableObject` `OnValidate` checks enforce content integrity at import time.
-
-**Art:** None required.
-
-**Audio:** None required.
-
----
-
-### 5. C6 — Stat Resolver & Upgrade Aggregation
+### 1. C6 — Stat Resolver & Upgrade Aggregation
 
 **Coding:** Aggregates stat contributions from all `IUpgradeSource` producers (skill tree, mods) into a frozen `GameStatsContext` struct consumed by gameplay systems. Recomputes on a dirty-flag basis so consumers always read a consistent snapshot. No gameplay system queries the tree or mods directly — they read `GameStatsContext` only.
 
@@ -65,7 +25,7 @@
 
 ### 6. G1 — Player Ship Controller
 
-**Coding:** Handles kinematic WASD and gamepad movement, dash timing, and damage intake for the player ship. Reads movement and defense stats from `GameStatsContext`. Broadcasts health changes to the HUD via events; death triggers the run-end flow.
+**Coding:** Handles keyboard (WASD/arrow keys) movement, dash timing, and damage intake for the player ship. Reads movement and defense stats from `GameStatsContext`. Broadcasts health changes to the HUD via events; death triggers the run-end flow.
 
 **Art:** A small ship sprite with a distinct silhouette readable at low zoom. An engine-thrust particle or frame animation conveys movement direction. A damage-flash shader tint communicates a hit without requiring a HUD read.
 
@@ -95,7 +55,7 @@
 
 ### 9. G3 — Boomerang Weapon ⚠ Week-1 Gate
 
-**Coding:** Implements the boomerang as a kinematic projectile that travels an arc, auto-aims on throw toward the nearest enemy within a forward cone, and auto-returns after reaching max range or a hit trigger. Hit detection runs in the fixed tick. All stats (speed, arc width, damage, pierce count) are read from `GameStatsContext`.
+**Coding:** Implements the boomerang as a kinematic projectile that travels an arc, auto-aims on throw toward the nearest enemy within a forward cone, and auto-returns after reaching max range or a hit trigger. All stats (speed, arc width, damage, pierce count) are read from `GameStatsContext`.
 
 **Art:** A single boomerang sprite with a rotation animation, visually distinct from enemies and asteroids. A subtle arc-preview ghost or line shows the projected throw path. Hit sparks on impact are defined here as placeholder; final VFX are owned by V1.
 
@@ -105,7 +65,7 @@
 
 ### 10. P1a — Skill Tree Architecture ⚠ Design Gate
 
-**Coding:** Implements the grid-graph data structure, prerequisite rule evaluation, and the `IUpgradeSource` contract that feeds C6. Nodes are `ScriptableObject` assets; purchased-node state is persisted via S1. This system owns purchase transaction logic but not the visual grid (U2) or node designs (P1b).
+**Coding:** Implements the grid-graph data structure, prerequisite rule evaluation, and the `IUpgradeSource` contract that feeds C6. Nodes are `ScriptableObject` assets. This system owns purchase transaction logic but not the visual grid (U2) or node designs (P1b).
 
 **Art:** No unique art assets; node icons and backgrounds are defined in P1b and rendered by U2.
 
@@ -205,7 +165,7 @@
 
 ### 20. A1 — Audio System
 
-**Coding:** Provides an SFX pool for fire-and-forget sounds and a music manager for looped tracks with crossfade. Handles the WebGL AudioContext unlock requirement (silent buffer on first user interaction). All audio assets load through C4.
+**Coding:** Provides an SFX pool for fire-and-forget sounds and a music manager for looped tracks with crossfade. Handles the WebGL AudioContext unlock requirement (silent buffer on first user interaction).
 
 **Art:** None required.
 
@@ -217,25 +177,19 @@
 
 | # | System | Layer |
 |---|--------|-------|
-| 1 | C1 Input & Control | Foundation |
-| 2 | C3 Fixed-Timestep Tick | Foundation |
-| 3 | S1 Save System | Foundation |
-| 4 | C4 Addressables Pipeline | Foundation |
-| 5 | C6 Stat Resolver ⚠ | Foundation |
-| 6 | G1 Player Ship Controller | Core |
-| 7 | E1 Fuel Economy | Core |
-| 8 | E2 Currency & XP | Core |
-| 9 | G3 Boomerang Weapon ⚠ Week-1 | Feature |
-| 10 | P1a Skill Tree Architecture ⚠ | Feature |
-| 11 | G4 Mod System | Feature |
-| 12 | P1b Skill Tree Node Catalog ⚠ | Feature |
-| 13 | G6 Enemy System | Feature |
-| 14 | G5 Asteroid Mining | Feature |
-| 15 | G8 Boss Encounter | Feature |
-| 16 | G7 Wave & Spawn Director | Feature |
-| 17 | U1 In-Run HUD | Presentation |
-| 18 | U2 Skill Tree UI | Presentation |
-| 19 | V1 Juice Layer | Presentation |
-| 20 | A1 Audio System | Presentation |
-
-**Design gates:** Author and approve C6 and G3 before writing any GDD that consumes their contracts.
+| 1 | C6 Stat Resolver ⚠ | Foundation |
+| 2 | G1 Player Ship Controller | Core |
+| 3 | E1 Fuel Economy | Core |
+| 4 | E2 Currency & XP | Core |
+| 5 | G3 Boomerang Weapon ⚠ Week-1 | Feature |
+| 6 | P1a Skill Tree Architecture ⚠ | Feature |
+| 7 | G4 Mod System | Feature |
+| 8 | P1b Skill Tree Node Catalog ⚠ | Feature |
+| 9 | G6 Enemy System | Feature |
+| 10 | G5 Asteroid Mining | Feature |
+| 11 | G8 Boss Encounter | Feature |
+| 12 | G7 Wave & Spawn Director | Feature |
+| 13 | U1 In-Run HUD | Presentation |
+| 14 | U2 Skill Tree UI | Presentation |
+| 15 | V1 Juice Layer | Presentation |
+| 16 | A1 Audio System | Presentation |

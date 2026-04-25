@@ -1,2 +1,2 @@
-public enum DeltaMode      { Additive, Multiplicative }
+public enum DeltaMode { Additive }
 public enum DeltaValueType { Int, Float }
