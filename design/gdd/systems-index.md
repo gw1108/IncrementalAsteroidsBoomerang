@@ -35,7 +35,7 @@
 
 ### 7. E1 — Fuel Economy
 
-**Coding:** Tracks a continuous fuel value that decays each tick and is extended by kills and asteroid mining, with diminishing returns on successive extensions within a run. Expiry triggers the run-end flow. Fuel rate multipliers are read from `GameStatsContext`.
+**Coding:** Tracks a continuous fuel value that decays each tick. Expiry triggers the run-end flow. Fuel rate multipliers are read from `GameStatsContext`.
 
 **Art:** Fuel is represented by a bar or gauge on the HUD; no standalone world-space art is required.
 
@@ -155,7 +155,7 @@
 
 ### 19. V1 — Juice Layer
 
-**Coding:** Implements camera shake, hitstop freeze frames, and world-space VFX (hit sparks, currency pickups, boomerang trail, death explosions) through a centralized service consumed by G1, G3, G5, G6, and G8. Uses a pre-allocated string pool for floating damage numbers. A shared Weight Events Table coordinates which effects trigger per event and at what intensity, cross-referenced by A1.
+**Coding:** Implements camera shake, hitstop freeze frames, and world-space VFX (hit sparks, currency pickups, boomerang trail, death explosions) through a centralized service consumed by G1, G3, G5, G6, and G8. A shared Weight Events Table coordinates which effects trigger per event and at what intensity, cross-referenced by A1.
 
 **Art:** Hit spark sprites, floating damage number font, currency-pickup flash, boomerang trail particle, and enemy/asteroid death explosions. All effects must read clearly against the space background.
 

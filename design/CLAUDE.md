@@ -1,38 +1,18 @@
 # Design Directory
 
-When authoring or editing files in this directory, follow these standards.
+Work iteratively — clarify unknowns through back-and-forth before writing. Write only what's needed to remove ambiguity and enable implementation.
 
 ## GDD Files (`design/gdd/`)
 
-Every GDD must include all **8 required sections** in this order:
-1. Overview — one-paragraph summary
-2. Player Fantasy — intended feeling and experience
-3. Detailed Rules — unambiguous mechanics
-4. Formulas — all math defined with variables
-5. Edge Cases — unusual situations handled
-6. Dependencies — other systems listed
-7. Tuning Knobs — configurable values identified
-8. Acceptance Criteria — testable success conditions
+Each GDD should cover: what the mechanic does, math/formulas, edge cases, tuning knobs, and how to verify it works. No fixed template — use as many or as few sections as the system warrants.
 
-**File naming:** `[system-slug].md` (e.g. `movement-system.md`, `combat-system.md`)
-
-**Systems index:** `design/gdd/systems-index.md` — update when adding a new GDD.
-
-**Design order:** Foundation → Core → Feature → Presentation → Polish
-
-**Validation:** Run `/design-review [path]` after authoring any GDD.
-Run `/review-all-gdds` after completing a set of related GDDs.
+**File naming:** `[system-slug].md`  
+**Systems index:** Update `design/gdd/systems-index.md` when adding a new GDD.
 
 ## Quick Specs (`design/quick-specs/`)
 
-Lightweight specs for tuning changes, minor mechanics, or balance adjustments.
-Use `/quick-design` to author.
+For tuning changes, minor mechanics, or balance adjustments.
 
 ## UX Specs (`design/ux/`)
 
-- Per-screen specs: `design/ux/[screen-name].md`
-- HUD design: `design/ux/hud.md`
-- Interaction pattern library: `design/ux/interaction-patterns.md`
-- Accessibility requirements: `design/ux/accessibility-requirements.md`
-
-Use `/ux-design` to author. Validate with `/ux-review` before passing to `/team-ui`.
+Per-screen specs live at `design/ux/[screen-name].md`.
