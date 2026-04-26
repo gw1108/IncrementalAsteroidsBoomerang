@@ -16,17 +16,16 @@ public class RunManager : MonoBehaviour
         InitializeFBPP();
     }
 
-    private const string c_saveFileName = "IncrementalAsteroidsGameSave.txt";
     private const string c_encryptionSecret = "IncrementalAsteroidsEncryptionSecret";
 
     private static void InitializeFBPP()
     {
         string path = SaveSystem.GetSaveFilePath();
-        Debug.Log($"[SaveManager] Save path: {path} filename: {c_saveFileName}");
+        Debug.Log($"[SaveManager] Save path: {path} filename: {SaveSystem.c_saveFileName}");
 
         FBPP.Start(new FBPPConfig()
         {
-            SaveFileName = c_saveFileName,
+            SaveFileName = SaveSystem.c_saveFileName,
             AutoSaveData = true,
             ScrambleSaveData = true,
             EncryptionSecret = c_encryptionSecret,

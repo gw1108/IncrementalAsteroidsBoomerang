@@ -1,0 +1,51 @@
+using UnityEngine;
+
+[System.Serializable]
+public class SkillTreeNodeEntry
+{
+    [Tooltip("Unique identifier for this node.")]
+    public string nodeId;
+
+    [Tooltip("Display name shown to the player.")]
+    public string displayName;
+    public string displayDescription;
+
+    [Tooltip("Column position in the 2D grid (zero-based).")]
+    public int gridPositionX;
+
+    [Tooltip("Row position in the 2D grid (zero-based).")]
+    public int gridPositionY;
+
+    [Tooltip("nodeId of the parent node. Leave empty for the root/origin node.")]
+    public string parentNodeId;
+
+    [Tooltip("Cost to purchase this upgrade")]
+    public float cost;
+
+    public int distanceFromOrigin = 0;
+
+    // Level up effects
+    // for example
+    //public bool unlocksDash;
+    //public bool unlocksShield;
+
+    //public int chainPercent;
+    //public int chainCount;
+    //public float piercePercent;
+    //public int healthBonus;
+
+    public int GetDefaultCost(int distanceFromOrigin)
+    {
+        return Mathf.CeilToInt(Mathf.Pow(1.12f, (distanceFromOrigin - 1)) * 10f);
+    }
+
+    /// <summary>
+    /// For debugging purposes.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        // TODO update this with every property.
+        return $"nodeId={nodeId},displayName={displayName},displayDescription={displayDescription},gridPositionX={gridPositionX},gridPositionY={gridPositionY},parentNodeId={parentNodeId},cost={cost},distanceFromOrigin={distanceFromOrigin},";
+    }
+}

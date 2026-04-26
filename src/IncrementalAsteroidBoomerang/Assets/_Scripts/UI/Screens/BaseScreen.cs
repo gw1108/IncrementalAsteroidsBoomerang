@@ -1,0 +1,90 @@
+﻿using DG.Tweening;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+
+[RequireComponent(typeof(CanvasGroup))]
+public class BaseScreen : MonoBehaviour
+{
+    [SerializeField]
+    private GameObject Container;
+
+    [SerializeField]
+    protected GameObject MainContentRoot;
+
+    [SerializeField]
+    private Button CloseButton;
+
+    [Tooltip("The button that is triggered if Escape key is pressed")]
+    [SerializeField]
+    private Button EscapeButton;
+
+    private CanvasGroup CanvasGroup;
+
+    protected virtual void Awake()
+    {
+        CloseButton?.onClick.AddListener(OnCloseButtonClicked);
+        CanvasGroup = GetComponent<CanvasGroup>();
+    }
+
+    protected virtual void OnCloseButtonClicked()
+    {
+        OverlayScreenManager.Instance.HideActiveScreen();
+    }
+
+    public void Show()
+    {
+        ShowContainer(true);
+        MainContentRoot.transform.localScale = Vector3.one * 0.5f;
+        MainContentRoot.transform.DOScale(Vector3.one, 0.55f);
+        CanvasGroup.DOFade(1, 0.55f).From(0f);
+
+        OnShow();
+    }
+
+    public void ShowContainer(bool active)
+    {
+        Container.SetActive(active);
+    }
+
+    protected virtual void OnShow()
+    {
+    }
+
+    public void Hide()
+    {
+        StartCoroutine(HideHelper());
+        OnHide();
+    }
+
+    /// <summary>
+    /// Quickly hides without calling OnHide.
+    /// </summary>
+    public void QuickHide()
+    {
+        Container.SetActive(false);
+    }
+
+    private IEnumerator HideHelper()
+    {
+        OverlayScreenManager.Instance.inputBlocker.SetActive(true);
+        yield return CanvasGroup.DOFade(0.0f, 0.25f).From(1.0f);
+        OverlayScreenManager.Instance.inputBlocker.SetActive(false);
+        QuickHide();
+    }
+
+    protected virtual void OnHide()
+    {
+    }
+
+    /// <summary>
+    /// Method called if a generic "Escape" is asked for.
+    /// </summary>
+    public virtual void EscapeOut()
+    {
+        if (EscapeButton != null)
+        {
+            EscapeButton.onClick.Invoke();
+        }
+    }
+}

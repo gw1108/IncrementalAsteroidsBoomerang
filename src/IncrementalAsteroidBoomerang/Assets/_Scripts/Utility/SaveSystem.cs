@@ -18,7 +18,7 @@ public class RunData
 
 public class SaveSystem
 {
-    private const string c_saveFilePath = "GoodLaundryGreatLaundry.txt";
+    public const string c_saveFileName = "IncrementalAsteroidsGameSave.txt";
 
     private string _saveFilePath;
 
@@ -27,7 +27,7 @@ public class SaveSystem
         string path = Application.persistentDataPath;
 
 #if PLATFORM_WEBGL
-        path = "idbfs/GoodLaundryGreatLaundry";
+        path = "idbfs/IncrementalAsteroidsGameSave";
 #endif
 
 #if !DISABLESTEAMWORKS
