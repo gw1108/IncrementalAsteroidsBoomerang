@@ -10,6 +10,30 @@ public class RunManager : MonoBehaviour
     [SerializeField] private C6StatResolver _resolver;
     [SerializeField] private FuelManager _fuelManager;
 
+    private void Awake()
+    {
+        // setup FBPP
+        InitializeFBPP();
+    }
+
+    private const string c_saveFileName = "IncrementalAsteroidsGameSave.txt";
+    private const string c_encryptionSecret = "IncrementalAsteroidsEncryptionSecret";
+
+    private static void InitializeFBPP()
+    {
+        string path = SaveSystem.GetSaveFilePath();
+        Debug.Log($"[SaveManager] Save path: {path} filename: {c_saveFileName}");
+
+        FBPP.Start(new FBPPConfig()
+        {
+            SaveFileName = c_saveFileName,
+            AutoSaveData = true,
+            ScrambleSaveData = true,
+            EncryptionSecret = c_encryptionSecret,
+            SaveFilePath = path,
+        });
+    }
+
     private void Start()
     {
         if (_resolver == null)
