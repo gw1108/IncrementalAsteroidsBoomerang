@@ -11,7 +11,7 @@ description: Research highest priority Linear ticket needing investigation
 
 0.  read .claude/commands/linear.md
 0a. fetch the top 10 priority items from linear in status "research needed" using the MCP tools, noting all items in the `links` section
-0b. select the highest priority SMALL or XS issue from the list (if no SMALL or XS issues exist, EXIT IMMEDIATELY and inform the user)
+0b. select the highest priority issue from the list
 0c. use `linear` cli to fetch the selected item into thoughts with the ticket number - ./thoughts/shared/tickets/ENG-xxxx.md
 0d. read the ticket and all comments to understand what research is needed and any previous attempts
 
@@ -50,7 +50,7 @@ think deeply about the findings
 3d. run `bash .claude/scripts/sync_thoughts.sh` to ensure the research file is staged in git
 
 4. update the ticket:
-4a. attach the research document to the ticket using the MCP tools with proper link formatting
+4a. reference the research document in the ticket
 4b. add a comment summarizing the research outcomes
 4c. move the item to "research in review" using the MCP tools
 

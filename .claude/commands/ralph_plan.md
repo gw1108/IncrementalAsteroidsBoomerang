@@ -11,7 +11,7 @@ description: Create implementation plan for highest priority Linear ticket ready
 ### PART I - IF NO TICKET IS MENTIONED
 
 0.  read .claude/commands/linear.md
-0a. fetch the top 10 priority items from linear in status "Todo" using the MCP tools, noting all items in the `links` section
+0a. fetch the top 10 priority items from linear in status "research in review" using the MCP tools, noting all items in the `links` section
 0b. select the highest priority issue from the list
 0c. use the Linear MCP tools to fetch the ticket details, then use the Write tool to save them to ./thoughts/shared/tickets/[ticket-id].md
 0d. read the ticket and all comments to learn about past implementations and research, and any questions or concerns about them
@@ -28,10 +28,10 @@ think deeply
 
 think deeply
 
-2. when the plan is complete, run `bash .claude/scripts/sync_thoughts.sh` and attach the doc to the ticket using the MCP tools and create a terse comment with a link to it (re-read .claude/commands/linear.md if needed)
+2. when the plan is complete, run `bash .claude/scripts/sync_thoughts.sh` and update the ticket to reference the plan.
 2a. move the item to "In Review" using the MCP tools
 
-think deeply, use TodoWrite to track your tasks. When fetching from linear, get the top 10 items by priority but only work on ONE item - specifically the highest priority SMALL or XS sized issue.
+think deeply, use TodoWrite to track your tasks. When fetching from linear, get the top 10 items by priority but only work on ONE item - specifically the highest priority issue.
 
 ### PART III - When you're done
 
