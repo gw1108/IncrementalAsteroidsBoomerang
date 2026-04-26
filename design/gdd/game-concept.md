@@ -3,11 +3,6 @@
 *Created: 2026-04-23*
 *Status: Draft — Ready for /setup-engine and downstream GDD authoring*
 
-> **Creative Director Review (CD-PILLARS)**: APPROVED 2026-04-23 with 5 non-blocking watch items (noted in Pillars section and Risks).
-> **Art Director Review (AD-CONCEPT-VISUAL)**: STRONG 2026-04-23 — "Deep Forge" direction selected, with cyan-boomerang resolution of AD-flagged hue conflict.
-> **Technical Director Review (TD-FEASIBILITY)**: CONCERNS 2026-04-23 — concept is viable; 9 architectural mandates recorded for /create-architecture.
-> **Producer Review (PR-SCOPE)**: CONCERNS 2026-04-23 — Tier 2 realistic at 5 months; operational recommendations captured in Production Guidance section.
-
 ---
 
 ## Elevator Pitch

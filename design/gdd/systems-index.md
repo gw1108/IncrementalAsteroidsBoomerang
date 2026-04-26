@@ -7,7 +7,7 @@
 
 ## Overview
 
-16 systems across five layers for a 2D incremental bullet-hell on Unity 6.3 LTS + URP 2D, WebGL-first. The core loop is a 1–3 minute combat run feeding a persistent grid skill tree. "The Tree IS the Game" — the skill tree (P1a/P1b) and stat-resolution layer (C6) are the architectural center of gravity. The boomerang (G3) is the mechanical identity and the Week-1 prototype gate. All gameplay systems use Unity's built-in `Update()` function directly — no custom fixed-timestep abstraction.
+16 systems across five layers for a 2D incremental bullet-hell on Unity 6.3 LTS + URP 2D, WebGL-first. The core loop is a 1–3 minute combat run feeding a persistent grid skill tree. "The Tree IS the Game" — the skill tree (P1a/P1b) and stat-resolution layer (C6) are the architectural center of gravity. The boomerang (G3) is the mechanical identity. All gameplay systems use Unity's built-in `Update()` function directly — no custom fixed-timestep abstraction.
 
 ---
 
@@ -21,6 +21,8 @@
 
 **Audio:** None required.
 
+**Status:** Done.
+
 ---
 
 ### 6. G1 — Player Ship Controller
@@ -30,6 +32,8 @@
 **Art:** A small ship sprite with a distinct silhouette readable at low zoom. An engine-thrust particle or frame animation conveys movement direction. A damage-flash shader tint communicates a hit without requiring a HUD read.
 
 **Audio:** A looping engine hum, a hit sound on damage intake, and a death explosion are the minimum set.
+
+**Status:** Dashing as a backlog TODO. Damageable player as a backlog TODO. Run-end flow as a backlog TODO.
 
 ---
 
@@ -41,6 +45,8 @@
 
 **Audio:** A low-fuel warning tone and a fuel-depleted sound cue communicate critical state without requiring a HUD read.
 
+**Status:** Run-end flow as a backlog TODO.
+
 ---
 
 ### 8. E2 — Currency & XP Economy
@@ -51,9 +57,11 @@
 
 **Audio:** A satisfying pickup chime plays on currency collection.
 
+**Status:** Money implemented. Skill tree that uses this money as a backlog TODO.
+
 ---
 
-### 9. G3 — Boomerang Weapon ⚠ Week-1 Gate
+### 9. G3 — Boomerang Weapon
 
 **Coding:** Implements the boomerang as a kinematic projectile that travels an arc, auto-aims on throw toward the nearest enemy within a forward cone, and auto-returns after reaching max range or a hit trigger. All stats (speed, arc width, damage, pierce count) are read from `GameStatsContext`.
 
@@ -61,13 +69,15 @@
 
 **Audio:** A throw whoosh, a hit-impact crack, and a return-catch thwack are the three key sounds. The return catch must feel rewarding — it is the mechanical identity of the game.
 
+**Status:** First pass done. Still needs further refinement towards behaviour as a backlog TODO.
+
 ---
 
-### 10. P1a — Skill Tree Architecture ⚠ Design Gate
+### 10. P1a — Skill Tree Architecture
 
-**Coding:** Implements the grid-graph data structure, prerequisite rule evaluation, and the `IUpgradeSource` contract that feeds C6. Nodes are `ScriptableObject` assets. This system owns purchase transaction logic but not the visual grid (U2) or node designs (P1b).
+**Coding:** Implements the a way to upgrade the player's stats through c6. Nodes are monobehaviours. This system owns purchase transaction logic but not the visual grid (U2) or node designs (P1b).
 
-**Art:** No unique art assets; node icons and backgrounds are defined in P1b and rendered by U2.
+**Art:** No unique art assets;
 
 **Audio:** A distinct node-purchase sound, separate from the currency-pickup chime.
 
@@ -75,27 +85,29 @@
 
 ### 11. G4 — Mod System
 
-**Coding:** Defines a data-driven mod system where each archetype (Pierce, Chain) contributes stat deltas and ability tags through `IUpgradeSource` into C6. Mods attach to the boomerang per-run based on unlocked skill tree nodes. Per-run boundary rule: mods reshape tactics only — no permanent power gain invisible to the tree.
+**Coding:** Defines a data-driven mod system where each archetype (Pierce, Chain) contributes stat deltas and ability tags through UpgradeSource into C6. Mods attach to the boomerang per-run based on unlocked skill tree nodes.
 
-**Art:** Each mod archetype has a small icon displayed in the HUD and skill tree to indicate which mods are active.
+**Art:** Each mod archetype has a small icon displayed in the skill tree.
 
 **Audio:** Mod-specific hit sounds (e.g., a chain-bounce ricochet) differentiate mod effects during play.
 
 ---
 
-### 12. P1b — Skill Tree Node Catalog ⚠ Design Gate
+### 12. P1b — Skill Tree Node Catalog
 
-**Coding:** Defines 25–30 individual node `ScriptableObjects`, each specifying stat deltas, unlock prerequisites, and display metadata. Tier-1 ships ~15 nodes across 3 clusters; Tier-2 expands to 25–30. Every node must produce a visible gameplay effect at the moment of purchase — no invisible stat nodes.
+**Coding:** Defines 25–30 individual nodes, each specifying stat deltas, unlock prerequisites, and display metadata.
 
 **Art:** Each node requires an icon sprite and a category color. Locked, unlocked, and purchased visual states are defined here and rendered by U2.
 
 **Audio:** No additional audio beyond the purchase sound defined in P1a.
 
+**Status:** Assume this is a human TODO only. LLMs can create the linear ticket but LLMs can never work on it.
+
 ---
 
 ### 13. G6 — Enemy System
 
-**Coding:** Implements 3 enemy archetypes (charge, orbit, snipe) with movement AI, health, and damage behaviors. Stats scale via `GameStatsContext` so difficulty increases without code changes. Enemy death broadcasts an event consumed by E1 and E2.
+**Coding:** Implements 2 enemy archetypes (charge, snipe) with movement AI, health, and damage behaviors. Stats scale via `GameStatsContext` so difficulty increases without code changes. Enemy death broadcasts an event consumed by E1 and E2.
 
 **Art:** Three distinct enemy sprites, visually readable as separate threat types at a glance. Zone-2 variants use a color-shift shader rather than new sprites. A shared death-particle effect plays for all variants.
 
@@ -107,7 +119,7 @@
 
 **Coding:** Manages asteroid objects with a crack-and-crumble lifecycle: each hit reduces integrity, spawning smaller debris at defined thresholds, until full destruction yields currency. Ore tier is assigned at spawn and determines yield. Yield multipliers are read from `GameStatsContext`.
 
-**Art:** At least 3 size variants (large, medium, small fragment) with a crack overlay or sprite-swap to show damage state. A crumble particle burst on final destruction.
+**Art:** Shader overlay to show damage state. A crumble particle burst on final destruction.
 
 **Audio:** A distinct mineral-crack sound on hit, different from enemy hit sounds, and a mineral-drop chime on full destruction.
 
@@ -115,9 +127,9 @@
 
 ### 15. G8 — Boss Encounter
 
-**Coding:** Implements a boss state machine with at least 3 phases driven by health thresholds, an attack-pattern library (projectile spray, charge, summon), and escalation triggers. Two distinct bosses are required at MVP. Boss health is broadcast to the HUD via event.
+**Coding:** Implements a boss state machine with, an attack-pattern library (snipe, charge, summon). Two distinct bosses are required at MVP. Boss health is broadcast to the HUD via event.
 
-**Art:** Each boss requires a large, screen-readable sprite with a clear silhouette distinct from standard enemies. Phase transitions use a visible state change (color shift or new attachment sprites). Attack-telegraph sprites (warning lines, charge indicators) aid readability.
+**Art:** Each boss requires a large, screen-readable sprite with a clear silhouette distinct from standard enemies. Attack-telegraph sprites (warning lines, charge indicators) aid readability.
 
 **Audio:** A boss-entry music sting that transitions into a combat track, a phase-transition impact sound, and a boss-death fanfare.
 
@@ -125,17 +137,19 @@
 
 ### 16. G7 — Wave & Spawn Director
 
-**Coding:** Drives spawn timing, enemy mix, and density escalation over the run using configurable difficulty curves in `ScriptableObject` spawn tables. Reads current fuel level and kill count to modulate pacing. Triggers the boss encounter via G8 at defined thresholds.
+**Coding:** Drives spawn timing, enemy mix, and density escalation over the run using configurable difficulty curves in `ScriptableObject` spawn tables. Triggers the boss encounter via G8 at defined time thresholds.
 
 **Art:** No unique art. Spawn-point flash indicators reuse particles from V1.
 
 **Audio:** No unique audio; relies on enemy and boss systems for encounter sounds.
 
+**Status:** We can spawn asteroids, but TODO backlog item is spawning enemies, bosses, and mini-bosses (named enemies with extra health).
+
 ---
 
 ### 17. U1 — In-Run HUD
 
-**Coding:** Displays fuel gauge, credit counter, active mod indicators, run timer, and boss health bar as UGUI elements. All data arrives through events from G1, E1, E2, and G8 — no per-frame polling. Updates must not allocate per frame.
+**Coding:** Displays fuel gauge, credit counter, run timer, and boss health bar as UGUI elements. All data arrives through events from G1, E1, E2, and G8 — no per-frame polling.
 
 **Art:** Fuel bar, currency icons, boss health bar, and mod-slot indicators each require distinct sprites or UI textures with a consistent visual language (bar shape, color coding).
 
@@ -145,17 +159,19 @@
 
 ### 18. U2 — Skill Tree UI
 
-**Coding:** Renders the persistent skill tree grid using UGUI with a custom `Graphic` subclass for connector lines between nodes. Handles node selection, purchase confirmation, and tooltip display. Reads tree state from P1a and currency balance from E2.
+**Coding:** Renders the persistent skill tree grid using UGUI with connector lines between nodes. Handles node selection, purchase confirmation, and tooltip display. Reads tree state from P1a and currency balance from E2.
 
 **Art:** A grid background texture, connector line art, and node frame sprites define the screen's visual identity. Node icons come from P1b. Selected-node highlight and locked-node desaturation states are required.
 
 **Audio:** Node hover and purchase sounds as defined in P1a.
 
+**Status:** Assume this is a human TODO only. LLMs can create the linear ticket but LLMs can never work on it.
+
 ---
 
 ### 19. V1 — Juice Layer
 
-**Coding:** Implements camera shake, hitstop freeze frames, and world-space VFX (hit sparks, currency pickups, boomerang trail, death explosions) through a centralized service consumed by G1, G3, G5, G6, and G8. A shared Weight Events Table coordinates which effects trigger per event and at what intensity, cross-referenced by A1.
+**Coding:** Implements camera shake, hitstop freeze frames, and world-space VFX (hit sparks, currency pickups, boomerang trail, death explosions) through a centralized service. A shared Weight Events Table coordinates which effects trigger per event and at what intensity, cross-referenced by A1.
 
 **Art:** Hit spark sprites, floating damage number font, currency-pickup flash, boomerang trail particle, and enemy/asteroid death explosions. All effects must read clearly against the space background.
 
@@ -171,6 +187,8 @@
 
 **Audio:** Minimum at MVP: one in-run combat music track, one skill-tree ambient track, and the per-system SFX defined in each system above (weapon throws, enemy deaths, asteroid cracks, boss stings, UI feedback).
 
+**Status:** Assume a human only TODO.
+
 ---
 
 ## Design Order
@@ -181,10 +199,10 @@
 | 2 | G1 Player Ship Controller | Core |
 | 3 | E1 Fuel Economy | Core |
 | 4 | E2 Currency & XP | Core |
-| 5 | G3 Boomerang Weapon ⚠ Week-1 | Feature |
-| 6 | P1a Skill Tree Architecture ⚠ | Feature |
+| 5 | G3 Boomerang Weapon | Feature |
+| 6 | P1a Skill Tree Architecture | Feature |
 | 7 | G4 Mod System | Feature |
-| 8 | P1b Skill Tree Node Catalog ⚠ | Feature |
+| 8 | P1b Skill Tree Node Catalog | Feature |
 | 9 | G6 Enemy System | Feature |
 | 10 | G5 Asteroid Mining | Feature |
 | 11 | G8 Boss Encounter | Feature |

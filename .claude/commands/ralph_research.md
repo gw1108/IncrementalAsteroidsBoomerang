@@ -47,7 +47,7 @@ think deeply about the findings
 3a. summarize key findings and technical decisions
 3b. identify potential implementation approaches
 3c. note any risks or concerns discovered
-3d. run `humanlayer thoughts sync` to save the research
+3d. run `bash .claude/scripts/sync_thoughts.sh` to ensure the research file is staged in git
 
 4. update the ticket:
 4a. attach the research document to the ticket using the MCP tools with proper link formatting
@@ -68,7 +68,7 @@ Research topic: [research topic description]
 The research has been:
 
 Created at thoughts/shared/research/YYYY-MM-DD-ENG-XXXX-description.md
-Synced to thoughts repository
+Staged in git via sync_thoughts.sh
 Attached to the Linear ticket
 Ticket moved to "research in review" status
 
@@ -77,5 +77,5 @@ Key findings:
 - [Major finding 2]
 - [Major finding 3]
 
-View the ticket: https://linear.app/humanlayer/issue/ENG-XXXX/[ticket-slug]
+View the ticket: https://linear.app/incremental-asteroid-boomerang/issue/ENG-XXXX/[ticket-slug]
 ```
